@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=80", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "veos-mcp"
+version = "0.1.0"
+description = "Python MCP server for controlling dSPACE VEOS"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "mcp[cli]>=1.27,<2",
+    "pydantic>=2.8,<3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pylint>=3.3,<4",
+    "pytest>=8.3,<9",
+]
+
+[project.scripts]
+veos-mcp = "veos_mcp.server:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,87 @@
+[MASTER]
+ignore=CVS
+ignore-paths=
+ignore-patterns=^\.#
+persistent=yes
+load-plugins=
+    pylint.extensions.check_elif,
+    pylint.extensions.bad_builtin,
+    pylint.extensions.docparams,
+    pylint.extensions.for_any_all,
+    pylint.extensions.set_membership,
+    pylint.extensions.code_style,
+    pylint.extensions.overlapping_exceptions,
+    pylint.extensions.typing,
+    pylint.extensions.redefined_variable_type,
+    pylint.extensions.comparison_placement,
+    pylint.extensions.broad_try_clause,
+    pylint.extensions.dict_init_mutate,
+    pylint.extensions.consider_refactoring_into_while_condition,
+jobs=1
+suggestion-mode=yes
+unsafe-load-any-extension=no
+extension-pkg-allow-list=
+py-version=3.12
+limit-inference-results=100
+fail-under=10.0
+fail-on=
+clear-cache-post-run=no
+
+[MESSAGES CONTROL]
+enable=
+    use-symbolic-message-instead,
+    useless-suppression,
+disable=
+    attribute-defined-outside-init,
+    invalid-name,
+    missing-docstring,
+    protected-access,
+    too-few-public-methods,
+    format,
+    fixme,
+    consider-using-assignment-expr,
+
+[REPORTS]
+output-format=text
+reports=no
+evaluation=max(0, 0 if fatal else 10.0 - ((float(5 * error + warning + refactor + convention) / statement) * 10))
+score=yes
+
+[LOGGING]
+logging-modules=logging
+logging-format-style=old
+
+[MISCELLANEOUS]
+notes=FIXME,XXX,TODO
+
+[SIMILARITIES]
+min-similarity-lines=6
+ignore-comments=yes
+ignore-docstrings=yes
+ignore-imports=yes
+ignore-signatures=yes
+
+[VARIABLES]
+init-import=no
+additional-builtins=
+callbacks=cb_,_cb
+allow-global-unused-variables=yes
+allowed-redefined-builtins=
+redefining-builtins-modules=six.moves,past.builtins,future.builtins,builtins,io
+
+[FORMAT]
+max-line-length=100
+ignore-long-lines=^\s*(# )?<?https?://\S+>?$
+single-line-if-stmt=no
+single-line-class-stmt=no
+max-module-lines=2000
+indent-string='    '
+indent-after-paren=4
+expected-line-ending-format=
+
+[BASIC]
+good-names=i,j,k,ex,Run,_
+good-names-rgxs=
+bad-names=foo,bar,baz,toto,tutu,tata
+bad-names-rgxs=
+name-group=
