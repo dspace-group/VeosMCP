@@ -1,4 +1,4 @@
-"""VEOS MCP server package."""
+"""Top-level package exports for the VEOS MCP server."""
 
 from veos_mcp.server import main
 

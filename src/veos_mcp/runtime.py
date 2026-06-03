@@ -1,4 +1,4 @@
-
+"""Shared FastMCP runtime state and response helpers for the VEOS MCP server."""
 
 from mcp.server import FastMCP
 

@@ -1,4 +1,4 @@
-"""MCP resources for materializing VEOS log file contents."""
+"""MCP resources that expose VEOS simulation and bus log file contents."""
 
 from __future__ import annotations
 

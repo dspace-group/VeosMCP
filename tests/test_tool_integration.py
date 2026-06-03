@@ -1,3 +1,5 @@
+"""Integration-style tests for VEOS MCP tools and log file resources."""
+
 from __future__ import annotations
 
 import asyncio

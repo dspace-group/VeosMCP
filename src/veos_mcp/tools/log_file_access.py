@@ -2,9 +2,7 @@
 
 from __future__ import annotations
 
-from typing import cast
-
-from mcp.types import CallToolResult, ContentBlock, ResourceLink, ToolAnnotations
+from mcp.types import CallToolResult, ResourceLink, ToolAnnotations
 from pydantic import AnyUrl
 
 from veos_mcp.schemas.cli_command_result import CommandResultCode
@@ -73,19 +71,16 @@ def veos_get_log_file(logFileName: str) -> CallToolResult:
     )
     return CallToolResult(
         isError=False,
-        content=cast(
-            list[ContentBlock],
-            [
-                ResourceLink(
-                    type="resource_link",
-                    uri=AnyUrl(resource_uri),
-                    name=logFileName,
-                    title=logFileName,
-                    description=description,
-                    mimeType=mime_type,
-                )
-            ],
-        ),
+        content=[
+            ResourceLink(
+                type="resource_link",
+                uri=AnyUrl(resource_uri),
+                name=logFileName,
+                title=logFileName,
+                description=description,
+                mimeType=mime_type,
+            )
+        ],
         structuredContent={
             "Success": True,
             "Code": CommandResultCode.OK.value,

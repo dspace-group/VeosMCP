@@ -1,4 +1,4 @@
-"""Pydantic schemas for VEOS model signal inspection results."""
+"""Pydantic schemas for VEOS model signal parsing results."""
 
 from __future__ import annotations
 
