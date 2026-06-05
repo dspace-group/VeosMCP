@@ -9,13 +9,17 @@ Python MCP server for controlling the dSPACE VEOS simulator.
 - `src/veos_mcp/tools/`: VEOS MCP tool implementations
 - `src/veos_mcp/resources/`: VEOS MCP resource implementations
 - `src/veos_mcp/schemas/`: MCP-facing pydantic models
-- `tests/`: unit tests for command execution and signal summary extraction
+- `tests/`: integration-style tests for MCP tool and resource registration and responses
 - `test-assets/`: sample OSA model copied from the original repository
 
 ## Setup
 
 1. Create a virtual environment with Python 3.12.
-2. Install the project and development dependencies:
+2. Install the project and development dependencies. If you use `uv`, the committed `uv.lock` can reproduce the intended environment:
+
+	`.venv\\Scripts\\uv.exe sync --extra dev`
+
+	If you prefer `pip`, install the editable project with the `dev` extra:
 
 	`.venv\\Scripts\\python.exe -m pip install -e ".[dev]"`
 
@@ -27,3 +31,4 @@ Python MCP server for controlling the dSPACE VEOS simulator.
 
 - Run tests: `.venv\\Scripts\\python.exe -m pytest`
 - Run pylint: `.venv\\Scripts\\python.exe -m pylint src tests`
+- Build a wheel: `.venv\\Scripts\\python.exe -m pip wheel --no-deps .`
