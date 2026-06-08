@@ -1,6 +1,5 @@
 """MCP tools for VEOS simulator state, loading, and configuration."""
 
-from __future__ import annotations
 
 from mcp.types import CallToolResult, ToolAnnotations
 

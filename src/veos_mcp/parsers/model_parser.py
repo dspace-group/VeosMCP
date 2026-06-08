@@ -1,6 +1,5 @@
 """Signal summary extraction logic for VEOS model inspection."""
 
-from __future__ import annotations
 
 import json
 from typing import Any

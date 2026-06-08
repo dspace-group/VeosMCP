@@ -1,6 +1,5 @@
 """Integration-style tests for VEOS log file access tools"""
 
-from __future__ import annotations
 
 import json
 from typing import cast

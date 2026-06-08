@@ -1,6 +1,5 @@
 """MCP tools and helpers for VEOS model signal inspection."""
 
-from __future__ import annotations
 
 from mcp.types import CallToolResult, ToolAnnotations
 

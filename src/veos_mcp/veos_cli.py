@@ -1,6 +1,5 @@
 """VEOS CLI path resolution and subprocess execution helpers."""
 
-from __future__ import annotations
 
 import os
 import subprocess

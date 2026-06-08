@@ -1,6 +1,5 @@
 """Integration-style tests for MCP server resources."""
 
-from __future__ import annotations
 
 from veos_mcp import runtime
 from veos_mcp.resources.log_files import (

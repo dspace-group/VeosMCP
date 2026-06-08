@@ -1,6 +1,5 @@
 """Integration-style tests for VEOS system extraction tools."""
 
-from __future__ import annotations
 
 import json
 from typing import cast

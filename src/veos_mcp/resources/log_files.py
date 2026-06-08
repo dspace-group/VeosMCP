@@ -1,6 +1,5 @@
 """MCP resources that expose VEOS simulation and bus log file contents."""
 
-from __future__ import annotations
 
 from veos_mcp.runtime import get_cli, mcp
 

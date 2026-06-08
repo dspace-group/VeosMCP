@@ -1,6 +1,5 @@
 """Pydantic models for VEOS model signal parsing results."""
 
-from __future__ import annotations
 
 from pydantic import BaseModel, Field
 

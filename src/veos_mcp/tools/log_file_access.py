@@ -1,6 +1,5 @@
 """MCP tools for enumerating VEOS log files and returning resource links."""
 
-from __future__ import annotations
 
 from mcp.types import CallToolResult, ResourceLink, ToolAnnotations
 from pydantic import AnyUrl

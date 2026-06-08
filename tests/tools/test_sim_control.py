@@ -1,6 +1,5 @@
 """Integration-style tests for VEOS sim control tools."""
 
-from __future__ import annotations
 
 import json
 from typing import cast
