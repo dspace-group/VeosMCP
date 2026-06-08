@@ -7,7 +7,7 @@ from veos_mcp.resources.log_files import (
     veos_get_bus_log_file_resource,
     veos_get_sim_log_file_resource,
 )
-from veos_mcp.schemas.cli_command_result import CliCommandResult, CommandResultCode
+from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
 
 class RecordingVeosCliMock:
     def __init__(self, sim_result: CliCommandResult) -> None:

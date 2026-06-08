@@ -8,7 +8,7 @@ from collections.abc import Iterable
 from pathlib import Path
 from threading import Lock
 
-from veos_mcp.schemas.cli_command_result import CliCommandResult, CommandResultCode
+from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
 
 
 DEFAULT_COMMAND_TIMEOUT_SECONDS = 40.0

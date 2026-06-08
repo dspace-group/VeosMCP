@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from veos_mcp.schemas.signal_summary import (
+from veos_mcp.models.signal_summary import (
     VeosSignal,
     VeosSignalConnection,
     VeosSignalSummary,

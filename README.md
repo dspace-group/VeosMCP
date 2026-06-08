@@ -8,7 +8,7 @@ Python MCP server for controlling the dSPACE VEOS simulator.
 - `src/veos_mcp/veos_cli.py`: VEOS executable resolution, subprocess execution, timeout handling, locking
 - `src/veos_mcp/tools/`: VEOS MCP tool implementations
 - `src/veos_mcp/resources/`: VEOS MCP resource implementations
-- `src/veos_mcp/schemas/`: MCP-facing pydantic models
+- `src/veos_mcp/models/`: MCP-facing pydantic models
 - `tests/`: integration-style tests for MCP tool and resource registration and responses
 - `test-assets/`: sample OSA model copied from the original repository
 

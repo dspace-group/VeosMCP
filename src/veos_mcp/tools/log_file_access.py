@@ -5,7 +5,7 @@ from __future__ import annotations
 from mcp.types import CallToolResult, ResourceLink, ToolAnnotations
 from pydantic import AnyUrl
 
-from veos_mcp.schemas.cli_command_result import CommandResultCode
+from veos_mcp.models.cli_command_result import CommandResultCode
 from veos_mcp.runtime import create_command_result_response, create_error, get_cli, mcp
 
 

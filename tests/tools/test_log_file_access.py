@@ -9,7 +9,7 @@ from mcp.types import CallToolResult, ResourceLink, TextContent
 
 from veos_mcp import runtime
 
-from veos_mcp.schemas.cli_command_result import CliCommandResult, CommandResultCode
+from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
 from veos_mcp.tools.log_file_access import (
     veos_get_log_file,
     veos_list_all_available_log_files,

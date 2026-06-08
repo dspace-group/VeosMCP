@@ -9,7 +9,7 @@ from mcp.types import CallToolResult, TextContent
 import pytest
 
 from veos_mcp import runtime
-from veos_mcp.schemas.cli_command_result import CliCommandResult, CommandResultCode
+from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
 from veos_mcp.tools.sim_control import (
     veos_apply_config,
     veos_load,

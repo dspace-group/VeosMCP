@@ -4,8 +4,8 @@ from mcp.server import FastMCP
 
 from mcp.types import CallToolResult, TextContent
 
-from veos_mcp.schemas.cli_command_result import CliCommandResult
-from veos_mcp.schemas.errors import VeosError, ErrorType
+from veos_mcp.models.cli_command_result import CliCommandResult
+from veos_mcp.models.errors import VeosError, ErrorType
 from veos_mcp.veos_cli import VeosCli
     
 mcp = FastMCP(
