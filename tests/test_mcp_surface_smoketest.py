@@ -1,7 +1,6 @@
 """Surface tests for the MCP server's exposed tools and resources."""
 
 import asyncio
-import os
 from pathlib import Path
 import sys
 
@@ -9,23 +8,28 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
 
-def create_server_params(repo_root: Path) -> StdioServerParameters:
-    """Build stdio server parameters for MCP surface tests."""
-    python_path_entries = [str(repo_root / "src")]
-    if existing_python_path := os.environ.get("PYTHONPATH"):
-        python_path_entries.append(existing_python_path)
+def create_fake_veos_executable(tmp_path: Path) -> Path:
+    """Create a minimal VEOS stub executable for subprocess-based MCP tests."""
+    if sys.platform.startswith("win"):
+        veos_path = tmp_path / "veos.cmd"
+        veos_path.write_text("@echo off\r\nexit /b 0\r\n", encoding="utf-8")
+        return veos_path
 
+    veos_path = tmp_path / "veos"
+    veos_path.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+    veos_path.chmod(0o755)
+    return veos_path
+
+
+def create_server_params(veos_path: Path) -> StdioServerParameters:
     return StdioServerParameters(
         command=sys.executable,
-        args=["-m", "veos_mcp.server", "--veos-path", "C:\\builds\\261\\bin"],
-        env={**os.environ, "PYTHONPATH": os.pathsep.join(python_path_entries)},
-        cwd=repo_root,
+        args=["-m", "veos_mcp.server", "--veos-path", str(veos_path)],
     )
 
 
-def test_list_all_tools() -> None:
+def test_list_all_tools(tmp_path: Path) -> None:
     """Test that all expected tools can be listed from the stdio server."""
-    repo_root = Path(__file__).resolve().parents[1]
 
     expected_tools = [
         "veos_add_signal_connection",
@@ -41,8 +45,8 @@ def test_list_all_tools() -> None:
     ]
 
     async def list_tool_names() -> list[str]:
-        server_params = create_server_params(repo_root)
-
+        server_params = create_server_params(create_fake_veos_executable(tmp_path))
+        
         async with stdio_client(server_params) as (read, write):
             async with ClientSession(read, write) as session:
                 await session.initialize()
@@ -54,9 +58,8 @@ def test_list_all_tools() -> None:
     assert actual_tools == expected_tools
 
 
-def test_list_all_resource_templates() -> None:
+def test_list_all_resource_templates(tmp_path: Path) -> None:
     """Test that all expected resource templates can be listed from the stdio server."""
-    repo_root = Path(__file__).resolve().parents[1]
 
     expected_resource_templates = [
         "logs://bus/{logFileName}",
@@ -64,7 +67,7 @@ def test_list_all_resource_templates() -> None:
     ]
 
     async def list_resource_templates() -> list[str]:
-        server_params = create_server_params(repo_root)
+        server_params = create_server_params(create_fake_veos_executable(tmp_path))
 
         async with stdio_client(server_params) as (read, write):
             async with ClientSession(read, write) as session:
@@ -77,12 +80,11 @@ def test_list_all_resource_templates() -> None:
     assert actual_resource_templates == expected_resource_templates
 
 
-def test_smoketest_log_file_tool_over_mcp() -> None:
+def test_smoketest_log_file_tool_over_mcp(tmp_path: Path) -> None:
     """Test one end-to-end MCP tool call over stdio."""
-    repo_root = Path(__file__).resolve().parents[1]
 
     async def call_tool() -> tuple[bool, str]:
-        server_params = create_server_params(repo_root)
+        server_params = create_server_params(create_fake_veos_executable(tmp_path))
 
         async with stdio_client(server_params) as (read, write):
             async with ClientSession(read, write) as session:

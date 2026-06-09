@@ -1,23 +1,17 @@
 """VEOS CLI path resolution and subprocess execution helpers."""
 
-
-import os
-import subprocess
-from collections.abc import Iterable
 from pathlib import Path
+import subprocess
+
 from threading import Lock
+from collections.abc import Iterable
 
 from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
+from veos_mcp.veos_path_resolver import resolve_veos_path
 
 
 DEFAULT_COMMAND_TIMEOUT_SECONDS = 40.0
 _COMMAND_GATE = Lock()
-
-
-def resolve_executable_path(base_path: Path, file_name: str) -> Path:
-    """Resolve a VEOS executable path from the configured VEOS bin directory."""
-    resolved_path = Path(f"{base_path / file_name}.exe") if os.name == "nt" else base_path / file_name
-    return resolved_path if resolved_path.is_file() else Path()
 
 
 def run_process_command(
@@ -145,59 +139,28 @@ class VeosCli:
 
     def __init__(
         self,
-        veos_path: str | Path,
         *,
+        veos_version: str | None,
+        veos_path: str | None,
         command_timeout_seconds: float = DEFAULT_COMMAND_TIMEOUT_SECONDS,
     ) -> None:
-        normalized_path = Path(veos_path)
-        if not str(veos_path).strip():
-            raise RuntimeError(
-                "Missing required command line argument '--veos-path'. "
-                "Configure it in the MCP server startup arguments."
-            )
-        if not normalized_path.is_dir():
-            raise FileNotFoundError(
-                "command line argument '--veos-path' does not point to a valid directory: "
-                f"{veos_path}"
-            )
-
-        sim_path = resolve_executable_path(normalized_path, "veos-sim")
-        model_path = resolve_executable_path(normalized_path, "veos-model")
-        if not sim_path or not model_path:
-            raise FileNotFoundError(
-                "command line argument '--veos-path' does not point to a valid VEOS "
-                f"installation path: {veos_path}. Make sure that the path points to the "
-                "bin directory of your local VEOS installation."
-            )
-
-        self.veos_path = normalized_path
-        self.sim_path = sim_path
-        self.model_path = model_path
+        
+        if veos_path is not None:
+            self.veos_path = Path(veos_path)
+            if not self.veos_path.is_file():
+                raise ValueError(f"Provided VEOS path is invalid, make sure that the provided path '{veos_path}' "
+                                 f"points to an existing veos.exe.")
+        else:
+            self.veos_path = resolve_veos_path(veos_version)
         self.command_timeout_seconds = command_timeout_seconds
-
-    @classmethod
-    def from_executables(
-        cls,
-        sim_path: str | Path,
-        model_path: str | Path,
-        *,
-        command_timeout_seconds: float = DEFAULT_COMMAND_TIMEOUT_SECONDS,
-    ) -> "VeosCli":
-        """Create an instance with explicit executable paths for tests."""
-        instance = cls.__new__(cls)
-        instance.veos_path = Path(sim_path).parent
-        instance.sim_path = Path(sim_path)
-        instance.model_path = Path(model_path)
-        instance.command_timeout_seconds = command_timeout_seconds
-        return instance
 
     def run_sim(self, *arguments: str) -> CliCommandResult:
         """Run the VEOS simulator CLI with serialized access."""
-        return self._run_locked(self.sim_path, arguments)
+        return self._run_locked(self.veos_path, ("sim", *arguments))
 
     def run_model(self, *arguments: str) -> CliCommandResult:
         """Run the VEOS model CLI with serialized access."""
-        return self._run_locked(self.model_path, arguments)
+        return self._run_locked(self.veos_path, ("model", *arguments))
 
     def _run_locked(
         self,

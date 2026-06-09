@@ -16,17 +16,16 @@ mcp = FastMCP(
 
 _veos_cli: VeosCli | None = None
 
-def configure(veos_path: str) -> None:
+def configure(*, veos_version: str | None , veos_path: str | None) -> None:
     """Configure the server with the VEOS CLI installation directory."""
     global _veos_cli
-    _veos_cli = VeosCli(veos_path)
+    _veos_cli = VeosCli(veos_version=veos_version, veos_path=veos_path)
 
 def get_cli() -> VeosCli:
     """Return the configured VEOS CLI facade."""
     if _veos_cli is None:
         raise RuntimeError(
-            "Missing required command line argument '--veos-path'. "
-            "Configure it in the MCP server startup arguments."
+            "VEOS CLI is not configured."
         )
     return _veos_cli
 
