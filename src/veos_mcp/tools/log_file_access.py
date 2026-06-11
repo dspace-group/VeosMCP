@@ -1,6 +1,5 @@
 """MCP tools for enumerating VEOS log files and returning resource links."""
 
-
 from mcp.types import CallToolResult, ResourceLink, ToolAnnotations
 from pydantic import AnyUrl
 
@@ -36,6 +35,7 @@ def veos_list_all_available_log_files() -> CallToolResult:
         )
     return create_command_result_response(command_result)
 
+
 @mcp.tool(
     name="veos_get_log_file",
     title="Get VEOS log file resource link",
@@ -56,13 +56,9 @@ def veos_get_log_file(logFileName: str) -> CallToolResult:
     """Return an MCP resource link for a named VEOS log file."""
     is_pcapng_file = logFileName.lower().endswith(".pcapng")
     resource_uri = (
-        f"logs://bus/{logFileName}"
-        if is_pcapng_file
-        else f"logs://sim/{logFileName}"
+        f"logs://bus/{logFileName}" if is_pcapng_file else f"logs://sim/{logFileName}"
     )
-    mime_type = (
-        "application/vnd.tcpdump.pcap" if is_pcapng_file else "text/plain"
-    )
+    mime_type = "application/vnd.tcpdump.pcap" if is_pcapng_file else "text/plain"
     description = (
         "VEOS bus log file in pcapng format."
         if is_pcapng_file

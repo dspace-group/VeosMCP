@@ -1,6 +1,5 @@
 """MCP tools and helpers for VEOS model signal inspection."""
 
-
 from mcp.types import CallToolResult, ToolAnnotations
 
 from veos_mcp.runtime import create_error, get_cli, mcp
@@ -46,7 +45,9 @@ def veos_get_all_signals_and_ports(osaPath: str) -> CallToolResult:
         )
 
     try:
-        signal_summary = model_inspection_service.extract_signal_summary(command_result.stdout)
+        signal_summary = model_inspection_service.extract_signal_summary(
+            command_result.stdout
+        )
     except (KeyError, TypeError, ValueError) as exception:
         return CallToolResult(
             isError=True,

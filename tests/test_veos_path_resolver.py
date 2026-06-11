@@ -6,7 +6,10 @@ import pytest
 
 import veos_mcp.veos_path_resolver as path_resolver
 
-def _installation(year: int, release: str, path: str) -> path_resolver._VeosInstallation:
+
+def _installation(
+    year: int, release: str, path: str
+) -> path_resolver._VeosInstallation:
     return path_resolver._VeosInstallation(
         year=year,
         release=release,
@@ -53,5 +56,6 @@ def test_select_installation_reports_error_when_no_installations_available() -> 
     with pytest.raises(RuntimeError) as exc_info:
         path_resolver._select_installation(installations, "26.2")
 
-    assert "Could not find any installed dSPACE VEOS instances on the machine." in str(exc_info.value)
-
+    assert "Could not find any installed dSPACE VEOS instances on the machine." in str(
+        exc_info.value
+    )

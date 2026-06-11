@@ -1,6 +1,5 @@
 """Integration-style tests for VEOS log file access tools"""
 
-
 import json
 from typing import cast
 
@@ -13,6 +12,7 @@ from veos_mcp.tools.log_file_access import (
     veos_get_log_file,
     veos_list_all_available_log_files,
 )
+
 
 class RecordingSimCliMock:
     def __init__(self, sim_result: CliCommandResult) -> None:
@@ -54,12 +54,18 @@ def assert_error_text_content(result: CallToolResult, expected_message: str) -> 
 
 
 def test_tool_veos_get_log_file_returns_bus_resource_link_for_pcapng() -> None:
-    result = cast(CallToolResult, veos_get_log_file("SimpleEthernetReceiverFmu.BusTransfer.pcapng"))
+    result = cast(
+        CallToolResult,
+        veos_get_log_file("SimpleEthernetReceiverFmu.BusTransfer.pcapng"),
+    )
 
     assert result.isError is False
     assert result.content is not None
     resource_link = cast(ResourceLink, result.content[0])
-    assert str(resource_link.uri) == "logs://bus/SimpleEthernetReceiverFmu.BusTransfer.pcapng"
+    assert (
+        str(resource_link.uri)
+        == "logs://bus/SimpleEthernetReceiverFmu.BusTransfer.pcapng"
+    )
     assert resource_link.mimeType == "application/vnd.tcpdump.pcap"
 
 
@@ -129,4 +135,6 @@ def test_tool_veos_list_all_available_log_files_returns_error_response_on_cli_fa
         "veos_list_all_available_log_files",
         result.structuredContent,
     )
-    assert_error_text_content(result, "Failed to retrieve the list of available log files.")
+    assert_error_text_content(
+        result, "Failed to retrieve the list of available log files."
+    )

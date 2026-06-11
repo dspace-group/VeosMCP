@@ -9,6 +9,7 @@ import pytest
 from veos_mcp import server
 from veos_mcp import veos_path_resolver
 
+
 def create_fake_veos_executable(tmp_path: Path) -> Path:
     """Create a minimal VEOS stub executable for subprocess-based MCP tests."""
     if sys.platform.startswith("win"):
@@ -26,7 +27,9 @@ def create_installation(bin_path: Path) -> veos_path_resolver._VeosInstallation:
     return veos_path_resolver._VeosInstallation(
         year=2026,
         release="A",
-        bin_path=bin_path / "veos.exe" if sys.platform.startswith("win") else bin_path / "veos",
+        bin_path=bin_path / "veos.exe"
+        if sys.platform.startswith("win")
+        else bin_path / "veos",
         source_name="test-installation",
     )
 
@@ -34,7 +37,9 @@ def create_installation(bin_path: Path) -> veos_path_resolver._VeosInstallation:
 def test_argument_no_veos_version_calls_select_installation(tmp_path: Path) -> None:
     with patch("veos_mcp.veos_path_resolver._select_installation") as mock_select:
         with patch.object(server.mcp, "run") as mock_run:
-            mock_select.return_value = create_installation(create_fake_veos_executable(tmp_path))
+            mock_select.return_value = create_installation(
+                create_fake_veos_executable(tmp_path)
+            )
 
             server.main([])
 
@@ -45,7 +50,9 @@ def test_argument_no_veos_version_calls_select_installation(tmp_path: Path) -> N
 def test_argument_veos_version_calls_select_installation(tmp_path: Path) -> None:
     with patch("veos_mcp.veos_path_resolver._select_installation") as mock_select:
         with patch.object(server.mcp, "run") as mock_run:
-            mock_select.return_value = create_installation(create_fake_veos_executable(tmp_path))
+            mock_select.return_value = create_installation(
+                create_fake_veos_executable(tmp_path)
+            )
 
             server.main(["--veos-version", "26.1"])
 

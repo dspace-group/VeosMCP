@@ -1,6 +1,5 @@
 """MCP resources that expose VEOS simulation and bus log file contents."""
 
-
 from veos_mcp.runtime import get_cli, mcp
 
 
@@ -11,7 +10,11 @@ def _read_log_file(logFileName: str) -> str | bytes:
     if not command_result.success:
         return f"Error retrieving log file: {command_result.stderr}"
 
-    return bytes(command_result.stdout_bytes) if logFileName.lower().endswith(".pcapng") else command_result.stdout
+    return (
+        bytes(command_result.stdout_bytes)
+        if logFileName.lower().endswith(".pcapng")
+        else command_result.stdout
+    )
 
 
 @mcp.resource(
@@ -23,7 +26,11 @@ def _read_log_file(logFileName: str) -> str | bytes:
 )
 def veos_get_sim_log_file_resource(logFileName: str) -> str:
     log_contents = _read_log_file(logFileName)
-    return log_contents if isinstance(log_contents, str) else bytes(log_contents).decode("utf-8", errors="replace")
+    return (
+        log_contents
+        if isinstance(log_contents, str)
+        else bytes(log_contents).decode("utf-8", errors="replace")
+    )
 
 
 @mcp.resource(
@@ -35,4 +42,8 @@ def veos_get_sim_log_file_resource(logFileName: str) -> str:
 )
 def veos_get_bus_log_file_resource(logFileName: str) -> bytes:
     log_contents = _read_log_file(logFileName)
-    return log_contents.encode("utf-8") if isinstance(log_contents, str) else bytes(log_contents)
+    return (
+        log_contents.encode("utf-8")
+        if isinstance(log_contents, str)
+        else bytes(log_contents)
+    )

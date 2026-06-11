@@ -1,13 +1,13 @@
 """Server startup and registration for the VEOS MCP server."""
 
-
 import argparse
 from collections.abc import Sequence
 
-import veos_mcp.tools # pylint: disable=unused-import
-import veos_mcp.resources # pylint: disable=unused-import
+import veos_mcp.tools  # pylint: disable=unused-import
+import veos_mcp.resources  # pylint: disable=unused-import
 
 from veos_mcp.runtime import mcp, configure
+
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     """Parse command line arguments for direct server execution."""

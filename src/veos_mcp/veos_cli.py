@@ -68,7 +68,9 @@ def _collect_process_result(
     command_timeout_seconds: float,
 ) -> CliCommandResult:
     try:
-        stdout_bytes, stderr_bytes = process.communicate(timeout=command_timeout_seconds)
+        stdout_bytes, stderr_bytes = process.communicate(
+            timeout=command_timeout_seconds
+        )
     except subprocess.TimeoutExpired:
         return _timeout_result(process, command_name, command_timeout_seconds)
     return _completed_result(process.returncode, stdout_bytes, stderr_bytes)
@@ -144,12 +146,14 @@ class VeosCli:
         veos_path: str | None,
         command_timeout_seconds: float = DEFAULT_COMMAND_TIMEOUT_SECONDS,
     ) -> None:
-        
+
         if veos_path is not None:
             self.veos_path = Path(veos_path)
             if not self.veos_path.is_file():
-                raise ValueError(f"Provided VEOS path is invalid, make sure that the provided path '{veos_path}' "
-                                 f"points to an existing veos.exe.")
+                raise ValueError(
+                    f"Provided VEOS path is invalid, make sure that the provided path '{veos_path}' "
+                    f"points to an existing veos.exe."
+                )
         else:
             self.veos_path = resolve_veos_path(veos_version)
         self.command_timeout_seconds = command_timeout_seconds

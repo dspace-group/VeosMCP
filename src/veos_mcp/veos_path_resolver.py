@@ -66,7 +66,9 @@ def _parse_requested_version(veos_version: str | None) -> tuple[int, str | None]
     )
 
 
-def _parse_windows_installation(display_name: str, root_path: str | Path) -> _VeosInstallation | None:
+def _parse_windows_installation(
+    display_name: str, root_path: str | Path
+) -> _VeosInstallation | None:
     match = _DISPLAY_NAME_PATTERN.fullmatch(display_name.strip())
     if match is None:
         return None
@@ -110,11 +112,15 @@ def _select_installation(
 ) -> _VeosInstallation:
     available_installations = sorted(installations, key=_installation_sort_key)
     if not available_installations:
-        raise RuntimeError("Could not find any installed dSPACE VEOS instances on the machine.")
+        raise RuntimeError(
+            "Could not find any installed dSPACE VEOS instances on the machine."
+        )
 
     requested_version = _parse_requested_version(veos_version)
     if requested_version is None:
-        return available_installations[-1]  # No specific version requested, return the newest available installation.
+        return available_installations[
+            -1
+        ]  # No specific version requested, return the newest available installation.
 
     requested_year, requested_release = requested_version
     matches = [
@@ -154,13 +160,16 @@ def _get_windows_installations() -> list[_VeosInstallation]:
     return installations
 
 
-def _get_linux_installations(base_path: Path = Path("/opt/dspace")) -> list[_VeosInstallation]:
+def _get_linux_installations(
+    base_path: Path = Path("/opt/dspace"),
+) -> list[_VeosInstallation]:
     installations: list[_VeosInstallation] = []
     for bin_path in base_path.glob("veos????[aAbB]/bin"):
         parsed_installation = _parse_linux_installation(bin_path)
         if parsed_installation is not None:
             installations.append(parsed_installation)
     return installations
+
 
 def resolve_veos_path(veos_version: str | None) -> Path:
     """Resolve the VEOS bin directory for a requested version or the newest install."""
@@ -171,4 +180,8 @@ def resolve_veos_path(veos_version: str | None) -> Path:
     )
 
     candidate_installation = _select_installation(installations, veos_version)
-    return candidate_installation.bin_path / "veos.exe" if sys.platform.startswith("win32") else candidate_installation.bin_path / "veos"
+    return (
+        candidate_installation.bin_path / "veos.exe"
+        if sys.platform.startswith("win32")
+        else candidate_installation.bin_path / "veos"
+    )

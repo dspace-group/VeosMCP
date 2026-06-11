@@ -1,6 +1,5 @@
 """Pydantic schema for VEOS CLI command execution results."""
 
-
 from enum import Enum
 from typing import Any
 

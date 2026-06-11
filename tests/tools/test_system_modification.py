@@ -1,6 +1,5 @@
 """Integration-style tests for VEOS system modification tools."""
 
-
 import json
 from typing import cast
 
@@ -13,6 +12,7 @@ from veos_mcp.tools.system_modification import (
     veos_add_signal_connection,
     veos_remove_signal_connection,
 )
+
 
 class RecordingModelCliMock:
     def __init__(self, result: CliCommandResult) -> None:

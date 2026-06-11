@@ -1,6 +1,5 @@
 """MCP tools for VEOS simulator state, loading, and configuration."""
 
-
 from mcp.types import CallToolResult, ToolAnnotations
 
 from veos_mcp.runtime import create_command_result_response, create_error, get_cli, mcp

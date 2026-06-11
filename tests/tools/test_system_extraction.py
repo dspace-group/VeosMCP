@@ -1,6 +1,5 @@
 """Integration-style tests for VEOS system extraction tools."""
 
-
 import json
 from typing import cast
 
@@ -9,6 +8,7 @@ from mcp.types import CallToolResult
 from veos_mcp import runtime
 from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
 from veos_mcp.tools.system_extraction import veos_get_all_signals_and_ports
+
 
 class RecordingModelCliMock:
     def __init__(self, result: CliCommandResult) -> None:
@@ -19,7 +19,10 @@ class RecordingModelCliMock:
         self.model_calls.append(arguments)
         return self._result
 
-def test_tool_veos_get_all_signals_and_ports_returns_signal_summary(monkeypatch) -> None:
+
+def test_tool_veos_get_all_signals_and_ports_returns_signal_summary(
+    monkeypatch,
+) -> None:
     cli = RecordingModelCliMock(
         CliCommandResult(
             success=True,
@@ -63,7 +66,9 @@ def test_tool_veos_get_all_signals_and_ports_returns_signal_summary(monkeypatch)
                             "SignalConnections": [
                                 {
                                     "InSignalReference": {"ShortPath": "/Consumer/In1"},
-                                    "OutSignalReference": {"ShortPath": "/Producer/Out1"},
+                                    "OutSignalReference": {
+                                        "ShortPath": "/Producer/Out1"
+                                    },
                                 }
                             ]
                         }
@@ -97,7 +102,9 @@ def test_tool_veos_get_all_signals_and_ports_returns_signal_summary(monkeypatch)
     }
 
 
-def test_tool_veos_get_all_signals_and_ports_returns_error_on_cli_failure(monkeypatch) -> None:
+def test_tool_veos_get_all_signals_and_ports_returns_error_on_cli_failure(
+    monkeypatch,
+) -> None:
     cli = RecordingModelCliMock(
         CliCommandResult(
             success=False,

@@ -46,7 +46,7 @@ def test_list_all_tools(tmp_path: Path) -> None:
 
     async def list_tool_names() -> list[str]:
         server_params = create_server_params(create_fake_veos_executable(tmp_path))
-        
+
         async with stdio_client(server_params) as (read, write):
             async with ClientSession(read, write) as session:
                 await session.initialize()
@@ -73,7 +73,9 @@ def test_list_all_resource_templates(tmp_path: Path) -> None:
             async with ClientSession(read, write) as session:
                 await session.initialize()
                 templates = await session.list_resource_templates()
-                return sorted(template.uriTemplate for template in templates.resourceTemplates)
+                return sorted(
+                    template.uriTemplate for template in templates.resourceTemplates
+                )
 
     actual_resource_templates = asyncio.run(list_resource_templates())
 

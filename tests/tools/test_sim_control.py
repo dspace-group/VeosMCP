@@ -1,6 +1,5 @@
 """Integration-style tests for VEOS sim control tools."""
 
-
 import json
 from typing import cast
 
@@ -16,6 +15,7 @@ from veos_mcp.tools.sim_control import (
     veos_status_info,
     veos_stop,
 )
+
 
 class RecordingSimCliMock:
     def __init__(self, sim_result: CliCommandResult) -> None:
@@ -195,7 +195,9 @@ def test_tool_veos_apply_config_invokes_veos_sim_with_all_supported_arguments(
         )
     ]
     assert result.structuredContent is not None
-    assert_command_result_structured_content("veos_apply_config", result.structuredContent)
+    assert_command_result_structured_content(
+        "veos_apply_config", result.structuredContent
+    )
 
 
 def test_tool_veos_apply_config_uses_default_command_without_optional_arguments(
@@ -218,10 +220,14 @@ def test_tool_veos_apply_config_uses_default_command_without_optional_arguments(
     assert result.isError is False
     assert cli.sim_calls == [("config",)]
     assert result.structuredContent is not None
-    assert_command_result_structured_content("veos_apply_config", result.structuredContent)
+    assert_command_result_structured_content(
+        "veos_apply_config", result.structuredContent
+    )
 
 
-def test_tool_veos_apply_config_returns_error_response_on_cli_failure(monkeypatch) -> None:
+def test_tool_veos_apply_config_returns_error_response_on_cli_failure(
+    monkeypatch,
+) -> None:
     cli = RecordingSimCliMock(
         CliCommandResult(
             success=False,
@@ -239,5 +245,9 @@ def test_tool_veos_apply_config_returns_error_response_on_cli_failure(monkeypatc
     assert result.isError is True
     assert cli.sim_calls == [("config", "--disable-bus-log", "--enable-sim-log")]
     assert result.structuredContent is not None
-    assert_command_result_structured_content("veos_apply_config", result.structuredContent)
-    assert_error_text_content(result, "Failed to apply the VEOS simulation configuration.")
+    assert_command_result_structured_content(
+        "veos_apply_config", result.structuredContent
+    )
+    assert_error_text_content(
+        result, "Failed to apply the VEOS simulation configuration."
+    )

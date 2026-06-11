@@ -1,6 +1,5 @@
 """MCP tools for editing VEOS model signal connections."""
 
-
 from mcp.types import CallToolResult, ToolAnnotations
 
 from veos_mcp.runtime import create_command_result_response, create_error, get_cli, mcp
@@ -14,17 +13,17 @@ from veos_mcp.runtime import create_command_result_response, create_error, get_c
         "file to the given VEOS osa file. Example JSON that adds two "
         "connections, the signal references are the signal paths:\n"
         "{\n"
-        "    \"CommunicationPackages\": [\n"
+        '    "CommunicationPackages": [\n'
         "        {\n"
-        "            \"PackageType\": \"StandardCommunicationPackage\",\n"
-        "            \"SignalConnections\": [\n"
+        '            "PackageType": "StandardCommunicationPackage",\n'
+        '            "SignalConnections": [\n'
         "                {\n"
-        "                    \"InSignalReference\": \"/Consumer/ProducerData/Sc1_ProducerData\",\n"
-        "                    \"OutSignalReference\": \"/Producer/ProducerData/Sa1_ProducerData\"\n"
+        '                    "InSignalReference": "/Consumer/ProducerData/Sc1_ProducerData",\n'
+        '                    "OutSignalReference": "/Producer/ProducerData/Sa1_ProducerData"\n'
         "                },\n"
         "                {\n"
-        "                    \"InSignalReference\": \"/Consumer/ProducerData/Sc2_ProducerData\",\n"
-        "                    \"OutSignalReference\": \"/Producer/ProducerData/Sa2_ProducerData\"\n"
+        '                    "InSignalReference": "/Consumer/ProducerData/Sc2_ProducerData",\n'
+        '                    "OutSignalReference": "/Producer/ProducerData/Sa2_ProducerData"\n'
         "                }\n"
         "            ]\n"
         "        }\n"
@@ -58,6 +57,7 @@ def veos_add_signal_connection(osaPath: str, jsonPath: str) -> CallToolResult:
         )
     return create_command_result_response(command_result)
 
+
 @mcp.tool(
     name="veos_remove_signal_connection",
     title="Disconnect signals given in a JSON file",
@@ -66,14 +66,14 @@ def veos_add_signal_connection(osaPath: str, jsonPath: str) -> CallToolResult:
         "JSON file from the given VEOS osa file. Example JSON that removes "
         "two connections, the signal references are the signal paths:\n"
         "{\n"
-        "    \"SignalConnections\": [\n"
+        '    "SignalConnections": [\n'
         "        {\n"
-        "            \"InSignalReference\": \"/Consumer/ProducerData/Sc1_ProducerData\",\n"
-        "            \"OutSignalReference\": \"/Producer/ProducerData/Sa1_ProducerData\"\n"
+        '            "InSignalReference": "/Consumer/ProducerData/Sc1_ProducerData",\n'
+        '            "OutSignalReference": "/Producer/ProducerData/Sa1_ProducerData"\n'
         "        },\n"
         "        {\n"
-        "            \"InSignalReference\": \"/Consumer/ProducerData/Sc2_ProducerData\",\n"
-        "            \"OutSignalReference\": \"/Producer/ProducerData/Sa2_ProducerData\"\n"
+        '            "InSignalReference": "/Consumer/ProducerData/Sc2_ProducerData",\n'
+        '            "OutSignalReference": "/Producer/ProducerData/Sa2_ProducerData"\n'
         "        }\n"
         "    ]\n"
         "}\n"

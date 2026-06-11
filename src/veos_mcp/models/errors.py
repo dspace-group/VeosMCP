@@ -1,6 +1,5 @@
 """Pydantic schema for MCP-facing VEOS errors."""
 
-
 from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, Field

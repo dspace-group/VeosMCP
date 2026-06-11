@@ -1,6 +1,5 @@
 """Signal summary extraction logic for VEOS model inspection."""
 
-
 import json
 from typing import Any
 
@@ -9,6 +8,7 @@ from veos_mcp.models.signal_summary import (
     VeosSignalConnection,
     VeosSignalSummary,
 )
+
 
 def extract_signal_summary(stdout: str) -> VeosSignalSummary:
     """Flatten VEOS model JSON output into MCP-facing signal summary data."""
@@ -53,6 +53,7 @@ def extract_signal_summary(stdout: str) -> VeosSignalSummary:
         signal_connections=signal_connections,
     )
 
+
 def _collect_port_group_signals(
     container: dict[str, Any],
     in_signals: dict[str, VeosSignal],
@@ -64,6 +65,7 @@ def _collect_port_group_signals(
     for port_group in container.get("PortGroups", []):
         _collect_port_group_signals(port_group, in_signals, out_signals)
 
+
 def _collect_signal_paths(
     container: dict[str, Any],
     in_signals: dict[str, VeosSignal],
@@ -74,6 +76,7 @@ def _collect_signal_paths(
 
     for signal_group in container.get("SignalGroups", []):
         _collect_signal_paths(signal_group, in_signals, out_signals)
+
 
 def _collect_signal_array(
     container: dict[str, Any],
@@ -87,6 +90,7 @@ def _collect_signal_array(
             data_type=_get_required_string(signal, "DataType"),
         )
 
+
 def _try_get_nested_string(
     element: dict[str, Any],
     object_property_name: str,
@@ -97,6 +101,7 @@ def _try_get_nested_string(
         return None
     property_value = nested_element.get(value_property_name)
     return property_value if isinstance(property_value, str) else None
+
 
 def _get_required_string(element: dict[str, Any], property_name: str) -> str:
     property_value = element.get(property_name)
