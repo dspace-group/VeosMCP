@@ -15,7 +15,7 @@ Python MCP server for controlling the dSPACE VEOS simulator.
 
 The Python package, MCP server name, and command are `veos-mcp`.
 
-## User Setup
+## Installation
 
 Run the MCP server from this checkout with the newest installed VEOS version:
 
@@ -25,9 +25,34 @@ To select a specific installed VEOS version, pass `--veos-version`:
 
 `uv run veos-mcp --veos-version 26.1`
 
-Supported version formats include `26.1`, `26.2`, `2026-A`, and `2026-B`.
+Supported version formats include `26.1`, `26-A`, `26.2`, `26-B`, `2026-A`, and `2026-B`.
 
-Use `--veos-path C:\\Path\\To\\VEOS\\bin\\veos.exe` only as an advanced override when you need to target a specific VEOS executable directly instead of resolving an installed VEOS version.
+Use `--veos-path path\\to\\VEOS\\bin\\` only as an advanced override when you need to target a specific VEOS installation directly instead of resolving from a given VEOS version.
+
+MCP server installation depends on the agent or client that should use the server. Configure Claude Code, CodeX, GitHub Copilot, or another MCP-capable client according to that client's MCP server setup instructions. The server should be registered as a stdio MCP server that runs `uv` in this checkout and starts the `veos-mcp` command. The example below shows one installation for GitHub Copilot.
+
+### GitHub Copilot in VS Code
+
+For GitHub Copilot in VS Code, create `.vscode/mcp.json` with a workspace-local MCP server entry. This does not require the developer setup unless you also want to run tests, linting, or builds.
+
+```json
+{
+	"servers": {
+		"VeosMCP": {
+			"type": "stdio",
+			"command": "uv",
+			"args": [
+				"--directory",
+				"C:\\repos\\VeosMCP",
+				"run",
+				"veos-mcp",
+				"--veos-version",
+				"26-A"
+				]
+		}
+	}
+}
+```
 
 ## Developer Setup
 
@@ -85,60 +110,6 @@ def veos_new_tool() -> str:
     return "Executed the new VEOS tool."
 ```
 
-
-
-## VS Code MCP Configuration
-
-To register the server in a workspace-local VS Code MCP configuration, create `.vscode/mcp.json` with a stdio server entry that runs the `veos-mcp` command through `uv`. This does not require the developer setup unless you also want to run tests, linting, or builds.
-
-```json
-{
-	"servers": {
-		"veos-mcp": {
-			"type": "stdio",
-			"command": "uv",
-			"args": [
-				"run",
-				"veos-mcp"
-			],
-			"cwd": "${workspaceFolder}"
-		}
-	}
-}
-```
-
-This configuration uses the newest installed VEOS version. To pin a specific installed VEOS version, use this configuration instead:
-
-```json
-{
-	"servers": {
-		"veos-mcp": {
-			"type": "stdio",
-			"command": "uv",
-			"args": [
-				"run",
-				"veos-mcp",
-				"--veos-version",
-				"26.1"
-			],
-			"cwd": "${workspaceFolder}"
-		}
-	}
-}
-```
-
-Use `--veos-path` only as an advanced override when you need to point to a specific VEOS executable such as `C:\\Path\\To\\VEOS\\bin\\veos.exe` instead of resolving an installed version.
-
 ## Example Prompts
 
-- Prompt: `Get the current VEOS simulator status.`
-	Result: VS Code can call `veos_status_info` and return structured status data such as the simulator state and command result code, for example `Code: ok`.
-
-- Prompt: `List the VEOS log files that are currently available.`
-	Result: VS Code can call `veos_list_all_available_log_files` and return the available simulation and bus log file names.
-
-- Prompt: `Open the Simulation.log resource from VEOS.`
-	Result: VS Code can call `veos_get_log_file` for `Simulation.log`, receive the resource URI `logs://sim/Simulation.log`, and then read the plain-text log resource.
-
-- Prompt: `Inspect all signals and ports in C:\\Models\\Demo.osa.`
-	Result: VS Code can call `veos_get_all_signals_and_ports` and return structured signal, port, and connection data extracted from the OSA model.
+- TODO

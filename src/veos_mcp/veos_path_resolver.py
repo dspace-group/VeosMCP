@@ -143,7 +143,7 @@ def _select_installation(
     )
 
 
-def _get_windows_installations() -> list[_VeosInstallation]:
+def get_windows_installations() -> list[_VeosInstallation]:
     clr = importlib.import_module("clr")
     clr.AddReference(_WINDOWS_INSTALLATION_REFERENCE)
     installation_api = importlib.import_module("dSPACE.InstallationManager.API")
@@ -160,7 +160,7 @@ def _get_windows_installations() -> list[_VeosInstallation]:
     return installations
 
 
-def _get_linux_installations(
+def get_linux_installations(
     base_path: Path = Path("/opt/dspace"),
 ) -> list[_VeosInstallation]:
     installations: list[_VeosInstallation] = []
@@ -171,17 +171,29 @@ def _get_linux_installations(
     return installations
 
 
-def resolve_veos_path(veos_version: str | None) -> Path:
-    """Resolve the VEOS bin directory for a requested version or the newest install."""
-    installations = (
-        _get_windows_installations()
-        if sys.platform.startswith("win32")
-        else _get_linux_installations()
-    )
-
+def resolve_veos_path_for_version(
+    installations: list[_VeosInstallation], veos_version: str | None
+) -> Path:
     candidate_installation = _select_installation(installations, veos_version)
     return (
         candidate_installation.bin_path / "veos.exe"
         if sys.platform.startswith("win32")
         else candidate_installation.bin_path / "veos"
+    )
+
+
+def check_veos_installation_exists(
+    installations: list[_VeosInstallation], veos_bin_path: str
+) -> Path:
+    for installation in installations:
+        if installation.bin_path == Path(veos_bin_path):
+            return (
+                installation.bin_path / "veos.exe"
+                if sys.platform.startswith("win32")
+                else installation.bin_path / "veos"
+            )
+    raise ValueError(
+        f"Provided VEOS path is invalid, make sure that the provided path '{veos_bin_path}' "
+        f"points to the bin directory of an existing VEOS installation. "
+        f"Following installations were found: {', '.join(str(installation.bin_path) for installation in installations)}."
     )

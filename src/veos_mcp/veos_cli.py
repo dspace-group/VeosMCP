@@ -3,11 +3,17 @@
 from pathlib import Path
 import subprocess
 
+import sys
 from threading import Lock
 from collections.abc import Iterable
 
 from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
-from veos_mcp.veos_path_resolver import resolve_veos_path
+from veos_mcp.veos_path_resolver import (
+    check_veos_installation_exists,
+    get_linux_installations,
+    get_windows_installations,
+    resolve_veos_path_for_version,
+)
 
 
 DEFAULT_COMMAND_TIMEOUT_SECONDS = 40.0
@@ -143,19 +149,25 @@ class VeosCli:
         self,
         *,
         veos_version: str | None,
-        veos_path: str | None,
+        veos_bin_path: str | None,
         command_timeout_seconds: float = DEFAULT_COMMAND_TIMEOUT_SECONDS,
     ) -> None:
 
-        if veos_path is not None:
-            self.veos_path = Path(veos_path)
-            if not self.veos_path.is_file():
-                raise ValueError(
-                    f"Provided VEOS path is invalid, make sure that the provided path '{veos_path}' "
-                    f"points to an existing veos.exe."
-                )
+        veos_installations = (
+            get_windows_installations()
+            if sys.platform.startswith("win32")
+            else get_linux_installations()
+        )
+
+        if veos_bin_path is not None:
+            self.veos_path = check_veos_installation_exists(
+                veos_installations, veos_bin_path
+            )
         else:
-            self.veos_path = resolve_veos_path(veos_version)
+            self.veos_path = resolve_veos_path_for_version(
+                veos_installations, veos_version
+            )
+
         self.command_timeout_seconds = command_timeout_seconds
 
     def run_sim(self, *arguments: str) -> CliCommandResult:

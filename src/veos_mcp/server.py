@@ -18,7 +18,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         help="VEOS version, e.g. '26.1'. If not provided, the server will use the newest VEOS installation.",
     )
     parser.add_argument(
-        "--veos-path",
+        "--veos-bin-path",
         required=False,
         help=argparse.SUPPRESS,
     )
@@ -28,7 +28,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
 def main(argv: Sequence[str] | None = None) -> None:
     """Run the VEOS MCP server over stdio."""
     args = parse_args(argv)
-    configure(veos_version=args.veos_version, veos_path=args.veos_path)
+    configure(veos_version=args.veos_version, veos_bin_path=args.veos_bin_path)
 
     mcp.run()
 

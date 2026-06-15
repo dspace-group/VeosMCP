@@ -8,16 +8,7 @@ from mcp.types import CallToolResult
 from veos_mcp import runtime
 from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
 from veos_mcp.tools.system_extraction import veos_get_all_signals_and_ports
-
-
-class RecordingModelCliMock:
-    def __init__(self, result: CliCommandResult) -> None:
-        self._result = result
-        self.model_calls: list[tuple[str, ...]] = []
-
-    def run_model(self, *arguments: str) -> CliCommandResult:
-        self.model_calls.append(arguments)
-        return self._result
+from tests.tool_test_helpers import RecordingModelCliMock
 
 
 def test_tool_veos_get_all_signals_and_ports_returns_signal_summary(

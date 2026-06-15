@@ -1,9 +1,8 @@
 """Integration-style tests for VEOS log file access tools"""
 
-import json
 from typing import cast
 
-from mcp.types import CallToolResult, ResourceLink, TextContent
+from mcp.types import CallToolResult, ResourceLink
 
 from veos_mcp import runtime
 
@@ -12,45 +11,11 @@ from veos_mcp.tools.log_file_access import (
     veos_get_log_file,
     veos_list_all_available_log_files,
 )
-
-
-class RecordingSimCliMock:
-    def __init__(self, sim_result: CliCommandResult) -> None:
-        self._sim_result = sim_result
-        self.sim_calls: list[tuple[str, ...]] = []
-
-    def run_sim(self, *arguments: str) -> CliCommandResult:
-        self.sim_calls.append(arguments)
-        return self._sim_result
-
-
-def assert_command_result_structured_content(
-    tool_name: str,
-    structured_content: dict[str, object],
-) -> None:
-    assert "Success" in structured_content, (
-        f"{tool_name} should include Success in structured content."
-    )
-    assert "Code" in structured_content, (
-        f"{tool_name} should include Code in structured content."
-    )
-    assert "Stdout" in structured_content, (
-        f"{tool_name} should include Stdout in structured content."
-    )
-    assert "Stderr" in structured_content, (
-        f"{tool_name} should include Stderr in structured content."
-    )
-    assert "ExitCode" in structured_content, (
-        f"{tool_name} should include ExitCode in structured content."
-    )
-
-
-def assert_error_text_content(result: CallToolResult, expected_message: str) -> None:
-    assert result.content is not None, "Expected text content in the tool result."
-    text_content = cast(TextContent, result.content[0])
-    payload = json.loads(text_content.text)
-    assert payload["Type"] == "PermanentError"
-    assert payload["Message"] == expected_message
+from tests.tool_test_helpers import (
+    RecordingSimCliMock,
+    assert_command_result_structured_content,
+    assert_error_text_content,
+)
 
 
 def test_tool_veos_get_log_file_returns_bus_resource_link_for_pcapng() -> None:

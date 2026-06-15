@@ -60,10 +60,10 @@ def test_argument_veos_version_calls_select_installation(tmp_path: Path) -> None
     mock_run.assert_called_once_with()
 
 
-def test_argument_veos_path_invalid() -> None:
-    """Test the direct server entrypoint error when the --veos-path argument is invalid."""
+def test_argument_veos_bin_path_invalid() -> None:
+    """Test the direct server entrypoint error when the --veos-bin-path argument is invalid."""
     with pytest.raises(ValueError) as exc_info:
-        server.main(["--veos-path", "invalid_path"])
+        server.main(["--veos-bin-path", "invalid_path"])
 
     assert "path is invalid" in str(exc_info.value)
     assert "invalid_path" in str(exc_info.value)
@@ -76,3 +76,12 @@ def test_argument_veos_version_invalid() -> None:
         server.main(["--veos-version", "invalid_version"])
 
     assert "Invalid VEOS version format" in str(exc_info.value)
+
+
+def test_argument_unknown() -> None:
+    """Test the direct server entrypoint error when an unknown argument is provided."""
+
+    with pytest.raises(SystemExit) as exc_info:
+        server.main(["--veos-version", "26-A", "--unknown-argument", "value"])
+
+    assert exc_info.value.code == 2

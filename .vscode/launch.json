@@ -1,12 +1,19 @@
 {
     "version": "0.2.0",
     "configurations": [
-            {
+        {
             "name": "Launch MCP server",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/.venv/Scripts/veos-mcp.exe",
-            "args" : ["--veos-path", "C:\\builds\\261\\bin"]
+            "module": "veos_mcp.server",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            "args": [
+                "--veos-version",
+                "26-A"
+            ]
         }
     ]
 }
