@@ -2,7 +2,12 @@
 
 from mcp.types import CallToolResult, ToolAnnotations
 
-from veos_mcp.runtime import create_command_result_response, create_error, get_cli, mcp
+from veos_mcp.runtime import (
+    create_command_result_response_success,
+    create_command_result_response_error,
+    get_cli,
+    mcp,
+)
 
 
 @mcp.tool(
@@ -35,11 +40,11 @@ def veos_status_info() -> CallToolResult:
     """Get the current VEOS simulator status information."""
     command_result = get_cli().run_sim("info")
     if not command_result.success:
-        return create_command_result_response(
+        return create_command_result_response_error(
             command_result,
-            create_error("Failed to get VEOS status info."),
+            "Failed to get VEOS status info.",
         )
-    return create_command_result_response(command_result, None)
+    return create_command_result_response_success(command_result)
 
 
 @mcp.tool(
@@ -69,11 +74,11 @@ def veos_load(osaPath: str) -> CallToolResult:
     """Load an OSA model into the VEOS simulator."""
     command_result = get_cli().run_sim("load", osaPath)
     if not command_result.success:
-        return create_command_result_response(
+        return create_command_result_response_error(
             command_result,
-            create_error("Failed to load osa file onto the VEOS."),
+            "Failed to load osa file onto the VEOS.",
         )
-    return create_command_result_response(command_result, None)
+    return create_command_result_response_success(command_result)
 
 
 @mcp.tool(
@@ -99,11 +104,11 @@ def veos_start() -> CallToolResult:
     """Start the loaded VEOS simulation."""
     command_result = get_cli().run_sim("start")
     if not command_result.success:
-        return create_command_result_response(
+        return create_command_result_response_error(
             command_result,
-            create_error("Failed to start the VEOS simulation."),
+            "Failed to start the VEOS simulation.",
         )
-    return create_command_result_response(command_result, None)
+    return create_command_result_response_success(command_result)
 
 
 @mcp.tool(
@@ -132,11 +137,11 @@ def veos_stop() -> CallToolResult:
     """Stop the running VEOS simulation."""
     command_result = get_cli().run_sim("stop")
     if not command_result.success:
-        return create_command_result_response(
+        return create_command_result_response_error(
             command_result,
-            create_error("Failed to stop the VEOS simulation."),
+            "Failed to stop the VEOS simulation.",
         )
-    return create_command_result_response(command_result, None)
+    return create_command_result_response_success(command_result)
 
 
 @mcp.tool(
@@ -195,8 +200,8 @@ def veos_apply_config(
 
     command_result = get_cli().run_sim(*arguments)
     if not command_result.success:
-        return create_command_result_response(
+        return create_command_result_response_error(
             command_result,
-            create_error("Failed to apply the VEOS simulation configuration."),
+            "Failed to apply the VEOS simulation configuration.",
         )
-    return create_command_result_response(command_result, None)
+    return create_command_result_response_success(command_result)

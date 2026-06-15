@@ -2,7 +2,12 @@
 
 from mcp.types import CallToolResult, ToolAnnotations
 
-from veos_mcp.runtime import create_command_result_response, create_error, get_cli, mcp
+from veos_mcp.runtime import (
+    create_command_result_response_success,
+    create_command_result_response_error,
+    get_cli,
+    mcp,
+)
 
 
 @mcp.tool(
@@ -48,14 +53,13 @@ def veos_add_signal_connection(osaPath: str, jsonPath: str) -> CallToolResult:
     """Add signal connections from a JSON file to an OSA model."""
     command_result = get_cli().run_model("connect", osaPath, "-c", jsonPath)
     if not command_result.success:
-        return create_command_result_response(
+        return create_command_result_response_error(
             command_result,
-            create_error(
-                f"Failed to add signal connection from JSON file {jsonPath} "
-                "on the VEOS model."
-            ),
+            f"Failed to add signal connection from JSON file {jsonPath} "
+            "on the VEOS model.",
         )
-    return create_command_result_response(command_result)
+
+    return create_command_result_response_success(command_result)
 
 
 @mcp.tool(
@@ -96,11 +100,10 @@ def veos_remove_signal_connection(osaPath: str, jsonPath: str) -> CallToolResult
     """Remove signal connections from a JSON file from an OSA model."""
     command_result = get_cli().run_model("remove", osaPath, "-c", jsonPath)
     if not command_result.success:
-        return create_command_result_response(
+        return create_command_result_response_error(
             command_result,
-            create_error(
-                f"Failed to remove signal connection from JSON file {jsonPath} "
-                "on the VEOS model."
-            ),
+            f"Failed to remove signal connection from JSON file {jsonPath} "
+            "on the VEOS model.",
         )
-    return create_command_result_response(command_result)
+
+    return create_command_result_response_success(command_result)

@@ -2,7 +2,12 @@
 
 from mcp.types import CallToolResult, ToolAnnotations
 
-from veos_mcp.runtime import create_error, get_cli, mcp
+from veos_mcp.runtime import (
+    create_error_response,
+    create_command_result_response_error,
+    get_cli,
+    mcp,
+)
 from veos_mcp.parsers import model_parser as model_inspection_service
 
 
@@ -36,12 +41,9 @@ def veos_get_all_signals_and_ports(osaPath: str) -> CallToolResult:
     """Return the available signals, ports, and connections for an OSA model."""
     command_result = get_cli().run_model("get", osaPath)
     if not command_result.success:
-        return CallToolResult(
-            isError=True,
-            content=[],
-            structuredContent=create_error(
-                "Failed to get the list of signals from the VEOS model."
-            ).model_dump(by_alias=True, mode="json"),
+        return create_command_result_response_error(
+            command_result,
+            "Failed to get the list of signals from the VEOS model.",
         )
 
     try:
@@ -49,12 +51,8 @@ def veos_get_all_signals_and_ports(osaPath: str) -> CallToolResult:
             command_result.stdout
         )
     except (KeyError, TypeError, ValueError) as exception:
-        return CallToolResult(
-            isError=True,
-            content=[],
-            structuredContent=create_error(
-                f"Failed to transform VEOS model output into signal data: {exception}"
-            ).model_dump(by_alias=True, mode="json"),
+        return create_error_response(
+            f"Failed to parse the signal summary from the VEOS model output: {exception}"
         )
 
     return CallToolResult(

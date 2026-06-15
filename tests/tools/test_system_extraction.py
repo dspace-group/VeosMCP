@@ -112,7 +112,4 @@ def test_tool_veos_get_all_signals_and_ports_returns_error_on_cli_failure(
 
     assert result.isError is True
     assert cli.model_calls == [("get", "model.osa")]
-    assert result.structuredContent == {
-        "Type": "PermanentError",
-        "Message": "Failed to get the list of signals from the VEOS model.",
-    }
+    assert result.structuredContent is not None

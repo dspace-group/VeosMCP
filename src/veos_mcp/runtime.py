@@ -30,7 +30,7 @@ def get_cli() -> VeosCli:
     return _veos_cli
 
 
-def create_error(
+def _create_error(
     message: str,
     error_type: ErrorType = ErrorType.PERMANENT_ERROR,
 ) -> VeosError:
@@ -38,20 +38,35 @@ def create_error(
     return VeosError(Type=error_type, Message=message)
 
 
-def create_command_result_response(
+def create_error_response(message: str) -> CallToolResult:
+    """Create a typed MCP-facing error result."""
+    error = _create_error(message)
+    return CallToolResult(
+        isError=True,
+        content=[TextContent(type="text", text=error.model_dump_json(by_alias=True))],
+        structuredContent=error.model_dump(by_alias=True, mode="json"),
+    )
+
+
+def create_command_result_response_error(
     command_result: CliCommandResult,
-    error: VeosError | None = None,
+    error_message: str,
 ) -> CallToolResult:
     """Convert a VEOS CLI command result into an MCP tool result."""
-    if error is not None:
-        message = error.model_dump_json(by_alias=True)
-    elif command_result.success:
-        message = "Tool Call succeeded."
-    else:
-        message = "Tool Call failed."
-
+    error = _create_error(error_message)
     return CallToolResult(
         isError=not command_result.success,
-        content=[TextContent(type="text", text=message)],
+        content=[TextContent(type="text", text=error.model_dump_json(by_alias=True))],
+        structuredContent=command_result.to_structured_content(),
+    )
+
+
+def create_command_result_response_success(
+    command_result: CliCommandResult,
+) -> CallToolResult:
+    """Convert a VEOS CLI command result into an MCP tool result."""
+    return CallToolResult(
+        isError=not command_result.success,
+        content=[TextContent(type="text", text="Tool Call succeeded.")],
         structuredContent=command_result.to_structured_content(),
     )

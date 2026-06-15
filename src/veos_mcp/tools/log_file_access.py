@@ -4,7 +4,12 @@ from mcp.types import CallToolResult, ResourceLink, ToolAnnotations
 from pydantic import AnyUrl
 
 from veos_mcp.models.cli_command_result import CommandResultCode
-from veos_mcp.runtime import create_command_result_response, create_error, get_cli, mcp
+from veos_mcp.runtime import (
+    create_command_result_response_error,
+    create_command_result_response_success,
+    get_cli,
+    mcp,
+)
 
 
 @mcp.tool(
@@ -29,11 +34,11 @@ def veos_list_all_available_log_files() -> CallToolResult:
     """List the VEOS bus and simulation log files that are currently available."""
     command_result = get_cli().run_sim("show-log")
     if not command_result.success:
-        return create_command_result_response(
+        return create_command_result_response_error(
             command_result,
-            create_error("Failed to retrieve the list of available log files."),
+            "Failed to retrieve the list of available log files.",
         )
-    return create_command_result_response(command_result)
+    return create_command_result_response_success(command_result)
 
 
 @mcp.tool(
