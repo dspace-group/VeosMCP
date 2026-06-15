@@ -213,32 +213,6 @@ wheels = [
 ]
 
 [[package]]
-name = "dspace-veos-mcp"
-version = "0.1.0"
-source = { editable = "." }
-dependencies = [
-    { name = "mcp", extra = ["cli"] },
-    { name = "pydantic" },
-    { name = "pythonnet" },
-]
-
-[package.optional-dependencies]
-dev = [
-    { name = "pylint" },
-    { name = "pytest" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "mcp", extras = ["cli"], specifier = ">=1.27,<2" },
-    { name = "pydantic", specifier = ">=2.8,<3" },
-    { name = "pylint", marker = "extra == 'dev'", specifier = ">=4.0.5,<5" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3,<9" },
-    { name = "pythonnet", specifier = ">=3.1.0" },
-]
-provides-extras = ["dev"]
-
-[[package]]
 name = "h11"
 version = "0.16.0"
 source = { registry = "https://bas-common.dspace.de/artifactory/api/pypi/ext.www.pypi.org_pypi_public-remote/simple" }
@@ -872,3 +846,29 @@ sdist = { url = "https://bas-common.dspace.de/artifactory/api/pypi/ext.www.pypi.
 wheels = [
     { url = "https://bas-common.dspace.de/artifactory/api/pypi/ext.www.pypi.org_pypi_public-remote/packages/packages/01/be/72532be3da7acc5fdfbccdb95215cd04f995a0886532a5b423f929cda4cc/uvicorn-0.48.0-py3-none-any.whl", hash = "sha256:48097851328b87ec36117d3d575234519eb58c2b22d79666e9bbc6c49a761dad" },
 ]
+
+[[package]]
+name = "veos-mcp"
+version = "0.1.0"
+source = { editable = "." }
+dependencies = [
+    { name = "mcp", extra = ["cli"] },
+    { name = "pydantic" },
+    { name = "pythonnet" },
+]
+
+[package.optional-dependencies]
+dev = [
+    { name = "pylint" },
+    { name = "pytest" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "mcp", extras = ["cli"], specifier = ">=1.27,<2" },
+    { name = "pydantic", specifier = ">=2.8,<3" },
+    { name = "pylint", marker = "extra == 'dev'", specifier = ">=4.0.5,<5" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.3,<9" },
+    { name = "pythonnet", specifier = ">=3.1.0" },
+]
+provides-extras = ["dev"]
