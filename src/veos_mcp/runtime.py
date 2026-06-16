@@ -1,5 +1,7 @@
 """Shared FastMCP runtime state and response helpers for the VEOS MCP server."""
 
+import sys
+
 from mcp.server import FastMCP
 
 from mcp.types import CallToolResult, TextContent
@@ -7,6 +9,12 @@ from mcp.types import CallToolResult, TextContent
 from veos_mcp.models.cli_command_result import CliCommandResult
 from veos_mcp.models.errors import VeosError, ErrorType
 from veos_mcp.veos_cli import VeosCli
+from veos_mcp.veos_path_resolver import (
+    check_veos_installation_exists,
+    get_linux_installations,
+    get_windows_installations,
+    resolve_veos_path_for_version,
+)
 
 mcp = FastMCP(
     name="VEOS MCP Server",
@@ -19,8 +27,20 @@ _veos_cli: VeosCli | None = None
 
 def configure(*, veos_version: str | None, veos_bin_path: str | None) -> None:
     """Configure the server with the VEOS CLI installation directory."""
+
+    veos_installations = (
+        get_windows_installations()
+        if sys.platform.startswith("win32")
+        else get_linux_installations()
+    )
+
+    if veos_bin_path is not None:
+        veos_path = check_veos_installation_exists(veos_installations, veos_bin_path)
+    else:
+        veos_path = resolve_veos_path_for_version(veos_installations, veos_version)
+
     global _veos_cli
-    _veos_cli = VeosCli(veos_version=veos_version, veos_bin_path=veos_bin_path)
+    _veos_cli = VeosCli(veos_path=veos_path)
 
 
 def get_cli() -> VeosCli:
