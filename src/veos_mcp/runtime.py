@@ -25,7 +25,7 @@ mcp = FastMCP(
 _veos_cli: VeosCli | None = None
 
 
-def configure(*, veos_version: str | None, veos_bin_path: str | None) -> None:
+def configure_cli(*, veos_version: str | None, veos_bin_path: str | None) -> None:
     """Configure the server with the VEOS CLI installation directory."""
 
     veos_installations = (

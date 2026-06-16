@@ -7,7 +7,7 @@ from collections.abc import Sequence
 import veos_mcp.tools  # pylint: disable=unused-import
 import veos_mcp.resources  # pylint: disable=unused-import
 
-from veos_mcp.runtime import mcp, configure
+from veos_mcp.runtime import mcp, configure_cli
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
@@ -31,7 +31,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     args = parse_args(argv)
 
     if os.environ.get("VEOS_MCP_SKIP_CONFIGURE") != "1":
-        configure(veos_version=args.veos_version, veos_bin_path=args.veos_bin_path)
+        configure_cli(veos_version=args.veos_version, veos_bin_path=args.veos_bin_path)
 
     mcp.run()
 
