@@ -2,6 +2,10 @@
 
 Python MCP server for controlling the dSPACE VEOS simulator.
 
+Examples:
+- basic
+- advanced
+
 ## Structure
 
 - `src/veos_mcp/tools/`: VEOS MCP tool implementations
@@ -10,7 +14,7 @@ Python MCP server for controlling the dSPACE VEOS simulator.
 ## Prerequisites
 
 - Python 3.12 or newer
-- `uv`
+- `uv`: todo explain
 - dSPACE VEOS installed on the machine
 
 The Python package, MCP server name, and command are `veos-mcp`.
@@ -109,7 +113,3 @@ from veos_mcp.runtime import mcp
 def veos_new_tool() -> str:
     return "Executed the new VEOS tool."
 ```
-
-## Example Prompts
-
-- TODO
