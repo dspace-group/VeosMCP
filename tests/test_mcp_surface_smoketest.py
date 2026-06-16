@@ -1,6 +1,7 @@
 """Surface tests for the MCP server's exposed tools and resources."""
 
 import asyncio
+import os
 import sys
 
 from mcp import ClientSession, StdioServerParameters
@@ -11,6 +12,7 @@ def create_server_params() -> StdioServerParameters:
     return StdioServerParameters(
         command=sys.executable,
         args=["-m", "veos_mcp.server"],
+        env={**os.environ, "VEOS_MCP_SKIP_CONFIGURE": "1"},
     )
 
 
@@ -71,17 +73,20 @@ def test_list_all_resource_templates() -> None:
 def test_smoketest_log_file_tool_over_mcp() -> None:
     """Test one end-to-end MCP tool call over stdio."""
 
-    async def call_tool() -> tuple[bool, str]:
+    async def call_tool() -> tuple[bool, dict[str, object]]:
         server_params = create_server_params()
 
         async with stdio_client(server_params) as (read, write):
             async with ClientSession(read, write) as session:
                 await session.initialize()
-                result = await session.call_tool("veos_status_info", {})
+                result = await session.call_tool(
+                    "veos_get_log_file", {"logFileName": "veos.log"}
+                )
                 assert result.structuredContent is not None
-                return result.isError, result.structuredContent["Code"]
+                return result.isError, result.structuredContent
 
-    is_error, result_code = asyncio.run(call_tool())
+    is_error, structured_content = asyncio.run(call_tool())
 
     assert is_error is False
-    assert result_code == "ok"
+    assert structured_content["Code"] == "ok"
+    assert structured_content["Uri"] == "logs://sim/veos.log"

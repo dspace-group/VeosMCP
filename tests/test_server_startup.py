@@ -60,6 +60,17 @@ def test_argument_veos_version_calls_select_installation(tmp_path: Path) -> None
     mock_run.assert_called_once_with()
 
 
+def test_skip_configure_environment_variable_skips_configure(monkeypatch) -> None:
+    monkeypatch.setenv("VEOS_MCP_SKIP_CONFIGURE", "1")
+
+    with patch("veos_mcp.server.configure") as mock_configure:
+        with patch.object(server.mcp, "run") as mock_run:
+            server.main([])
+
+    mock_configure.assert_not_called()
+    mock_run.assert_called_once_with()
+
+
 def test_argument_veos_bin_path_invalid() -> None:
     """Test the direct server entrypoint error when the --veos-bin-path argument is invalid."""
     with pytest.raises(ValueError) as exc_info:
