@@ -50,8 +50,8 @@ def test_list_all_resource_templates() -> None:
     """Test that all expected resource templates can be listed from the stdio server."""
 
     expected_resource_templates = [
-        "logs://bus/{logFileName}",
-        "logs://sim/{logFileName}",
+        "logs://bus/{log_file_name}",
+        "logs://sim/{log_file_name}",
     ]
 
     async def list_resource_templates() -> list[str]:
@@ -80,7 +80,7 @@ def test_smoketest_log_file_tool_over_mcp() -> None:
             async with ClientSession(read, write) as session:
                 await session.initialize()
                 result = await session.call_tool(
-                    "veos_get_log_file", {"logFileName": "veos.log"}
+                    "veos_get_log_file", {"log_file_name": "veos.log"}
                 )
                 assert result.structuredContent is not None
                 return result.isError, result.structuredContent

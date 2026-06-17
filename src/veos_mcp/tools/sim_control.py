@@ -70,9 +70,9 @@ def veos_status_info() -> CallToolResult:
         openWorldHint=False,
     ),
 )
-def veos_load(osaPath: str) -> CallToolResult:
+def veos_load(osa_path: str) -> CallToolResult:
     """Load an OSA model into the VEOS simulator."""
-    command_result = get_cli().run_sim("load", osaPath)
+    command_result = get_cli().run_sim("load", osa_path)
     if not command_result.success:
         return create_command_result_response_error(
             command_result,
@@ -179,24 +179,24 @@ def veos_stop() -> CallToolResult:
     ),
 )
 def veos_apply_config(
-    stopTime: str | None = None,
-    accelerationFactor: str | None = None,
-    ipAddress: str | None = None,
-    busLog: bool | None = None,
-    simLog: bool | None = None,
+    stop_time: str | None = None,
+    acceleration_factor: str | None = None,
+    ip_address: str | None = None,
+    bus_log: bool | None = None,
+    sim_log: bool | None = None,
 ) -> CallToolResult:
     """Apply VEOS simulator configuration without starting the simulation."""
     arguments = ["config"]
-    if stopTime:
-        arguments.extend(["-o", stopTime])
-    if ipAddress:
-        arguments.extend(["-h", ipAddress])
-    if accelerationFactor:
-        arguments.extend(["-a", accelerationFactor])
-    if busLog is not None:
-        arguments.append("--enable-bus-log" if busLog else "--disable-bus-log")
-    if simLog is not None:
-        arguments.append("--enable-sim-log" if simLog else "--disable-sim-log")
+    if stop_time:
+        arguments.extend(["-o", stop_time])
+    if ip_address:
+        arguments.extend(["-h", ip_address])
+    if acceleration_factor:
+        arguments.extend(["-a", acceleration_factor])
+    if bus_log is not None:
+        arguments.append("--enable-bus-log" if bus_log else "--disable-bus-log")
+    if sim_log is not None:
+        arguments.append("--enable-sim-log" if sim_log else "--disable-sim-log")
 
     command_result = get_cli().run_sim(*arguments)
     if not command_result.success:

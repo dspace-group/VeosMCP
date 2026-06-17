@@ -25,7 +25,7 @@ from tests.tool_test_helpers import (
     ("tool_func", "tool_name", "expected_call", "payload"),
     [
         (veos_status_info, "veos_status_info", ("info",), {}),
-        (veos_load, "veos_load", ("load", "model.osa"), {"osaPath": "model.osa"}),
+        (veos_load, "veos_load", ("load", "model.osa"), {"osa_path": "model.osa"}),
         (veos_start, "veos_start", ("start",), {}),
         (veos_stop, "veos_stop", ("stop",), {}),
     ],
@@ -71,7 +71,7 @@ def test_sim_control_tools_invoke_veos_sim_and_return_structured_content(
             veos_load,
             "veos_load",
             ("load", "model.osa"),
-            {"osaPath": "model.osa"},
+            {"osa_path": "model.osa"},
             "Failed to load osa file onto the VEOS.",
         ),
         (
@@ -137,11 +137,11 @@ def test_tool_veos_apply_config_invokes_veos_sim_with_all_supported_arguments(
     result = cast(
         CallToolResult,
         veos_apply_config(
-            stopTime="10",
-            accelerationFactor="2",
-            ipAddress="127.0.0.2",
-            busLog=True,
-            simLog=False,
+            stop_time="10",
+            acceleration_factor="2",
+            ip_address="127.0.0.2",
+            bus_log=True,
+            sim_log=False,
         ),
     )
 
@@ -205,7 +205,7 @@ def test_tool_veos_apply_config_returns_error_response_on_cli_failure(
     )
     monkeypatch.setattr(runtime, "_veos_cli", cli)
 
-    result = cast(CallToolResult, veos_apply_config(busLog=False, simLog=True))
+    result = cast(CallToolResult, veos_apply_config(bus_log=False, sim_log=True))
 
     assert result.isError is True
     assert cli.sim_calls == [("config", "--disable-bus-log", "--enable-sim-log")]

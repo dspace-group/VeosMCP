@@ -57,11 +57,13 @@ def veos_list_all_available_log_files() -> CallToolResult:
         openWorldHint=False,
     ),
 )
-def veos_get_log_file(logFileName: str) -> CallToolResult:
+def veos_get_log_file(log_file_name: str) -> CallToolResult:
     """Return an MCP resource link for a named VEOS log file."""
-    is_pcapng_file = logFileName.lower().endswith(".pcapng")
+    is_pcapng_file = log_file_name.lower().endswith(".pcapng")
     resource_uri = (
-        f"logs://bus/{logFileName}" if is_pcapng_file else f"logs://sim/{logFileName}"
+        f"logs://bus/{log_file_name}"
+        if is_pcapng_file
+        else f"logs://sim/{log_file_name}"
     )
     mime_type = "application/vnd.tcpdump.pcap" if is_pcapng_file else "text/plain"
     description = (
@@ -75,8 +77,8 @@ def veos_get_log_file(logFileName: str) -> CallToolResult:
             ResourceLink(
                 type="resource_link",
                 uri=AnyUrl(resource_uri),
-                name=logFileName,
-                title=logFileName,
+                name=log_file_name,
+                title=log_file_name,
                 description=description,
                 mimeType=mime_type,
             )
@@ -84,7 +86,7 @@ def veos_get_log_file(logFileName: str) -> CallToolResult:
         structuredContent={
             "Success": True,
             "Code": CommandResultCode.OK.value,
-            "LogFileName": logFileName,
+            "LogFileName": log_file_name,
             "Uri": resource_uri,
             "MimeType": mime_type,
             "Description": description,
