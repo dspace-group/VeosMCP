@@ -4,29 +4,36 @@ MCP server implementation for controlling the [dSPACE VEOS](https://www.dspace.c
 
 ## Prerequisites
 
+- [dSPACE VEOS](https://www.dspace.com/en/pub/home/products/sw/simulation_software/veos.cfm) installed on the machine where the MCP server runs.
 - Python 3.12 or newer.
 - `uv`, the Python package and project manager used to create the environment, install dependencies, and run the server from this checkout. Install it from the official Astral documentation: https://docs.astral.sh/uv/getting-started/installation/
-- [dSPACE VEOS](https://www.dspace.com/en/pub/home/products/sw/simulation_software/veos.cfm) installed on the machine where the MCP server runs.
 
 ## Getting Started
 
-TODO: uv sync has to happen, no?
+Create the project environment and install the development dependencies from the committed lockfile:
+
+```shell
+uv sync
+uv sync --extra dev 	# alternatively for developer setup
+```
 
 The VEOS MCP server runs locally over stdio. The example below shows a minmal installation for GitHub Copilot. For other MCP clients like Claude Code, Claude Desktop, Codex, etc. follow their repective MCP server setup instructions.
 
 For GitHub Copilot installation create or edit `.vscode/mcp.json` in VS Code with a workspace-local MCP server entry.
 
 ```json
-{	TODO
+{
 	"servers": {
 		"VeosMCP": {
 			"type": "stdio",
 			"command": "uv",
 			"args": [
 				"--directory",
-				"C:\\repos\\VeosMCP",
+				"path\\to\\this\\cloned\\repo",
 				"run",
-				"veos-mcp"
+				"python",
+				"-m",
+				"veos-mcp.server"
 			]
 		}
 	}
@@ -47,9 +54,9 @@ If no `veos-version` and `veos-bin-path` are given, the VEOS MCP server will use
 ## Example Prompts
 
 - Load my.osa and run the simulation for 5 seconds.
-- What signals are unconnected in my.osa? Do a best effort to find matching pairs and connect them.
+- What signals are unconnected in my.osa? Do a best effort matching and connect them.
 - Disconnect all the signals from the fmu EngineModel in my.osa.
-- Enable the bus log and start the simulation, then check in the logs how many TCP frames were transmitted.
+- Enable the bus log and start the simulation, then check the bus logs for any TCP transmissions.
 
 ## MCP Surface
 
@@ -57,16 +64,18 @@ The server exposes the following MCP tools and resource templates to connected c
 
 | Tools | Resource templates |
 | --- | --- |
-| `veos_add_signal_connection` | `logs://bus/{logFileName}` |
-| `veos_apply_config` | `logs://sim/{logFileName}` |
-| `veos_get_all_signals_and_ports` | |
-| `veos_get_log_file` | |
-| `veos_list_all_available_log_files` | |
-| `veos_load` | |
-| `veos_remove_signal_connection` | |
-| `veos_start` | |
-| `veos_status_info` | |
+| `veos_load` | `logs://sim/{logFileName}` |
+| `veos_start` | `logs://bus/{logFileName}` |
 | `veos_stop` | |
+| `veos_status_info` | |
+| `veos_apply_config` | |
+| `veos_list_all_available_log_files` | |
+| `veos_get_log_file` | |
+| `veos_get_all_signals_and_ports` | |
+| `veos_add_signal_connection` | |
+| `veos_remove_signal_connection` | |
+
+
 
 ## Project Dependencies
 
@@ -115,9 +124,9 @@ from veos_mcp.runtime import mcp
 
 @mcp.tool(
     name="veos_new_tool",
-    title="New Server Tool",
-    description="Tool extending the VEOS MCP server."
+    title="New tool",
+    description="New tool extending the VEOS MCP server."
 )
 def veos_new_tool() -> str:
-    return "This is the new VEOS MCP server tool."
+    return "Hello from the new VEOS MCP server tool!"
 ```

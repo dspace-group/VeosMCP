@@ -63,7 +63,7 @@ def test_argument_veos_version_calls_select_installation(tmp_path: Path) -> None
 def test_skip_configure_environment_variable_skips_configure(monkeypatch) -> None:
     monkeypatch.setenv("VEOS_MCP_SKIP_CONFIGURE", "1")
 
-    with patch("veos_mcp.server.configure") as mock_configure:
+    with patch("veos_mcp.server.configure_cli") as mock_configure:
         with patch.object(server.mcp, "run") as mock_run:
             server.main([])
 
