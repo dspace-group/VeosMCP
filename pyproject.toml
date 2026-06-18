@@ -33,4 +33,4 @@ where = ["src"]
 testpaths = ["tests"]
 
 [tool.ruff]
-line-length = 160
+line-length = 140

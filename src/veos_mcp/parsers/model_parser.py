@@ -22,31 +22,13 @@ def extract_signal_summary(stdout: str) -> VeosSignalSummary:
 
     for communication_package in root.get("CommunicationPackages", []):
         for connection in communication_package.get("SignalConnections", []):
-            in_signal = _try_get_nested_string(
-                connection,
-                "InSignalReference",
-                "ShortPath",
-            )
-            out_signal = _try_get_nested_string(
-                connection,
-                "OutSignalReference",
-                "ShortPath",
-            )
+            in_signal = _try_get_nested_string(connection, "InSignalReference", "ShortPath")
+            out_signal = _try_get_nested_string(connection, "OutSignalReference", "ShortPath")
             if not in_signal or not out_signal:
                 continue
-            signal_connections.append(
-                VeosSignalConnection(
-                    in_signal_reference=in_signal,
-                    out_signal_reference=out_signal,
-                )
-            )
+            signal_connections.append(VeosSignalConnection(in_signal_reference=in_signal, out_signal_reference=out_signal))
 
-    signal_connections.sort(
-        key=lambda connection: (
-            connection.in_signal_reference,
-            connection.out_signal_reference,
-        )
-    )
+    signal_connections.sort(key=lambda connection: (connection.in_signal_reference, connection.out_signal_reference))
     return VeosSignalSummary(
         in_signals=[in_signals[path] for path in sorted(in_signals)],
         out_signals=[out_signals[path] for path in sorted(out_signals)],

@@ -4,33 +4,26 @@ from typing import cast
 
 from mcp.types import CallToolResult, ResourceLink
 
-from veos_mcp import runtime
-
-from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
-from veos_mcp.tools.log_file_access import (
-    veos_get_log_file,
-    veos_list_all_available_log_files,
-)
 from tests.tool_test_helpers import (
     RecordingSimCliMock,
     assert_command_result_structured_content,
     assert_error_text_content,
 )
+from veos_mcp import runtime
+from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
+from veos_mcp.tools.log_file_access import (
+    veos_get_log_file,
+    veos_list_all_available_log_files,
+)
 
 
 def test_tool_veos_get_log_file_returns_bus_resource_link_for_pcapng() -> None:
-    result = cast(
-        CallToolResult,
-        veos_get_log_file("SimpleEthernetReceiverFmu.BusTransfer.pcapng"),
-    )
+    result = cast(CallToolResult, veos_get_log_file("SimpleEthernetReceiverFmu.BusTransfer.pcapng"))
 
     assert result.isError is False
     assert result.content is not None
     resource_link = cast(ResourceLink, result.content[0])
-    assert (
-        str(resource_link.uri)
-        == "logs://bus/SimpleEthernetReceiverFmu.BusTransfer.pcapng"
-    )
+    assert str(resource_link.uri) == "logs://bus/SimpleEthernetReceiverFmu.BusTransfer.pcapng"
     assert resource_link.mimeType == "application/vnd.tcpdump.pcap"
 
 
@@ -70,10 +63,7 @@ def test_tool_veos_list_all_available_log_files_invokes_veos_sim(monkeypatch) ->
     assert result.isError is False
     assert cli.sim_calls == [("show-log",)]
     assert result.structuredContent is not None
-    assert_command_result_structured_content(
-        "veos_list_all_available_log_files",
-        result.structuredContent,
-    )
+    assert_command_result_structured_content("veos_list_all_available_log_files", result.structuredContent)
 
 
 def test_tool_veos_list_all_available_log_files_returns_error_response_on_cli_failure(
@@ -96,10 +86,5 @@ def test_tool_veos_list_all_available_log_files_returns_error_response_on_cli_fa
     assert result.isError is True
     assert cli.sim_calls == [("show-log",)]
     assert result.structuredContent is not None
-    assert_command_result_structured_content(
-        "veos_list_all_available_log_files",
-        result.structuredContent,
-    )
-    assert_error_text_content(
-        result, "Failed to retrieve the list of available log files."
-    )
+    assert_command_result_structured_content("veos_list_all_available_log_files", result.structuredContent)
+    assert_error_text_content(result, "Failed to retrieve the list of available log files.")

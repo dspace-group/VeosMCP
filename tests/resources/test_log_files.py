@@ -18,9 +18,7 @@ class RecordingVeosCliMock:
         return self._sim_result
 
 
-def test_resource_function_veos_bus_log_file_returns_binary_contents(
-    monkeypatch,
-) -> None:
+def test_resource_function_veos_bus_log_file_returns_binary_contents(monkeypatch) -> None:
     cli = RecordingVeosCliMock(
         CliCommandResult(
             success=True,

@@ -2,9 +2,14 @@
 
 from typing import cast
 
-from mcp.types import CallToolResult
 import pytest
+from mcp.types import CallToolResult
 
+from tests.tool_test_helpers import (
+    RecordingSimCliMock,
+    assert_command_result_structured_content,
+    assert_error_text_content,
+)
 from veos_mcp import runtime
 from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
 from veos_mcp.tools.sim_control import (
@@ -13,11 +18,6 @@ from veos_mcp.tools.sim_control import (
     veos_start,
     veos_status_info,
     veos_stop,
-)
-from tests.tool_test_helpers import (
-    RecordingSimCliMock,
-    assert_command_result_structured_content,
-    assert_error_text_content,
 )
 
 
@@ -119,9 +119,7 @@ def test_sim_control_tools_return_error_response_on_cli_failure(
     assert_error_text_content(result, expected_message)
 
 
-def test_tool_veos_apply_config_invokes_veos_sim_with_all_supported_arguments(
-    monkeypatch,
-) -> None:
+def test_tool_veos_apply_config_invokes_veos_sim_with_all_supported_arguments(monkeypatch) -> None:
     cli = RecordingSimCliMock(
         CliCommandResult(
             success=True,
@@ -135,14 +133,7 @@ def test_tool_veos_apply_config_invokes_veos_sim_with_all_supported_arguments(
     monkeypatch.setattr(runtime, "_veos_cli", cli)
 
     result = cast(
-        CallToolResult,
-        veos_apply_config(
-            stop_time="10",
-            acceleration_factor="2",
-            ip_address="127.0.0.2",
-            bus_log=True,
-            sim_log=False,
-        ),
+        CallToolResult, veos_apply_config(stop_time="10", acceleration_factor="2", ip_address="127.0.0.2", bus_log=True, sim_log=False)
     )
 
     assert result.isError is False
@@ -160,14 +151,10 @@ def test_tool_veos_apply_config_invokes_veos_sim_with_all_supported_arguments(
         )
     ]
     assert result.structuredContent is not None
-    assert_command_result_structured_content(
-        "veos_apply_config", result.structuredContent
-    )
+    assert_command_result_structured_content("veos_apply_config", result.structuredContent)
 
 
-def test_tool_veos_apply_config_uses_default_command_without_optional_arguments(
-    monkeypatch,
-) -> None:
+def test_tool_veos_apply_config_uses_default_command_without_optional_arguments(monkeypatch) -> None:
     cli = RecordingSimCliMock(
         CliCommandResult(
             success=True,
@@ -185,14 +172,10 @@ def test_tool_veos_apply_config_uses_default_command_without_optional_arguments(
     assert result.isError is False
     assert cli.sim_calls == [("config",)]
     assert result.structuredContent is not None
-    assert_command_result_structured_content(
-        "veos_apply_config", result.structuredContent
-    )
+    assert_command_result_structured_content("veos_apply_config", result.structuredContent)
 
 
-def test_tool_veos_apply_config_returns_error_response_on_cli_failure(
-    monkeypatch,
-) -> None:
+def test_tool_veos_apply_config_returns_error_response_on_cli_failure(monkeypatch) -> None:
     cli = RecordingSimCliMock(
         CliCommandResult(
             success=False,
@@ -210,9 +193,5 @@ def test_tool_veos_apply_config_returns_error_response_on_cli_failure(
     assert result.isError is True
     assert cli.sim_calls == [("config", "--disable-bus-log", "--enable-sim-log")]
     assert result.structuredContent is not None
-    assert_command_result_structured_content(
-        "veos_apply_config", result.structuredContent
-    )
-    assert_error_text_content(
-        result, "Failed to apply the VEOS simulation configuration."
-    )
+    assert_command_result_structured_content("veos_apply_config", result.structuredContent)
+    assert_error_text_content(result, "Failed to apply the VEOS simulation configuration.")

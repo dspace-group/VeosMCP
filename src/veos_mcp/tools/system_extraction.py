@@ -36,10 +36,7 @@ def veos_get_all_signals_and_ports(osa_path: str) -> CallToolResult:
     """Return the available signals, ports, and connections for an OSA model."""
     command_result = get_cli().run_model("get", osa_path)
     if not command_result.success:
-        return create_command_result_response_error(
-            command_result,
-            "Failed to get the list of signals from the VEOS model.",
-        )
+        return create_command_result_response_error(command_result, "Failed to get the list of signals from the VEOS model.")
 
     try:
         signal_summary = model_inspection_service.extract_signal_summary(command_result.stdout)

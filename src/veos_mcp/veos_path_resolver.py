@@ -117,7 +117,9 @@ def _select_installation(
     if matches:
         return matches[-1]
 
-    available_versions = ", ".join(_format_installation_version(installation.year, installation.release) for installation in available_installations)
+    available_versions = ", ".join(
+        _format_installation_version(installation.year, installation.release) for installation in available_installations
+    )
     raise RuntimeError(
         "Could not find the installation of dSPACE VEOS "
         f"{_format_requested_version(requested_year, requested_release)}. "

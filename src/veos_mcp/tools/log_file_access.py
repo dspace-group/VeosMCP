@@ -31,10 +31,7 @@ def veos_list_all_available_log_files() -> CallToolResult:
     """List the VEOS bus and simulation log files that are currently available."""
     command_result = get_cli().run_sim("show-log")
     if not command_result.success:
-        return create_command_result_response_error(
-            command_result,
-            "Failed to retrieve the list of available log files.",
-        )
+        return create_command_result_response_error(command_result, "Failed to retrieve the list of available log files.")
     return create_command_result_response_success(command_result)
 
 

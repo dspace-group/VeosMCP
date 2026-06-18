@@ -17,11 +17,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         required=False,
         help="VEOS version, e.g. '26.1'. If not provided, the server will use the newest VEOS installation.",
     )
-    parser.add_argument(
-        "--veos-bin-path",
-        required=False,
-        help=argparse.SUPPRESS,
-    )
+    parser.add_argument("--veos-bin-path", required=False, help=argparse.SUPPRESS)
     return parser.parse_args(argv)
 
 

@@ -35,10 +35,7 @@ def veos_status_info() -> CallToolResult:
     """Get the current VEOS simulator status information."""
     command_result = get_cli().run_sim("info")
     if not command_result.success:
-        return create_command_result_response_error(
-            command_result,
-            "Failed to get VEOS status info.",
-        )
+        return create_command_result_response_error(command_result, "Failed to get VEOS status info.")
     return create_command_result_response_success(command_result)
 
 
@@ -64,10 +61,7 @@ def veos_load(osa_path: str) -> CallToolResult:
     """Load an OSA model into the VEOS simulator."""
     command_result = get_cli().run_sim("load", osa_path)
     if not command_result.success:
-        return create_command_result_response_error(
-            command_result,
-            "Failed to load osa file onto the VEOS.",
-        )
+        return create_command_result_response_error(command_result, "Failed to load osa file onto the VEOS.")
     return create_command_result_response_success(command_result)
 
 
@@ -91,10 +85,7 @@ def veos_start() -> CallToolResult:
     """Start the loaded VEOS simulation."""
     command_result = get_cli().run_sim("start")
     if not command_result.success:
-        return create_command_result_response_error(
-            command_result,
-            "Failed to start the VEOS simulation.",
-        )
+        return create_command_result_response_error(command_result, "Failed to start the VEOS simulation.")
     return create_command_result_response_success(command_result)
 
 
@@ -120,10 +111,7 @@ def veos_stop() -> CallToolResult:
     """Stop the running VEOS simulation."""
     command_result = get_cli().run_sim("stop")
     if not command_result.success:
-        return create_command_result_response_error(
-            command_result,
-            "Failed to stop the VEOS simulation.",
-        )
+        return create_command_result_response_error(command_result, "Failed to stop the VEOS simulation.")
     return create_command_result_response_success(command_result)
 
 
@@ -175,8 +163,5 @@ def veos_apply_config(
 
     command_result = get_cli().run_sim(*arguments)
     if not command_result.success:
-        return create_command_result_response_error(
-            command_result,
-            "Failed to apply the VEOS simulation configuration.",
-        )
+        return create_command_result_response_error(command_result, "Failed to apply the VEOS simulation configuration.")
     return create_command_result_response_success(command_result)

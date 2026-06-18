@@ -5,15 +5,13 @@ from typing import cast
 
 from mcp.types import CallToolResult
 
+from tests.tool_test_helpers import RecordingModelCliMock
 from veos_mcp import runtime
 from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
 from veos_mcp.tools.system_extraction import veos_get_all_signals_and_ports
-from tests.tool_test_helpers import RecordingModelCliMock
 
 
-def test_tool_veos_get_all_signals_and_ports_returns_signal_summary(
-    monkeypatch,
-) -> None:
+def test_tool_veos_get_all_signals_and_ports_returns_signal_summary(monkeypatch) -> None:
     cli = RecordingModelCliMock(
         CliCommandResult(
             success=True,
@@ -57,9 +55,7 @@ def test_tool_veos_get_all_signals_and_ports_returns_signal_summary(
                             "SignalConnections": [
                                 {
                                     "InSignalReference": {"ShortPath": "/Consumer/In1"},
-                                    "OutSignalReference": {
-                                        "ShortPath": "/Producer/Out1"
-                                    },
+                                    "OutSignalReference": {"ShortPath": "/Producer/Out1"},
                                 }
                             ]
                         }
@@ -93,9 +89,7 @@ def test_tool_veos_get_all_signals_and_ports_returns_signal_summary(
     }
 
 
-def test_tool_veos_get_all_signals_and_ports_returns_error_on_cli_failure(
-    monkeypatch,
-) -> None:
+def test_tool_veos_get_all_signals_and_ports_returns_error_on_cli_failure(monkeypatch) -> None:
     cli = RecordingModelCliMock(
         CliCommandResult(
             success=False,

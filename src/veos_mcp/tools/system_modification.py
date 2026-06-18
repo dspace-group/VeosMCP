@@ -50,8 +50,7 @@ def veos_add_signal_connection(osa_path: str, json_path: str) -> CallToolResult:
     command_result = get_cli().run_model("connect", osa_path, "-c", json_path)
     if not command_result.success:
         return create_command_result_response_error(
-            command_result,
-            f"Failed to add signal connection from JSON file {json_path} on the VEOS model.",
+            command_result, f"Failed to add signal connection from JSON file {json_path} on the VEOS model."
         )
 
     return create_command_result_response_success(command_result)
@@ -92,8 +91,7 @@ def veos_remove_signal_connection(osa_path: str, json_path: str) -> CallToolResu
     command_result = get_cli().run_model("remove", osa_path, "-c", json_path)
     if not command_result.success:
         return create_command_result_response_error(
-            command_result,
-            f"Failed to remove signal connection from JSON file {json_path} on the VEOS model.",
+            command_result, f"Failed to remove signal connection from JSON file {json_path} on the VEOS model."
         )
 
     return create_command_result_response_success(command_result)
