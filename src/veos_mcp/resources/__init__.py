@@ -1,3 +1,5 @@
 """MCP resources exposed by the VEOS MCP server."""
 
-import veos_mcp.resources.log_files
+from veos_mcp.resources import log_files as log_files
+
+__all__ = ["log_files"]

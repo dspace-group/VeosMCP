@@ -134,7 +134,7 @@ MCP tools live in `src/veos_mcp/tools/` and are registered with the shared FastM
 1. Add the tool implementation to an existing module in `src/veos_mcp/tools/` or create a new module there.
 2. Decorate the function with `@mcp.tool(...)`. You should add a clear title and description, and set `ToolAnnotations` to describe whether the tool is read-only, destructive, idempotent, or open-world.
 3. Use `get_cli().run_sim(...)` or `get_cli().run_model(...)` for VEOS CLI operations.
-4. If you created a new tool module, import it in `src/veos_mcp/tools/__init__.py`; otherwise the decorator will not run when the server starts.
+4. If you created a new tool module, re-export it in `src/veos_mcp/tools/__init__.py` with `from veos_mcp.tools import new_module as new_module` and add it to `__all__`; otherwise the decorator will not run when the server starts.
 5. Add or update tests under `tests/tools/` for the direct Python function behavior.
 6. Add the new tool name to `expected_tools` in `tests/test_mcp_surface_smoketest.py` so the MCP stdio surface test verifies that it is registered.
 7. Run `pytest`, `ruff`, and `pylint` for validation, formatting and linting.
