@@ -16,12 +16,9 @@ from veos_mcp.runtime import (
     name="veos_list_all_available_log_files",
     title="List all available VEOS log files",
     description=(
-        "Lists all available VEOS log files, including both bus log files "
-        "(pcapng) and simulation log files. Structured content includes a "
-        "CommandResultCode value for the execution of the underlying VEOS "
-        "process: ok, process_failed, process_start_failed, or "
-        "process_timed_out. It also includes its exit code, Stdout, and "
-        "Stderr."
+        "Lists all available VEOS log files, including both bus log files (pcapng) and simulation log files. "
+        "Structured content includes a CommandResultCode value for the execution of the underlying VEOS process: ok, "
+        "process_failed, process_start_failed, or process_timed_out. It also includes its exit code, Stdout, and Stderr."
     ),
     annotations=ToolAnnotations(
         readOnlyHint=True,
@@ -45,10 +42,8 @@ def veos_list_all_available_log_files() -> CallToolResult:
     name="veos_get_log_file",
     title="Get VEOS log file resource link",
     description=(
-        "Gets the resource link to a specified VEOS log file, which can be "
-        "either a bus log file (pcapng) or a simulation log file. Call "
-        "VeosListAllAvailableLogFiles to get the list of available log files "
-        "first."
+        "Gets the resource link to a specified VEOS log file, which can be either a bus log file (pcapng) or a "
+        "simulation log file. Call veos_list_all_available_log_files to get the list of available log files first."
     ),
     annotations=ToolAnnotations(
         readOnlyHint=True,

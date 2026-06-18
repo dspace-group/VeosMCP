@@ -14,9 +14,8 @@ from veos_mcp.runtime import (
     name="veos_add_signal_connection",
     title="Connect signals given a JSON file",
     description=(
-        "Adds signal connections that are specified in a list within the JSON "
-        "file to the given VEOS osa file. Example JSON that adds two "
-        "connections, the signal references are the signal paths:\n"
+        "Adds signal connections that are specified in a list within the JSON file to the given VEOS osa file. "
+        "Example JSON that adds two connections, the signal references are the signal paths:\n"
         "{\n"
         '    "CommunicationPackages": [\n'
         "        {\n"
@@ -34,13 +33,10 @@ from veos_mcp.runtime import (
         "        }\n"
         "    ]\n"
         "}\n"
-        "If successful, this tool returns a success message. If the tool "
-        "fails (e.g. due to invalid JSON file or invalid signal references), "
-        "the tool returns an error message with details about the failure. "
-        "Structured content includes a CommandResultCode value for the "
-        "execution of the underlying VEOS process: ok, process_failed, "
-        "process_start_failed, or process_timed_out. It also includes its "
-        "exit code, Stdout, and Stderr."
+        "If successful, this tool returns a success message. If the tool fails (e.g. due to invalid JSON file or "
+        "invalid signal references), the tool returns an error message with details about the failure. Structured "
+        "content includes a CommandResultCode value for the execution of the underlying VEOS process: ok, process_failed, "
+        "process_start_failed, or process_timed_out. It also includes its exit code, Stdout, and Stderr."
     ),
     annotations=ToolAnnotations(
         readOnlyHint=False,
@@ -65,9 +61,8 @@ def veos_add_signal_connection(osa_path: str, json_path: str) -> CallToolResult:
     name="veos_remove_signal_connection",
     title="Disconnect signals given in a JSON file",
     description=(
-        "Removes signal connections that are specified in a list within the "
-        "JSON file from the given VEOS osa file. Example JSON that removes "
-        "two connections, the signal references are the signal paths:\n"
+        "Removes signal connections that are specified in a list within the JSON file from the given VEOS osa file. "
+        "Example JSON that removes two connections, the signal references are the signal paths:\n"
         "{\n"
         '    "SignalConnections": [\n'
         "        {\n"
@@ -80,13 +75,10 @@ def veos_add_signal_connection(osa_path: str, json_path: str) -> CallToolResult:
         "        }\n"
         "    ]\n"
         "}\n"
-        "If successful, this tool returns a success message. If the tool "
-        "fails (e.g. due to invalid JSON file or invalid signal references), "
-        "the tool returns an error message with details about the failure. "
-        "Structured content includes a CommandResultCode value for the "
-        "execution of the underlying VEOS process: ok, process_failed, "
-        "process_start_failed, or process_timed_out. It also includes its "
-        "exit code, Stdout, and Stderr."
+        "If successful, this tool returns a success message. If the tool fails (e.g. due to invalid JSON file or "
+        "invalid signal references), the tool returns an error message with details about the failure. Structured "
+        "content includes a CommandResultCode value for the execution of the underlying VEOS process: ok, process_failed, "
+        "or process_timed_out. It also includes its exit code, Stdout, and Stderr."
     ),
     annotations=ToolAnnotations(
         readOnlyHint=False,
