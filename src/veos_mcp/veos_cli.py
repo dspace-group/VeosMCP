@@ -1,10 +1,9 @@
 """VEOS CLI subprocess execution helpers."""
 
-from pathlib import Path
 import subprocess
-
-from threading import Lock
 from collections.abc import Iterable
+from pathlib import Path
+from threading import Lock
 
 from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
 
@@ -66,9 +65,7 @@ def _collect_process_result(
     command_timeout_seconds: float,
 ) -> CliCommandResult:
     try:
-        stdout_bytes, stderr_bytes = process.communicate(
-            timeout=command_timeout_seconds
-        )
+        stdout_bytes, stderr_bytes = process.communicate(timeout=command_timeout_seconds)
     except subprocess.TimeoutExpired:
         return _timeout_result(process, command_name, command_timeout_seconds)
     return _completed_result(process.returncode, stdout_bytes, stderr_bytes)
@@ -86,10 +83,7 @@ def _timeout_result(
         code=CommandResultCode.PROCESS_TIMED_OUT,
         stdout="",
         stdout_bytes=b"",
-        stderr=(
-            f"The VEOS command {command_name} timed out after "
-            f"{command_timeout_seconds:0.0f} seconds.{cleanup_error}"
-        ),
+        stderr=(f"The VEOS command {command_name} timed out after {command_timeout_seconds:0.0f} seconds.{cleanup_error}"),
     )
 
 

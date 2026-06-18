@@ -2,13 +2,13 @@
 
 from mcp.types import CallToolResult, ToolAnnotations
 
+from veos_mcp.parsers import model_parser as model_inspection_service
 from veos_mcp.runtime import (
-    create_error_response,
     create_command_result_response_error,
+    create_error_response,
     get_cli,
     mcp,
 )
-from veos_mcp.parsers import model_parser as model_inspection_service
 
 
 @mcp.tool(
@@ -47,13 +47,9 @@ def veos_get_all_signals_and_ports(osa_path: str) -> CallToolResult:
         )
 
     try:
-        signal_summary = model_inspection_service.extract_signal_summary(
-            command_result.stdout
-        )
+        signal_summary = model_inspection_service.extract_signal_summary(command_result.stdout)
     except (KeyError, TypeError, ValueError) as exception:
-        return create_error_response(
-            f"Failed to parse the signal summary from the VEOS model output: {exception}"
-        )
+        return create_error_response(f"Failed to parse the signal summary from the VEOS model output: {exception}")
 
     return CallToolResult(
         isError=False,

@@ -16,7 +16,6 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pylint>=4.0.5,<5",
     "pytest>=8.3,<9",
     "ruff>=0.15.17",
 ]
@@ -32,3 +31,6 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 160

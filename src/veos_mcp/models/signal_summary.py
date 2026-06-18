@@ -22,6 +22,4 @@ class VeosSignalSummary(BaseModel):
 
     in_signals: list[VeosSignal] = Field(serialization_alias="InSignals")
     out_signals: list[VeosSignal] = Field(serialization_alias="OutSignals")
-    signal_connections: list[VeosSignalConnection] = Field(
-        serialization_alias="SignalConnections"
-    )
+    signal_connections: list[VeosSignalConnection] = Field(serialization_alias="SignalConnections")

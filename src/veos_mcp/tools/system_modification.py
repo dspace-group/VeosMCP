@@ -3,8 +3,8 @@
 from mcp.types import CallToolResult, ToolAnnotations
 
 from veos_mcp.runtime import (
-    create_command_result_response_success,
     create_command_result_response_error,
+    create_command_result_response_success,
     get_cli,
     mcp,
 )
@@ -55,8 +55,7 @@ def veos_add_signal_connection(osa_path: str, json_path: str) -> CallToolResult:
     if not command_result.success:
         return create_command_result_response_error(
             command_result,
-            f"Failed to add signal connection from JSON file {json_path} "
-            "on the VEOS model.",
+            f"Failed to add signal connection from JSON file {json_path} on the VEOS model.",
         )
 
     return create_command_result_response_success(command_result)
@@ -102,8 +101,7 @@ def veos_remove_signal_connection(osa_path: str, json_path: str) -> CallToolResu
     if not command_result.success:
         return create_command_result_response_error(
             command_result,
-            f"Failed to remove signal connection from JSON file {json_path} "
-            "on the VEOS model.",
+            f"Failed to remove signal connection from JSON file {json_path} on the VEOS model.",
         )
 
     return create_command_result_response_success(command_result)

@@ -106,7 +106,5 @@ def _try_get_nested_string(
 def _get_required_string(element: dict[str, Any], property_name: str) -> str:
     property_value = element.get(property_name)
     if not isinstance(property_value, str):
-        raise ValueError(
-            f"Required property '{property_name}' is missing or is not a string."
-        )
+        raise ValueError(f"Required property '{property_name}' is missing or is not a string.")
     return property_value

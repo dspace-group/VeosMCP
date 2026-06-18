@@ -1,17 +1,12 @@
-from dataclasses import dataclass
-from collections.abc import Iterable
 import importlib
-from pathlib import Path
 import re
 import sys
+from collections.abc import Iterable
+from dataclasses import dataclass
+from pathlib import Path
 
-_WINDOWS_INSTALLATION_REFERENCE = (
-    "dSPACE.InstallationManager.API, Version=2.0.0.0, Culture=neutral, "
-    "PublicKeyToken=f9604847d8afbfbb"
-)
-_REQUESTED_VERSION_PATTERN = re.compile(
-    r"^\s*(?P<year>\d{2}|\d{4})[.\-_ ]?(?P<release>[12abAB])\s*$"
-)
+_WINDOWS_INSTALLATION_REFERENCE = "dSPACE.InstallationManager.API, Version=2.0.0.0, Culture=neutral, PublicKeyToken=f9604847d8afbfbb"
+_REQUESTED_VERSION_PATTERN = re.compile(r"^\s*(?P<year>\d{2}|\d{4})[.\-_ ]?(?P<release>[12abAB])\s*$")
 _DISPLAY_NAME_PATTERN = re.compile(
     r"^dSPACE\s+VEOS\s+(?P<year>\d{4})-(?P<release>[AB])$",
     re.IGNORECASE,
@@ -55,10 +50,7 @@ def _parse_requested_version(veos_version: str | None) -> tuple[int, str | None]
 
     match = _REQUESTED_VERSION_PATTERN.fullmatch(veos_version)
     if match is None:
-        raise ValueError(
-            "Invalid VEOS version format. Use values like '26.1', '26.2', "
-            "'2026-A', or '2026-B'."
-        )
+        raise ValueError("Invalid VEOS version format. Use values like '26.1', '26.2', '2026-A', or '2026-B'.")
 
     return (
         _normalize_year(match.group("year")),
@@ -66,9 +58,7 @@ def _parse_requested_version(veos_version: str | None) -> tuple[int, str | None]
     )
 
 
-def _parse_windows_installation(
-    display_name: str, root_path: str | Path
-) -> _VeosInstallation | None:
+def _parse_windows_installation(display_name: str, root_path: str | Path) -> _VeosInstallation | None:
     match = _DISPLAY_NAME_PATTERN.fullmatch(display_name.strip())
     if match is None:
         return None
@@ -112,30 +102,22 @@ def _select_installation(
 ) -> _VeosInstallation:
     available_installations = sorted(installations, key=_installation_sort_key)
     if not available_installations:
-        raise RuntimeError(
-            "Could not find any installed dSPACE VEOS instances on the machine."
-        )
+        raise RuntimeError("Could not find any installed dSPACE VEOS instances on the machine.")
 
     requested_version = _parse_requested_version(veos_version)
     if requested_version is None:
-        return available_installations[
-            -1
-        ]  # No specific version requested, return the newest available installation.
+        return available_installations[-1]  # No specific version requested, return the newest available installation.
 
     requested_year, requested_release = requested_version
     matches = [
         installation
         for installation in available_installations
-        if installation.year == requested_year
-        and (requested_release is None or installation.release == requested_release)
+        if installation.year == requested_year and (requested_release is None or installation.release == requested_release)
     ]
     if matches:
         return matches[-1]
 
-    available_versions = ", ".join(
-        _format_installation_version(installation.year, installation.release)
-        for installation in available_installations
-    )
+    available_versions = ", ".join(_format_installation_version(installation.year, installation.release) for installation in available_installations)
     raise RuntimeError(
         "Could not find the installation of dSPACE VEOS "
         f"{_format_requested_version(requested_year, requested_release)}. "
@@ -171,27 +153,15 @@ def get_linux_installations(
     return installations
 
 
-def resolve_veos_path_for_version(
-    installations: list[_VeosInstallation], veos_version: str | None
-) -> Path:
+def resolve_veos_path_for_version(installations: list[_VeosInstallation], veos_version: str | None) -> Path:
     candidate_installation = _select_installation(installations, veos_version)
-    return (
-        candidate_installation.bin_path / "veos.exe"
-        if sys.platform.startswith("win32")
-        else candidate_installation.bin_path / "veos"
-    )
+    return candidate_installation.bin_path / "veos.exe" if sys.platform.startswith("win32") else candidate_installation.bin_path / "veos"
 
 
-def check_veos_installation_exists(
-    installations: list[_VeosInstallation], veos_bin_path: str
-) -> Path:
+def check_veos_installation_exists(installations: list[_VeosInstallation], veos_bin_path: str) -> Path:
     for installation in installations:
         if installation.bin_path == Path(veos_bin_path):
-            return (
-                installation.bin_path / "veos.exe"
-                if sys.platform.startswith("win32")
-                else installation.bin_path / "veos"
-            )
+            return installation.bin_path / "veos.exe" if sys.platform.startswith("win32") else installation.bin_path / "veos"
     raise ValueError(
         f"Provided VEOS path is invalid, make sure that the provided path '{veos_bin_path}' "
         f"points to the bin directory of an existing VEOS installation. "

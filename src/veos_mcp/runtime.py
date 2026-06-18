@@ -3,11 +3,10 @@
 import sys
 
 from mcp.server import FastMCP
-
 from mcp.types import CallToolResult, TextContent
 
 from veos_mcp.models.cli_command_result import CliCommandResult
-from veos_mcp.models.errors import VeosError, ErrorType
+from veos_mcp.models.errors import ErrorType, VeosError
 from veos_mcp.veos_cli import VeosCli
 from veos_mcp.veos_path_resolver import (
     check_veos_installation_exists,
@@ -28,11 +27,7 @@ _veos_cli: VeosCli | None = None
 def configure_cli(*, veos_version: str | None, veos_bin_path: str | None) -> None:
     """Configure the server with the VEOS CLI installation directory."""
 
-    veos_installations = (
-        get_windows_installations()
-        if sys.platform.startswith("win32")
-        else get_linux_installations()
-    )
+    veos_installations = get_windows_installations() if sys.platform.startswith("win32") else get_linux_installations()
 
     if veos_bin_path is not None:
         veos_path = check_veos_installation_exists(veos_installations, veos_bin_path)

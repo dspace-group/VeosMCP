@@ -3,8 +3,8 @@
 from mcp.types import CallToolResult, ToolAnnotations
 
 from veos_mcp.runtime import (
-    create_command_result_response_success,
     create_command_result_response_error,
+    create_command_result_response_success,
     get_cli,
     mcp,
 )

@@ -4,10 +4,9 @@ import argparse
 import os
 from collections.abc import Sequence
 
-import veos_mcp.tools  # pylint: disable=unused-import
-import veos_mcp.resources  # pylint: disable=unused-import
-
-from veos_mcp.runtime import mcp, configure_cli
+import veos_mcp.resources  # noqa: F401
+import veos_mcp.tools  # noqa: F401
+from veos_mcp.runtime import configure_cli, mcp
 
 
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:

@@ -32,21 +32,11 @@ def assert_command_result_structured_content(
     tool_name: str,
     structured_content: dict[str, object],
 ) -> None:
-    assert "Success" in structured_content, (
-        f"{tool_name} should include Success in structured content."
-    )
-    assert "Code" in structured_content, (
-        f"{tool_name} should include Code in structured content."
-    )
-    assert "Stdout" in structured_content, (
-        f"{tool_name} should include Stdout in structured content."
-    )
-    assert "Stderr" in structured_content, (
-        f"{tool_name} should include Stderr in structured content."
-    )
-    assert "ExitCode" in structured_content, (
-        f"{tool_name} should include ExitCode in structured content."
-    )
+    assert "Success" in structured_content, f"{tool_name} should include Success in structured content."
+    assert "Code" in structured_content, f"{tool_name} should include Code in structured content."
+    assert "Stdout" in structured_content, f"{tool_name} should include Stdout in structured content."
+    assert "Stderr" in structured_content, f"{tool_name} should include Stderr in structured content."
+    assert "ExitCode" in structured_content, f"{tool_name} should include ExitCode in structured content."
 
 
 def assert_error_text_content(result: CallToolResult, expected_message: str) -> None:
