@@ -1,11 +1,11 @@
 """Pydantic schema for MCP-facing VEOS errors."""
 
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class ErrorType(str, Enum):
+class ErrorType(StrEnum):
     """Classify whether a tool failure is transient or permanent."""
 
     TRANSIENT_ERROR = "TransientError"
