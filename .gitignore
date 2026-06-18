@@ -4,3 +4,4 @@ __pycache__/
 .pylint.d/
 *.pyc
 *.egg-info/
+uv.lock

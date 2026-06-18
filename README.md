@@ -10,7 +10,7 @@ MCP server implementation for controlling the [dSPACE VEOS](https://www.dspace.c
 
 ## Getting Started
 
-Create the project environment and install the development dependencies from the committed lockfile:
+Create the project environment and install dependencies from `pyproject.toml`:
 
 ```shell
 uv sync
@@ -114,7 +114,7 @@ Direct dependency license metadata checked from the current project environment:
 
 ## Developer Setup
 
-Create the project environment and install the development dependencies from the committed lockfile:
+Create the project environment and install the development dependencies from `pyproject.toml`:
 
 ```shell
 uv sync --python 3.12 --extra dev
