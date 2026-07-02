@@ -11,7 +11,7 @@ from veos_mcp.runtime import (
 
 
 @mcp.tool(
-    name="veos_add_signal_connection",
+    name="veos_add_signal_connections",
     title="Connect signals given a JSON file",
     description=(
         "Adds signal connections that are specified in a list within the JSON file to the given VEOS osa file. "
@@ -36,7 +36,9 @@ from veos_mcp.runtime import (
         "If successful, this tool returns a success message. If the tool fails (e.g. due to invalid JSON file or "
         "invalid signal references), the tool returns an error message with details about the failure. Structured "
         "content includes a CommandResultCode value for the execution of the underlying VEOS process: ok, process_failed, "
-        "process_start_failed, or process_timed_out. It also includes its exit code, Stdout, and Stderr."
+        "process_start_failed, or process_timed_out. It also includes its exit code, Stdout, and Stderr. Together "
+        "with veos_remove_signal_connections a round-trip of signal connections can be performed, e.g. to temporarily "
+        "disconnect signals for testing purposes."
     ),
     annotations=ToolAnnotations(
         readOnlyHint=False,
@@ -45,19 +47,19 @@ from veos_mcp.runtime import (
         openWorldHint=False,
     ),
 )
-def veos_add_signal_connection(osa_path: str, json_path: str) -> CallToolResult:
+def veos_add_signal_connections(osa_path: str, json_path: str) -> CallToolResult:
     """Add signal connections from a JSON file to an OSA model."""
     command_result = get_cli().run_model("connect", osa_path, "-c", json_path)
     if not command_result.success:
         return create_command_result_response_error(
-            command_result, f"Failed to add signal connection from JSON file {json_path} on the VEOS model."
+            command_result, f"Failed to add signal connections from JSON file {json_path} on the VEOS model."
         )
 
     return create_command_result_response_success(command_result)
 
 
 @mcp.tool(
-    name="veos_remove_signal_connection",
+    name="veos_remove_signal_connections",
     title="Disconnect signals given in a JSON file",
     description=(
         "Removes signal connections that are specified in a list within the JSON file from the given VEOS osa file. "
@@ -77,21 +79,23 @@ def veos_add_signal_connection(osa_path: str, json_path: str) -> CallToolResult:
         "If successful, this tool returns a success message. If the tool fails (e.g. due to invalid JSON file or "
         "invalid signal references), the tool returns an error message with details about the failure. Structured "
         "content includes a CommandResultCode value for the execution of the underlying VEOS process: ok, process_failed, "
-        "or process_timed_out. It also includes its exit code, Stdout, and Stderr."
+        "process_start_failed, or process_timed_out. It also includes its exit code, Stdout, and Stderr. Together "
+        "with veos_add_signal_connections a round-trip of signal connections can be performed, e.g. to temporarily "
+        "disconnect signals for testing purposes."
     ),
     annotations=ToolAnnotations(
         readOnlyHint=False,
-        destructiveHint=False,
+        destructiveHint=True,
         idempotentHint=True,
         openWorldHint=False,
     ),
 )
-def veos_remove_signal_connection(osa_path: str, json_path: str) -> CallToolResult:
+def veos_remove_signal_connections(osa_path: str, json_path: str) -> CallToolResult:
     """Remove signal connections from a JSON file from an OSA model."""
     command_result = get_cli().run_model("remove", osa_path, "-c", json_path)
     if not command_result.success:
         return create_command_result_response_error(
-            command_result, f"Failed to remove signal connection from JSON file {json_path} on the VEOS model."
+            command_result, f"Failed to remove signal connections from JSON file {json_path} on the VEOS model."
         )
 
     return create_command_result_response_success(command_result)

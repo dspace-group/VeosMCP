@@ -14,11 +14,11 @@ def _read_log_file(log_file_name: str) -> str | bytes:
 
 
 @mcp.resource(
-    "logs://sim/{log_file_name}",
+    "veos://logs/sim/{log_file_name}",
     name="veos_get_sim_log_file_resource",
     title="VEOS Log File",
     mime_type="text/plain",
-    description="Resource for accessing the contents of a VEOS Simulation.log file.",
+    description="Resource for accessing the contents of a VEOS Simulation.log file. If the specified log file does not exist, an error is returned.",
 )
 def veos_get_sim_log_file_resource(log_file_name: str) -> str:
     log_contents = _read_log_file(log_file_name)
@@ -26,11 +26,11 @@ def veos_get_sim_log_file_resource(log_file_name: str) -> str:
 
 
 @mcp.resource(
-    "logs://bus/{log_file_name}",
+    "veos://logs/bus/{log_file_name}",
     name="veos_get_bus_log_file_resource",
     title="VEOS Bus Log File",
     mime_type="application/vnd.tcpdump.pcap",
-    description="Resource for accessing the contents of a VEOS Bus log file.",
+    description="Resource for accessing the contents of a VEOS Bus log file. If the specified log file does not exist, an error is returned.",
 )
 def veos_get_bus_log_file_resource(log_file_name: str) -> bytes:
     log_contents = _read_log_file(log_file_name)

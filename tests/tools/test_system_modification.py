@@ -13,8 +13,8 @@ from tests.tool_test_helpers import (
 from veos_mcp import runtime
 from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
 from veos_mcp.tools.system_modification import (
-    veos_add_signal_connection,
-    veos_remove_signal_connection,
+    veos_add_signal_connections,
+    veos_remove_signal_connections,
 )
 
 
@@ -22,13 +22,13 @@ from veos_mcp.tools.system_modification import (
     ("tool_func", "tool_name", "arguments"),
     [
         (
-            veos_add_signal_connection,
-            "veos_add_signal_connection",
+            veos_add_signal_connections,
+            "veos_add_signal_connections",
             ("connect", "model.osa", "-c", "connections.json"),
         ),
         (
-            veos_remove_signal_connection,
-            "veos_remove_signal_connection",
+            veos_remove_signal_connections,
+            "veos_remove_signal_connections",
             ("remove", "model.osa", "-c", "connections.json"),
         ),
     ],
@@ -63,16 +63,16 @@ def test_system_modification_tools_invoke_veos_model_and_return_structured_conte
     ("tool_func", "tool_name", "arguments", "expected_message"),
     [
         (
-            veos_add_signal_connection,
-            "veos_add_signal_connection",
+            veos_add_signal_connections,
+            "veos_add_signal_connections",
             ("connect", "model.osa", "-c", "connections.json"),
-            "Failed to add signal connection from JSON file connections.json on the VEOS model.",
+            "Failed to add signal connections from JSON file connections.json on the VEOS model.",
         ),
         (
-            veos_remove_signal_connection,
-            "veos_remove_signal_connection",
+            veos_remove_signal_connections,
+            "veos_remove_signal_connections",
             ("remove", "model.osa", "-c", "connections.json"),
-            "Failed to remove signal connection from JSON file connections.json on the VEOS model.",
+            "Failed to remove signal connections from JSON file connections.json on the VEOS model.",
         ),
     ],
 )

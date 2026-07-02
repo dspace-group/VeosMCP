@@ -40,7 +40,8 @@ def veos_list_all_available_log_files() -> CallToolResult:
     title="Get VEOS log file resource link",
     description=(
         "Gets the resource link to a specified VEOS log file, which can be either a bus log file (pcapng) or a "
-        "simulation log file. Call veos_list_all_available_log_files to get the list of available log files first."
+        "simulation log file. Call veos_list_all_available_log_files to get the list of available log files first. "
+        "This tool does not fail, hence it will not provide an error message."
     ),
     annotations=ToolAnnotations(
         readOnlyHint=True,
@@ -52,7 +53,7 @@ def veos_list_all_available_log_files() -> CallToolResult:
 def veos_get_log_file(log_file_name: str) -> CallToolResult:
     """Return an MCP resource link for a named VEOS log file."""
     is_pcapng_file = log_file_name.lower().endswith(".pcapng")
-    resource_uri = f"logs://bus/{log_file_name}" if is_pcapng_file else f"logs://sim/{log_file_name}"
+    resource_uri = f"veos://logs/bus/{log_file_name}" if is_pcapng_file else f"veos://logs/sim/{log_file_name}"
     mime_type = "application/vnd.tcpdump.pcap" if is_pcapng_file else "text/plain"
     description = "VEOS bus log file in pcapng format." if is_pcapng_file else "VEOS simulation log file in plain text format."
     return CallToolResult(

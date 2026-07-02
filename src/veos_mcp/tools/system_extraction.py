@@ -15,7 +15,7 @@ from veos_mcp.runtime import (
     name="veos_get_all_signals_and_ports",
     title="Get a list of signals/ports from the VEOS osa simulation system",
     description=(
-        "Gets the list of available signals/ports from the currently loaded VEOS model and existing connections "
+        "Gets the list of available signals/ports from the given osa file and existing connections "
         "between them. Signals and ports are often used interchangeably in the context of the VEOS simulation system. "
         "Signals are either output or input ports, and each port has a specific data type. An output port/signal "
         "represents a signal that is produced by a component in the simulation and can be connected to multiple input "

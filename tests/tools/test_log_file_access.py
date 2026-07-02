@@ -23,7 +23,7 @@ def test_tool_veos_get_log_file_returns_bus_resource_link_for_pcapng() -> None:
     assert result.isError is False
     assert result.content is not None
     resource_link = cast(ResourceLink, result.content[0])
-    assert str(resource_link.uri) == "logs://bus/SimpleEthernetReceiverFmu.BusTransfer.pcapng"
+    assert str(resource_link.uri) == "veos://logs/bus/SimpleEthernetReceiverFmu.BusTransfer.pcapng"
     assert resource_link.mimeType == "application/vnd.tcpdump.pcap"
 
 
@@ -33,13 +33,13 @@ def test_tool_veos_get_log_file_returns_sim_resource_link_for_text_log() -> None
     assert result.isError is False
     assert result.content is not None
     resource_link = cast(ResourceLink, result.content[0])
-    assert str(resource_link.uri) == "logs://sim/veos.log"
+    assert str(resource_link.uri) == "veos://logs/sim/veos.log"
     assert resource_link.mimeType == "text/plain"
     assert result.structuredContent == {
         "Success": True,
         "Code": CommandResultCode.OK.value,
         "LogFileName": "veos.log",
-        "Uri": "logs://sim/veos.log",
+        "Uri": "veos://logs/sim/veos.log",
         "MimeType": "text/plain",
         "Description": "VEOS simulation log file in plain text format.",
     }

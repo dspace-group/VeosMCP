@@ -44,11 +44,13 @@ def veos_status_info() -> CallToolResult:
     title="Load .osa simulation model into VEOS",
     description=(
         "Loads a simulation model specified by an osa file into the VEOS simulator. If successful, this transitions "
-        "the simulator to the Stopped state. If load fails, the simulator switches to the Terminated state. The tool "
-        "takes the path to the osa file as input and returns the result of the load operation. If the load fails (e.g. "
-        "due to invalid osa path or file), the tool returns an error message with details about the failure. Structured "
-        "content includes a CommandResultCode value for the execution of the underlying VEOS process: ok, process_failed, "
-        "process_start_failed, or process_timed_out. It also includes its exit code, Stdout, and Stderr."
+        "the simulator to the Stopped state. If the simulation is already loaded and in Stopped state, the state "
+        "remains unchanged. If load fails, the simulator switches to the Terminated state. "
+        "The tool takes the path to the osa file as input and returns the result of the "
+        "load operation. If the load fails (e.g. due to invalid osa path or file), the tool returns an error message "
+        "with details about the failure. Structured content includes a CommandResultCode value for the execution of "
+        "the underlying VEOS process: ok, process_failed, process_start_failed, or process_timed_out. "
+        "It also includes its exit code, Stdout, and Stderr."
     ),
     annotations=ToolAnnotations(
         readOnlyHint=False,
@@ -70,7 +72,8 @@ def veos_load(osa_path: str) -> CallToolResult:
     title="Start VEOS simulation",
     description=(
         "Starts the VEOS simulation. This transitions the simulator from Stopped or Paused state to Running state. "
-        "An osa file must have been successfully loaded beforehand by calling the veos_load tool. Structured content "
+        "An osa file must have been successfully loaded beforehand by calling the veos_load tool. If the simulator "
+        "state is already Running, the state remains unchanged. Structured content "
         "includes a CommandResultCode value for the execution of the underlying VEOS process: ok, process_failed, "
         "process_start_failed, or process_timed_out. It also includes its exit code, Stdout, and Stderr."
     ),
@@ -94,7 +97,8 @@ def veos_start() -> CallToolResult:
     title="Stop VEOS simulation",
     description=(
         "Stops the VEOS simulation. This transitions the simulator from Running or Paused state to Stopped state. "
-        "If the simulator is not in a valid state for stopping the simulation, this tool returns an error message "
+        "If the simulator is already Stopped, the state remains unchanged. If the simulator is not in a valid state "
+        "for stopping the simulation, this tool returns an error message "
         "with details about the failure. Necessary operation to access the simulation log and bus log files, as these "
         "are only finalized and accessible after the simulation is stopped. Structured content includes a "
         "CommandResultCode value for the execution of the underlying VEOS process: ok, process_failed, "

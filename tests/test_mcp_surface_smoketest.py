@@ -20,13 +20,13 @@ def test_list_all_tools() -> None:
     """Test that all expected tools can be listed from the stdio server."""
 
     expected_tools = [
-        "veos_add_signal_connection",
+        "veos_add_signal_connections",
         "veos_apply_config",
         "veos_get_all_signals_and_ports",
         "veos_get_log_file",
         "veos_list_all_available_log_files",
         "veos_load",
-        "veos_remove_signal_connection",
+        "veos_remove_signal_connections",
         "veos_start",
         "veos_status_info",
         "veos_stop",
@@ -50,8 +50,8 @@ def test_list_all_resource_templates() -> None:
     """Test that all expected resource templates can be listed from the stdio server."""
 
     expected_resource_templates = [
-        "logs://bus/{log_file_name}",
-        "logs://sim/{log_file_name}",
+        "veos://logs/bus/{log_file_name}",
+        "veos://logs/sim/{log_file_name}",
     ]
 
     async def list_resource_templates() -> list[str]:
@@ -85,4 +85,4 @@ def test_smoketest_log_file_tool_over_mcp() -> None:
 
     assert is_error is False
     assert structured_content["Code"] == "ok"
-    assert structured_content["Uri"] == "logs://sim/veos.log"
+    assert structured_content["Uri"] == "veos://logs/sim/veos.log"
