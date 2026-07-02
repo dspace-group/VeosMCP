@@ -128,9 +128,15 @@ def _select_installation(
 
 
 def get_windows_installations() -> list[_VeosInstallation]:
-    clr = importlib.import_module("clr")
-    clr.AddReference(_WINDOWS_INSTALLATION_REFERENCE)
-    installation_api = importlib.import_module("dSPACE.InstallationManager.API")
+    try:
+        clr = importlib.import_module("clr")
+        clr.AddReference(_WINDOWS_INSTALLATION_REFERENCE)
+        installation_api = importlib.import_module("dSPACE.InstallationManager.API")
+    except (ImportError, ModuleNotFoundError) as exception:
+        raise RuntimeError(
+            "Could not load the dSPACE InstallationManager API required for Windows VEOS discovery. "
+            "Ensure pythonnet is installed and the dSPACE Installation Manager is available on this machine."
+        ) from exception
 
     configuration_info = installation_api.ConfigurationInfo()
     installations: list[_VeosInstallation] = []
