@@ -5,38 +5,27 @@ MCP server implementation for controlling the [dSPACE VEOS](https://www.dspace.c
 ## Prerequisites
 
 - [dSPACE VEOS](https://www.dspace.com/en/pub/home/products/sw/simulation_software/veos.cfm) installed on the machine where the MCP server runs.
-- Python 3.12 or newer.
-- `uv`, the Python package and project manager used to create the environment, install dependencies, and run the server from this checkout. Install it from the official Astral documentation: https://docs.astral.sh/uv/getting-started/installation/
 
 ## Getting Started
 
-Create the project environment and install dependencies from `pyproject.toml`:
+Download `veos-mcp-windows.zip` from the latest GitHub Release and extract it on the machine where VEOS is installed. The archive contains `veos-mcp.exe`, this project's `LICENSE`, and third-party license notices.
 
-```shell
-uv sync
-uv sync --python 3.12 --extra dev 	# alternatively for developer setup
-```
+The VEOS MCP server runs locally over stdio. The example below shows a minimal installation for GitHub Copilot. For other MCP clients like Claude Code, Claude Desktop, Codex, etc. follow their respective MCP server setup instructions.
 
-The VEOS MCP server runs locally over stdio. The example below shows a minmal installation for GitHub Copilot. For other MCP clients like Claude Code, Claude Desktop, Codex, etc. follow their repective MCP server setup instructions.
-
-For GitHub Copilot installation create or edit `.vscode/mcp.json` in VS Code with a workspace-local MCP server entry.
+For GitHub Copilot installation create or edit `.vscode/mcp.json` in VS Code with a local MCP server entry that points to the extracted executable.
 
 ```json
 {
-	"servers": {
-		"VeosMCP": {
-			"type": "stdio",
-			"command": "uv",
-			"args": [
-				"--directory",
-				"<PATH_TO_REPOSITORY>",
-				"run",
-				"python",
-				"-m",
-				"veos_mcp.server"
-			]
-		}
-	}
+  "servers": {
+    "VeosMCP": {
+      "type": "stdio",
+      "command": "C:\\Path\\To\\VeosMCP\\veos-mcp.exe",
+      "args": [
+        "--veos-version",
+        "26.1"
+      ]
+    }
+  }
 }
 ```
 
@@ -84,10 +73,33 @@ If no `veos-version` and `veos-bin-path` are provided, the VEOS MCP server will 
 
 ## Developer Setup
 
+Developer setup requires Python 3.12 or newer and `uv`, the Python package and project manager used to create the environment, install dependencies, and run the server from this checkout. Install `uv` from the official Astral documentation: https://docs.astral.sh/uv/getting-started/installation/
+
 Create the project environment and install the development dependencies from `pyproject.toml`:
 
 ```shell
 uv sync --python 3.12 --extra dev
+```
+
+For local development with GitHub Copilot, create or edit `.vscode/mcp.json` with a workspace-local MCP server entry. To target a specific VEOS version, add the arguments described in the Configuration section.
+
+```json
+{
+  "servers": {
+    "VeosMCP": {
+      "type": "stdio",
+      "command": "uv",
+      "args": [
+        "--directory",
+        "<PATH_TO_REPOSITORY>",
+        "run",
+        "python",
+        "-m",
+        "veos_mcp.server"
+      ]
+    }
+  }
+}
 ```
 
 ```shell

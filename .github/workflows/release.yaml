@@ -32,21 +32,23 @@ jobs:
       - name: Generate third-party license report
         run: uv run --with pip-licenses pip-licenses --format=plain-vertical --with-license-file --output-file THIRD_PARTY_LICENSES.txt
 
-      - name: Upload executable artifact
+      - name: Package release archive
+        run: |
+          New-Item -ItemType Directory -Force release-package | Out-Null
+          Copy-Item dist\*.exe release-package\
+          Copy-Item LICENSE release-package\
+          Copy-Item THIRD_PARTY_LICENSES.txt release-package\
+          Compress-Archive -Path release-package\* -DestinationPath dist\veos-mcp-windows.zip -Force
+
+      - name: Upload release artifact
         uses: actions/upload-artifact@v4
         with:
-          name: veos-mcp-windows-exe
-          path: |
-            dist/*.exe
-            LICENSE
-            THIRD_PARTY_LICENSES.txt
+          name: veos-mcp-windows
+          path: dist/veos-mcp-windows.zip
           if-no-files-found: error
 
-      - name: Attach executable to GitHub release
+      - name: Attach archive to GitHub release
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            dist/*.exe
-            LICENSE
-            THIRD_PARTY_LICENSES.txt
+          files: dist/veos-mcp-windows.zip
