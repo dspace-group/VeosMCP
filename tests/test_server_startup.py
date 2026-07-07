@@ -6,48 +6,45 @@ from unittest.mock import ANY, patch
 
 import pytest
 
-from veos_mcp import server, veos_path_resolver
+import veos_mcp.veos_path_resolver as path_resolver
+from veos_mcp import server
 
 
-def create_fake_veos_executable(tmp_path: Path) -> Path:
-    """Create a minimal VEOS stub executable for subprocess-based MCP tests."""
-    if sys.platform.startswith("win"):
-        veos_path = tmp_path / "veos.cmd"
-        veos_path.write_text("@echo off\r\nexit /b 0\r\n", encoding="utf-8")
-        return veos_path
-
-    veos_path = tmp_path / "veos"
-    veos_path.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
-    veos_path.chmod(0o755)
-    return veos_path
-
-
-def create_installation(bin_path: Path) -> veos_path_resolver._VeosInstallation:
-    return veos_path_resolver._VeosInstallation(
+def create_installation(tmp_path: Path) -> path_resolver._VeosInstallation:
+    return path_resolver._VeosInstallation(
         year=2026,
         release="A",
-        bin_path=bin_path / "veos.exe" if sys.platform.startswith("win") else bin_path / "veos",
-        source_name="test-installation",
+        bin_path=tmp_path / "bin",
+        source_name="dSPACE VEOS 2026-A",
     )
 
 
-def test_argument_no_veos_version_calls_select_installation(tmp_path: Path) -> None:
-    with patch("veos_mcp.veos_path_resolver._select_installation") as mock_select:
-        with patch.object(server.mcp, "run") as mock_run:
-            mock_select.return_value = create_installation(create_fake_veos_executable(tmp_path))
+def patch_veos_installation_discovery(installations: list[path_resolver._VeosInstallation]):
+    discovery_target = (
+        "veos_mcp.runtime.get_windows_installations" if sys.platform.startswith("win32") else "veos_mcp.runtime.get_linux_installations"
+    )
+    return patch(discovery_target, return_value=installations)
 
-            server.main([])
+
+def test_argument_no_veos_version_calls_select_installation(tmp_path: Path) -> None:
+    installation = create_installation(tmp_path)
+
+    with patch_veos_installation_discovery([installation]):
+        with patch("veos_mcp.veos_path_resolver._select_installation", return_value=installation) as mock_select:
+            with patch.object(server.mcp, "run") as mock_run:
+                server.main([])
 
     mock_select.assert_called_once_with(ANY, None)
     mock_run.assert_called_once_with()
 
 
 def test_argument_veos_version_calls_select_installation(tmp_path: Path) -> None:
-    with patch("veos_mcp.veos_path_resolver._select_installation") as mock_select:
-        with patch.object(server.mcp, "run") as mock_run:
-            mock_select.return_value = create_installation(create_fake_veos_executable(tmp_path))
+    installation = create_installation(tmp_path)
 
-            server.main(["--veos-version", "26.1"])
+    with patch_veos_installation_discovery([installation]):
+        with patch("veos_mcp.veos_path_resolver._select_installation", return_value=installation) as mock_select:
+            with patch.object(server.mcp, "run") as mock_run:
+                server.main(["--veos-version", "26.1"])
 
     mock_select.assert_called_once_with(ANY, "26.1")
     mock_run.assert_called_once_with()
@@ -64,20 +61,22 @@ def test_skip_configure_environment_variable_skips_configure(monkeypatch) -> Non
     mock_run.assert_called_once_with()
 
 
-def test_argument_veos_bin_path_invalid() -> None:
+def test_argument_veos_bin_path_invalid(tmp_path: Path) -> None:
     """Test the direct server entrypoint error when the --veos-bin-path argument is invalid."""
-    with pytest.raises(ValueError) as exc_info:
-        server.main(["--veos-bin-path", "invalid_path"])
+    with patch_veos_installation_discovery([create_installation(tmp_path)]):
+        with pytest.raises(ValueError) as exc_info:
+            server.main(["--veos-bin-path", "invalid_path"])
 
     assert "path is invalid" in str(exc_info.value)
     assert "invalid_path" in str(exc_info.value)
 
 
-def test_argument_veos_version_invalid() -> None:
+def test_argument_veos_version_invalid(tmp_path: Path) -> None:
     """Test the direct server entrypoint error when the --veos-version argument is invalid."""
 
-    with pytest.raises(ValueError) as exc_info:
-        server.main(["--veos-version", "invalid_version"])
+    with patch_veos_installation_discovery([create_installation(tmp_path)]):
+        with pytest.raises(ValueError) as exc_info:
+            server.main(["--veos-version", "invalid_version"])
 
     assert "Invalid VEOS version format" in str(exc_info.value)
 

@@ -29,7 +29,7 @@ For GitHub Copilot installation create or edit `.vscode/mcp.json` in VS Code wit
 			"command": "uv",
 			"args": [
 				"--directory",
-				"path\\to\\this\\cloned\\repo",
+				"<PATH_TO_REPOSITORY>",
 				"run",
 				"python",
 				"-m",

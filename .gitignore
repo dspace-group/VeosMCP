@@ -1,6 +1,13 @@
-.venv/
+# Python caches and package metadata
+*.egg-info/
+*.pyc
 __pycache__/
 .pytest_cache/
-*.pyc
-*.egg-info/
+
+# Local environments
+.venv/
 uv.lock
+
+# Build and release artifacts
+build/
+THIRD_PARTY_LICENSES.txt
