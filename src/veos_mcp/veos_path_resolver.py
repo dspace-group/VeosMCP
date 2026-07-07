@@ -129,7 +129,8 @@ def _select_installation(
 
 def get_windows_installations() -> list[_VeosInstallation]:
     try:
-        clr = importlib.import_module("clr")
+        import clr
+
         clr.AddReference(_WINDOWS_INSTALLATION_REFERENCE)
         installation_api = importlib.import_module("dSPACE.InstallationManager.API")
     except (ImportError, ModuleNotFoundError) as exception:
