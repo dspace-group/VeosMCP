@@ -19,7 +19,7 @@ For GitHub Copilot installation create or edit `.vscode/mcp.json` in VS Code wit
   "servers": {
     "VeosMCP": {
       "type": "stdio",
-      "command": "C:\\Path\\To\\VeosMCP\\veos-mcp.exe",
+      "command": "C:\\Path\\To\\Extracted\\veos-mcp.exe",
       "args": [
         "--veos-version",
         "26.1"
