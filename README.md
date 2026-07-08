@@ -10,7 +10,7 @@ MCP server implementation for controlling the [dSPACE VEOS](https://www.dspace.c
 
 Download `veos-mcp-windows.zip` from the latest GitHub Release and extract it on the machine where VEOS is installed. The archive contains `veos-mcp.exe`, this project's `LICENSE`, and third-party license notices.
 
-The VEOS MCP server runs locally over stdio. The example below shows a minimal installation for GitHub Copilot. For other MCP clients like Claude Code, Claude Desktop, Codex, etc. follow their respective MCP server setup instructions.
+The VEOS MCP server runs locally over stdio. The example below shows an exemplary  installation for GitHub Copilot. For other MCP clients like Claude Code, Claude Desktop, Codex, etc. follow their respective MCP server setup instructions.
 
 For GitHub Copilot installation create or edit `.vscode/mcp.json` in VS Code with a local MCP server entry that points to the extracted executable.
 

@@ -30,7 +30,7 @@ jobs:
         run: uv run --with pyinstaller pyinstaller --noconfirm --clean --distpath dist --workpath build/pyinstaller packaging/pyinstaller.spec
 
       - name: Generate third-party license report
-        run: uv run --with pip-licenses pip-licenses --format=plain-vertical --with-license-file --output-file THIRD_PARTY_LICENSES.txt
+        run: uv run --with pip-licenses --with pyinstaller pip-licenses --format=plain-vertical --with-license-file --output-file THIRD_PARTY_LICENSES.txt
 
       - name: Package release archive
         run: |
