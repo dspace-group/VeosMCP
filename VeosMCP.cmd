@@ -1,1 +1,1 @@
-@uv --directory "%~dp0." run python -m veos_mcp.server
+@uv --directory "%~dp0." run python -m veos_mcp.server %*
