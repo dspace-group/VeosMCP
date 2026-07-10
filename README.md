@@ -82,18 +82,20 @@ If no `veos-version` and `veos-bin-path` are provided, the VEOS MCP server will 
 
 ## Tools
 
+> Full list of tools, titles and parameters. Tool descriptions might be abbreviated here, for full tool descriptions either use the [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) or check the source code directly [src/veos_mcp/tools](src/veos_mcp/tools).
+
 <details>
 <summary><b>Log File Access</b></summary>
 
 - **veos_list_all_available_log_files**
   - Title: List all available VEOS log files
-  - Short Description: Lists all available VEOS log files, including both bus log files (pcapng) and simulation log files.
+  - Description: Lists all available VEOS log files, including both bus log files (pcapng) and simulation log files.
   - Parameters: None
   - Read-only: **true**
 
 - **veos_get_log_file**
   - Title: Get VEOS log file resource link
-  - Short Description: Gets the resource link to a specified VEOS log file, which can be either a bus log file (pcapng) or a simulation log file. Call `veos_list_all_available_log_files` to get the list of available log files first.
+  - Description: Gets the resource link to a specified VEOS log file, which can be either a bus log file (pcapng) or a simulation log file. Call `veos_list_all_available_log_files` to get the list of available log files first.
   - Parameters:
     - `log_file_name` (string): Name of the VEOS log file to return as a resource link. Files ending with `.pcapng` are returned as bus log resources; all others are returned as simulation log resources.
   - Read-only: **true**
@@ -105,32 +107,32 @@ If no `veos-version` and `veos-bin-path` are provided, the VEOS MCP server will 
 
 - **veos_status_info**
   - Title: Get VEOS Simulator Status Info
-  - Short Description: Gets the current status information of the VEOS simulator, including the simulator state. State can be one of: Unloaded, Stopped, Running, Paused, Stopped, Terminated.
+  - Description: Gets the current status information of the VEOS simulator, including the simulator state. State can be one of: Unloaded, Stopped, Running, Paused, Stopped, Terminated.
   - Parameters: None
   - Read-only: **true**
 
 - **veos_load**
   - Title: Load .osa simulation model into VEOS
-  - Short Description: Loads a simulation model specified by an osa file into the VEOS simulator. If successful, this transitions the simulator to the Stopped state.
+  - Description: Loads a simulation model specified by an osa file into the VEOS simulator. If successful, this transitions the simulator to the Stopped state.
   - Parameters:
     - `osa_path` (string): Path to the osa simulation model file to load into VEOS.
   - Read-only: **false**
 
 - **veos_start**
   - Title: Start VEOS simulation
-  - Short Description: Starts the VEOS simulation. This transitions the simulator from Stopped or Paused state to Running state.
+  - Description: Starts the VEOS simulation. This transitions the simulator from Stopped or Paused state to Running state.
   - Parameters: None
   - Read-only: **false**
 
 - **veos_stop**
   - Title: Stop VEOS simulation
-  - Short Description: Stops the VEOS simulation. This transitions the simulator from Running or Paused state to Stopped state.
+  - Description: Stops the VEOS simulation. This transitions the simulator from Running or Paused state to Stopped state.
   - Parameters: None
   - Read-only: **false**
 
 - **veos_apply_config**
   - Title: Configure the VEOS simulator
-  - Short Description: Sets up and configures the VEOS simulation without starting it. Any parameter omitted from the tool call is left unchanged in the VEOS configuration.
+  - Description: Sets up and configures the VEOS simulation without starting it. Any parameter omitted from the tool call is left unchanged in the VEOS configuration.
   - Parameters:
     - `stop_time` (string, optional): Desired stop time for the simulation in seconds of SimulationTime. If omitted, the existing stop time configuration is left unchanged.
     - `acceleration_factor` (string, optional): Simulation acceleration factor. `Infinity` or `0` means as fast as possible; `1` means real-time speed. If omitted, the existing acceleration factor is left unchanged.
@@ -146,7 +148,7 @@ If no `veos-version` and `veos-bin-path` are provided, the VEOS MCP server will 
 
 - **veos_get_all_signals_and_ports**
   - Title: Get a list of signals/ports from the VEOS osa simulation system
-  - Short Description: Gets the list of available signals/ports from the given osa file and existing connections between them. Signals and ports are often used interchangeably in the context of the VEOS simulation system.
+  - Description: Gets the list of available signals/ports from the given osa file and existing connections between them. Signals and ports are often used interchangeably in the context of the VEOS simulation system.
   - Parameters:
     - `osa_path` (string): Path to the osa simulation model file from which signals, ports, and existing connections are read.
   - Read-only: **true**
@@ -158,7 +160,7 @@ If no `veos-version` and `veos-bin-path` are provided, the VEOS MCP server will 
 
 - **veos_add_signal_connections**
   - Title: Connect signals given a JSON file
-  - Short Description: Adds signal connections that are specified in a list within the JSON file to the given VEOS osa file. The signal references are the signal paths.
+  - Description: Adds signal connections that are specified in a list within the JSON file to the given VEOS osa file. The signal references are the signal paths.
   - Parameters:
     - `osa_path` (string): Path to the osa simulation model file to modify.
     - `json_path` (string): Path to the JSON file that contains the signal connections to add.
@@ -166,7 +168,7 @@ If no `veos-version` and `veos-bin-path` are provided, the VEOS MCP server will 
 
 - **veos_remove_signal_connections**
   - Title: Disconnect signals given in a JSON file
-  - Short Description: Removes signal connections that are specified in a list within the JSON file from the given VEOS osa file. The signal references are the signal paths.
+  - Description: Removes signal connections that are specified in a list within the JSON file from the given VEOS osa file. The signal references are the signal paths.
   - Parameters:
     - `osa_path` (string): Path to the osa simulation model file to modify.
     - `json_path` (string): Path to the JSON file that contains the signal connections to remove.
@@ -181,14 +183,14 @@ If no `veos-version` and `veos-bin-path` are provided, the VEOS MCP server will 
 
 - **veos://logs/sim/{log_file_name}**
   - Title: VEOS Log File
-  - Short Description: Resource for accessing the contents of a VEOS Simulation.log file. If the specified log file does not exist, an error is returned.
+  - Description: Resource for accessing the contents of a VEOS Simulation.log file. If the specified log file does not exist, an error is returned.
   - Parameters:
     - `log_file_name` (string): Name of the VEOS simulation log file to read.
   - MIME type: `text/plain`
 
 - **veos://logs/bus/{log_file_name}**
   - Title: VEOS Bus Log File
-  - Short Description: Resource for accessing the contents of a VEOS Bus log file. If the specified log file does not exist, an error is returned.
+  - Description: Resource for accessing the contents of a VEOS Bus log file. If the specified log file does not exist, an error is returned.
   - Parameters:
     - `log_file_name` (string): Name of the VEOS bus log file to read.
   - MIME type: `application/vnd.tcpdump.pcap`
