@@ -1,12 +1,14 @@
 # dSPACE VEOS MCP server
 
-MCP server implementation for controlling the [dSPACE VEOS](https://www.dspace.com/en/pub/home/products/sw/simulation_software/veos.cfm) simulator. This server enables LLMs to interact with the VEOS simulator and its log files.
+The dSPACE VEOS MCP server lets you control the [dSPACE VEOS](https://www.dspace.com/en/pub/home/products/sw/simulation_software/veos.cfm) simulator using natural language. This is achieved by enabling LLMs to interact with the VEOS simulator and its log files. 
 
 ## Prerequisites
 
-- Installed [dSPACE VEOS](https://www.dspace.com/en/pub/home/products/sw/simulation_software/veos.cfm) on the machine where the MCP server runs.
+The following software must be installed on the same machine as the MCP server:
 
-For a developer-focused setup:
+- [dSPACE VEOS](https://www.dspace.com/en/pub/home/products/sw/simulation_software/veos.cfm)
+
+Optionally, for a developer-focused setup:
 - Python 3.12 or newer.
 - `uv`, the Python package and project manager used to create the environment, install dependencies, and run the server from this checkout. Install `uv` from the official Astral documentation: https://docs.astral.sh/uv/getting-started/installation/
 
@@ -44,7 +46,7 @@ Alternatively, for a developer-focused `uv`-based setup:
    uv sync --extra dev   # full developer setup
    ```
 
-3. Follow the MCP server installation instructions for your respective MCP client. Use `uv run` to start the server, see [VeosMCP.cmd](VeosMCP.cmd). You can directly call this script from your MCP client installation, exemplary `.vscode/mcp.json` entry:
+3. Follow the MCP server installation instructions for your respective MCP client (see documentation for [Claude](https://code.claude.com/docs/en/mcp-quickstart), [Codex](https://developers.openai.com/codex/mcp), [GitHub Copilot](https://docs.github.com/en/copilot/how-tos/provide-context/use-mcp-in-your-ide/extend-copilot-chat-with-mcp), ... ). Use `uv run` to start the server (see [VeosMCP.cmd](VeosMCP.cmd) for reference). You can call this script directly from your MCP client installation, exemplary `.vscode/mcp.json` entry:
 
    ```json
    {
@@ -73,16 +75,16 @@ Alternatively, for a developer-focused `uv`-based setup:
 
 The VEOS MCP server supports the following arguments. They can be provided in the JSON configuration above as part of the `args` list:
 
-| Option | Description |
+| Argument | Description |
 |--------|-------------|
-| --veos-version <VEOS_VERSION> | supported version formats include `26.1`, `26-A`, `26.2`, `26-B`, `2026-A`, and `2026-B`. |
-| --veos-bin-path <PATH> | target a specific VEOS installation with the path to its bin directory. |
+| `--veos-version <VEOS_VERSION>` | Lets you target a specific VEOS installation by version. The following version formats are supported: `26.1`, `26-A`, `26.2`, `26-B`, `2026-A`, and `2026-B`. |
+| `--veos-bin-path <PATH>` | Lets you target a specific VEOS installation by providing its `/bin` folder.  |
 
-If no `veos-version` and `veos-bin-path` are provided, the VEOS MCP server will use the newest installed VEOS installation on the machine.
+If these arguments are not provided, the VEOS MCP server uses the newest installed VEOS version.
 
 ## Tools
 
-> Full list of tools, titles and parameters. Tool descriptions might be abbreviated here, for full tool descriptions either use the [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) or check the source code directly [src/veos_mcp/tools](src/veos_mcp/tools).
+> Full list of tools, titles and parameters. Tool descriptions might be abbreviated here, for full tool descriptions either use the [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) or check the source code directly in [src/veos_mcp/tools](src/veos_mcp/tools).
 
 <details>
 <summary><b>Log File Access</b></summary>
@@ -199,24 +201,37 @@ If no `veos-version` and `veos-bin-path` are provided, the VEOS MCP server will 
 
 ## Example Prompts
 
-- Load `my.osa` and run the simulation for 5 seconds.
-- What signals are unconnected in `my.osa`? Do a best effort matching and connect them.
-- Disconnect all the signals from the fmu EngineModel in `my.osa`.
-- Enable the bus log and start the simulation, then check the bus logs for any TCP transmissions.
+The following example prompts show how you can interact with the VEOS MCP server to perform typical VEOS tasks:
+
+- `Load `my.osa` and run the simulation for 5 seconds.`
+- `What signals are unconnected in `my.osa`? Do a best effort matching and create connections accordingly.`
+- `Disconnect all the signals from the EngineModel FMU in `my.osa`.`
+- `Enable bus logging and start the simulation, then check the bus logs for any TCP transmissions.`
+
 
 ## Adding MCP Tools
 
-MCP tools live in `src/veos_mcp/tools/` and are registered with the shared FastMCP instance from `veos_mcp.runtime`.
+MCP tools are saved in `src/veos_mcp/tools/` and registered with a shared FastMCP instance that is imported from the `veos_mcp.runtime` module.
+
+To add an MCP tool, perform the following steps:
 
 1. Add the tool implementation to an existing module in `src/veos_mcp/tools/` or create a new module there.
-2. Decorate the function with `@mcp.tool(...)`. You should add a clear title and description, and set `ToolAnnotations` to describe whether the tool is read-only, destructive, idempotent, or open-world.
-3. Use `get_cli().run_sim(...)` or `get_cli().run_model(...)` for VEOS CLI operations.
-4. If you created a new tool module, re-export it in `src/veos_mcp/tools/__init__.py` with `from veos_mcp.tools import new_module as new_module` and add it to `__all__`; otherwise the decorator will not run when the server starts.
-5. Add or update tests under `tests/tools/` for the direct Python function behavior.
-6. Add the new tool name to `expected_tools` in `tests/test_mcp_surface_smoketest.py` so the MCP stdio surface test verifies that it is registered.
-7. Run `pytest` and `ruff` for validation, formatting and linting.
+2. Register the tool with the shared `FastMCP` instance by using `@mcp.tool(...)`. Provide a clear tool name, title, and description, and use `ToolAnnotations` to describe whether the tool is read-only, destructive, idempotent, or open-world.
+3. Use `get_cli().run_sim(...)` or `get_cli().run_model(...)` to define VEOS CLI operations.
+4. If you create a new tool module, import it from `src/veos_mcp/tools/__init__.py`:
 
-Minimal tool shape:
+    ```python
+    from veos_mcp.tools import new_module as new_module
+    ```
+
+    Also add the new module to `__all__`, otherwise the module is not
+    imported when the server starts.
+
+5. Add or update tests under `tests/tools/` to verify the direct Python function behavior.
+6. Add the new tool name to `expected_tools` in `tests/test_mcp_surface_smoketest.py`. This ensures that the MCP stdio surface test verifies that the tool is registered.
+7. Run `pytest` and `ruff` to validate the implementation, format the code, and check for linting issues.
+
+Here is a minimal tool example:
 
 ```python
 from veos_mcp.runtime import mcp
