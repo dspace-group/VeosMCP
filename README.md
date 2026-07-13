@@ -9,22 +9,22 @@ The following software must be installed on the same machine as the MCP server:
 - [dSPACE VEOS](https://www.dspace.com/en/pub/home/products/sw/simulation_software/veos.cfm)
 
 Optionally, for a developer-focused setup:
-- Python 3.12 or newer.
+- Python 3.12 or later.
 - `uv`, the Python package and project manager used to create the environment, install dependencies, and run the server from this source checkout. Install `uv` from the official Astral documentation: https://docs.astral.sh/uv/getting-started/installation/
 
 ## Getting Started
 
 There are two ways to install the VEOS MCP server:
 
- - Directly from the latest GitHub Release. Refer to [To install the latest GitHub Release](#to-install-the-latest-github-release).
+ - Directly from the latest GitHub release. Refer to [To install the latest GitHub release](#to-install-the-latest-github-release).
  - Using `uv` for a developer-focused setup that runs the server directly from this source checkout. Refer to [Developer-focused setup](#developer-focused-setup). 
 
  You can easily verify the installation with a quick prompt, for example: "`Give me the state of the VEOS simulator`".
 
 ### To install the latest GitHub release
 
-1. Download `veos-mcp-windows.zip` from the latest GitHub Release. The archive contains the server executable `veos-mcp.exe`.
-2. Follow the MCP server installation instructions for your MCP client (see documentation for [Claude](https://code.claude.com/docs/en/mcp-quickstart), [Codex](https://developers.openai.com/codex/mcp), [GitHub Copilot](https://docs.github.com/en/copilot/how-tos/provide-context/use-mcp-in-your-ide/extend-copilot-chat-with-mcp), ... ).
+1. Download `veos-mcp-windows.zip` from the latest GitHub release. The archive contains the server executable `veos-mcp.exe`.
+2. Follow the MCP server installation instructions for your MCP client (see the documentation for [Claude](https://code.claude.com/docs/en/mcp-quickstart), [Codex](https://developers.openai.com/codex/mcp), [GitHub Copilot](https://docs.github.com/en/copilot/how-tos/provide-context/use-mcp-in-your-ide/extend-copilot-chat-with-mcp), ... ).
 
    Here is an example installation for GitHub Copilot as a `.vscode/mcp.json` entry that points to the extracted executable:
 
@@ -55,7 +55,7 @@ There are two ways to install the VEOS MCP server:
    uv sync --extra dev   # for full developer setup
    ```
 
-3. Follow the MCP server installation instructions for your respective MCP client (see documentation for [Claude](https://code.claude.com/docs/en/mcp-quickstart), [Codex](https://developers.openai.com/codex/mcp), [GitHub Copilot](https://docs.github.com/en/copilot/how-tos/provide-context/use-mcp-in-your-ide/extend-copilot-chat-with-mcp), ... ).
+3. Follow the MCP server installation instructions for your MCP client (see the documentation for [Claude](https://code.claude.com/docs/en/mcp-quickstart), [Codex](https://developers.openai.com/codex/mcp), [GitHub Copilot](https://docs.github.com/en/copilot/how-tos/provide-context/use-mcp-in-your-ide/extend-copilot-chat-with-mcp), ... ).
 
     Use `uv run` to start the server directly from this repository checkout (see [VeosMCP.cmd](VeosMCP.cmd) for reference).
     
