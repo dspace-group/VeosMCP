@@ -7,8 +7,8 @@ on:
       - main
 
 jobs:
-  tests:
-    name: Tests
+  lint:
+    name: Lint
     runs-on: windows-latest
 
     steps:
@@ -31,6 +31,25 @@ jobs:
 
       - name: Run formatter check
         run: uv run ruff format --check .
+
+  tests:
+    name: Tests
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: uv sync --python 3.12 --extra dev
 
       - name: Run tests
         run: uv run pytest
