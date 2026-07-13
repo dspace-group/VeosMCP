@@ -41,7 +41,7 @@ jobs:
           Compress-Archive -Path release-package\* -DestinationPath dist\veos-mcp-windows.zip -Force
 
       - name: Upload release artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: veos-mcp-windows
           path: dist/veos-mcp-windows.zip
