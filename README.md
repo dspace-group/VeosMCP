@@ -10,16 +10,23 @@ The following software must be installed on the same machine as the MCP server:
 
 Optionally, for a developer-focused setup:
 - Python 3.12 or newer.
-- `uv`, the Python package and project manager used to create the environment, install dependencies, and run the server from this checkout. Install `uv` from the official Astral documentation: https://docs.astral.sh/uv/getting-started/installation/
+- `uv`, the Python package and project manager used to create the environment, install dependencies, and run the server from this source checkout. Install `uv` from the official Astral documentation: https://docs.astral.sh/uv/getting-started/installation/
 
 ## Getting Started
 
-You can install the VEOS MCP server either directly from the latest GitHub Release or run it from this repository with a `uv`-based setup. You can easily verify the installation with a quick prompt, for example: "Give me the state of the VEOS simulator".
+There are two ways to install the VEOS MCP server:
 
-To install the latest release:
+ - Directly from the latest GitHub Release. Refer to [To install the latest GitHub Release](#to-install-the-latest-github-release).
+ - Using `uv` for a developer-focused setup that runs the server directly from this source checkout. Refer to [Developer-focused setup](#developer-focused-setup). 
+
+ You can easily verify the installation with a quick prompt, for example: "`Give me the state of the VEOS simulator`".
+
+### To install the latest GitHub release
 
 1. Download `veos-mcp-windows.zip` from the latest GitHub Release. The archive contains the server executable `veos-mcp.exe`.
-2. Follow the MCP server installation instructions for your MCP client (see documentation for [Claude](https://code.claude.com/docs/en/mcp-quickstart), [Codex](https://developers.openai.com/codex/mcp), [GitHub Copilot](https://docs.github.com/en/copilot/how-tos/provide-context/use-mcp-in-your-ide/extend-copilot-chat-with-mcp), ... ). Here is an exemplary installation for GitHub Copilot as a `.vscode/mcp.json` entry that points to the extracted executable:
+2. Follow the MCP server installation instructions for your MCP client (see documentation for [Claude](https://code.claude.com/docs/en/mcp-quickstart), [Codex](https://developers.openai.com/codex/mcp), [GitHub Copilot](https://docs.github.com/en/copilot/how-tos/provide-context/use-mcp-in-your-ide/extend-copilot-chat-with-mcp), ... ).
+
+   Here is an example installation for GitHub Copilot as a `.vscode/mcp.json` entry that points to the extracted executable:
 
    ```json
    {
@@ -36,17 +43,23 @@ To install the latest release:
    }
    ```
 
-Alternatively, for a developer-focused `uv`-based setup:
+### Developer-focused setup
 
 1. Clone this repository.
-2. Create the project environment and install dependencies from `pyproject.toml`:
+2. Create the project environment and install dependencies from `pyproject.toml`.
 
    ```shell
-   uv sync   # minimal
-   uv sync --extra dev   # full developer setup
+   uv sync   # for minimal setup
+   ````
+   ```shell
+   uv sync --extra dev   # for full developer setup
    ```
 
-3. Follow the MCP server installation instructions for your respective MCP client (see documentation for [Claude](https://code.claude.com/docs/en/mcp-quickstart), [Codex](https://developers.openai.com/codex/mcp), [GitHub Copilot](https://docs.github.com/en/copilot/how-tos/provide-context/use-mcp-in-your-ide/extend-copilot-chat-with-mcp), ... ). Use `uv run` to start the server (see [VeosMCP.cmd](VeosMCP.cmd) for reference). You can call this script directly from your MCP client installation, exemplary `.vscode/mcp.json` entry:
+3. Follow the MCP server installation instructions for your respective MCP client (see documentation for [Claude](https://code.claude.com/docs/en/mcp-quickstart), [Codex](https://developers.openai.com/codex/mcp), [GitHub Copilot](https://docs.github.com/en/copilot/how-tos/provide-context/use-mcp-in-your-ide/extend-copilot-chat-with-mcp), ... ).
+
+    Use `uv run` to start the server directly from this repository checkout (see [VeosMCP.cmd](VeosMCP.cmd) for reference).
+    
+    You can also call the `VeosMCP.cmd` script directly from your MCP client installation, as shown in the following example `.vscode/mcp.json` entry:
 
    ```json
    {
@@ -84,7 +97,7 @@ If these arguments are not provided, the VEOS MCP server uses the newest install
 
 ## Tools
 
-> Full list of tools, titles and parameters. Tool descriptions might be abbreviated here, for full tool descriptions either use the [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) or check the source code directly in [src/veos_mcp/tools](src/veos_mcp/tools).
+> Full list of tools, titles, and parameters. Tool descriptions might be abbreviated here, for full tool descriptions either use the [MCP Inspector](https://modelcontextprotocol.io/docs/tools/inspector) or check the source code directly under [src/veos_mcp/tools](src/veos_mcp/tools).
 
 <details>
 <summary><b>Log File Access</b></summary>
@@ -185,14 +198,14 @@ If these arguments are not provided, the VEOS MCP server uses the newest install
 
 - **veos://logs/sim/{log_file_name}**
   - Title: VEOS Log File
-  - Description: Resource for accessing the contents of a VEOS Simulation.log file. If the specified log file does not exist, an error is returned.
+  - Description: Resource for accessing the contents of a VEOS simulation log file. If the specified log file does not exist, an error is returned.
   - Parameters:
     - `log_file_name` (string): Name of the VEOS simulation log file to read.
   - MIME type: `text/plain`
 
 - **veos://logs/bus/{log_file_name}**
   - Title: VEOS Bus Log File
-  - Description: Resource for accessing the contents of a VEOS Bus log file. If the specified log file does not exist, an error is returned.
+  - Description: Resource for accessing the contents of a VEOS bus log file. If the specified log file does not exist, an error is returned.
   - Parameters:
     - `log_file_name` (string): Name of the VEOS bus log file to read.
   - MIME type: `application/vnd.tcpdump.pcap`
