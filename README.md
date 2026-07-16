@@ -40,9 +40,9 @@ This setup works on both Windows and Linux, as long as `uv` is installed and dSP
 
 3. Follow the MCP server installation instructions for your MCP client (see the documentation for [Claude](https://code.claude.com/docs/en/mcp-quickstart), [Codex](https://developers.openai.com/codex/mcp), [GitHub Copilot](https://docs.github.com/en/copilot/how-tos/provide-context/use-mcp-in-your-ide/extend-copilot-chat-with-mcp), ... ).
 
-    Use `uv run` to start the server directly from this repository checkout (see [VeosMCP.cmd](VeosMCP.cmd) for Windows or [VeosMCP.sh](VeosMCP.sh) for Linux).
+    Use `uv run` to start the server directly from this repository checkout. For reference see [VeosMCP.cmd](VeosMCP.cmd) for Windows or [VeosMCP.sh](VeosMCP.sh) for Linux.
 
-    You can also call the `VeosMCP.cmd` (Windows) or `VeosMCP.sh` (Linux) script directly from your MCP client installation, as shown in the following example `.vscode/mcp.json` entry (use `VeosMCP.sh` instead of `VeosMCP.cmd` on Linux):
+    You can also call these scripts directly from your MCP client installation, as shown in the following example `.vscode/mcp.json` entry (use `VeosMCP.sh` instead of `VeosMCP.cmd` on Linux):
 
    ```json
    {
