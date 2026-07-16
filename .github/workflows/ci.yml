@@ -8,8 +8,14 @@ on:
 
 jobs:
   lint:
-    name: Lint
-    runs-on: windows-latest
+    name: Lint (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-latest
+          - ubuntu-latest
 
     steps:
       - name: Check out repository
@@ -33,8 +39,14 @@ jobs:
         run: uv run ruff format --check .
 
   tests:
-    name: Tests
-    runs-on: windows-latest
+    name: Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-latest
+          - ubuntu-latest
 
     steps:
       - name: Check out repository

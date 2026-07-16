@@ -34,7 +34,6 @@ def run_process_command(
         )
 
     with process:
-        _close_stdin(process)
         return _collect_process_result(
             process,
             command_name,
@@ -48,15 +47,10 @@ def _start_process(
 ) -> subprocess.Popen[bytes]:
     return subprocess.Popen(
         [str(resolved_executable), *arguments],
-        stdin=subprocess.PIPE,
+        stdin=subprocess.DEVNULL,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
-
-
-def _close_stdin(process: subprocess.Popen[bytes]) -> None:
-    if process.stdin is not None:
-        process.stdin.close()
 
 
 def _collect_process_result(
