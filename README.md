@@ -112,8 +112,6 @@ The following example prompts show how you can interact with the VEOS MCP server
 - `Load `my.osa` and run the simulation for 5 seconds.`
 - `Enable bus logging and start the simulation, then check the bus logs for any TCP transmissions.`
 
-![VEOS MCP demo](docs/demo800.gif)
-
 ![VEOS MCP demo](docs/demo.gif)
 
 *Demo: Let the agent connect signals, run the simulation and validate its result.*
