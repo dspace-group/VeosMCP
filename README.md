@@ -12,38 +12,17 @@ Optionally, for a developer-focused setup:
 - Python 3.12 or later.
 - `uv`, the Python package and project manager used to create the environment, install dependencies, and run the server from this source checkout. Install `uv` from the official Astral documentation: https://docs.astral.sh/uv/getting-started/installation/
 
-> The pre-built GitHub release is Windows-only. The `uv`-based developer-focused setup works on Linux and Windows.
+> The `uv`-based developer-focused setup works on Linux and Windows. The pre-built GitHub release is Windows-only.
 
 ## Getting Started
 
 There are two ways to install the VEOS MCP server:
 
- - Directly from the latest GitHub release (Windows only). Refer to [To install the latest GitHub release](#to-install-the-latest-github-release).
  - Using `uv` for a developer-focused setup that runs the server directly from this source checkout (Windows or Linux). Refer to [Developer-focused setup](#developer-focused-setup). 
+ - Directly from the latest GitHub release (Windows only). Refer to [To install the latest GitHub release](#to-install-the-latest-github-release).
 
  You can easily verify the installation with a quick prompt, for example: "`Give me the state of the VEOS simulator`".
 
-### To install the latest GitHub release
-
-1. Download `veos-mcp-windows.zip` from the latest GitHub release. The archive contains the server executable `veos-mcp.exe`.
-2. Follow the MCP server installation instructions for your MCP client (see the documentation for [Claude](https://code.claude.com/docs/en/mcp-quickstart), [Codex](https://developers.openai.com/codex/mcp), [GitHub Copilot](https://docs.github.com/en/copilot/how-tos/provide-context/use-mcp-in-your-ide/extend-copilot-chat-with-mcp), ... ).
-
-   Here is an example installation for GitHub Copilot as a `.vscode/mcp.json` entry that points to the extracted executable:
-
-   ```json
-   {
-     "servers": {
-       "VeosMCP": {
-         "type": "stdio",
-         "command": "<PATH_TO_EXTRACTED_RELEASE>\\veos-mcp.exe",
-         "args": [
-           "--veos-version",
-           "<VEOS_VERSION>"
-         ]
-       }
-     }
-   }
-   ```
 
 ### Developer-focused setup
 
@@ -61,9 +40,9 @@ This setup works on both Windows and Linux, as long as `uv` is installed and dSP
 
 3. Follow the MCP server installation instructions for your MCP client (see the documentation for [Claude](https://code.claude.com/docs/en/mcp-quickstart), [Codex](https://developers.openai.com/codex/mcp), [GitHub Copilot](https://docs.github.com/en/copilot/how-tos/provide-context/use-mcp-in-your-ide/extend-copilot-chat-with-mcp), ... ).
 
-    Use `uv run` to start the server directly from this repository checkout (see [VeosMCP.cmd](VeosMCP.cmd) for Windows or [VeosMCP.sh](VeosMCP.sh) for Linux).
+    Use `uv run` to start the server directly from this repository checkout. For reference see [VeosMCP.cmd](VeosMCP.cmd) for Windows or [VeosMCP.sh](VeosMCP.sh) for Linux.
 
-    You can also call the `VeosMCP.cmd` (Windows) or `VeosMCP.sh` (Linux) script directly from your MCP client installation, as shown in the following example `.vscode/mcp.json` entry (use `VeosMCP.sh` instead of `VeosMCP.cmd` on Linux):
+    You can also call these scripts directly from your MCP client installation, as shown in the following example `.vscode/mcp.json` entry (use `VeosMCP.sh` instead of `VeosMCP.cmd` on Linux):
 
    ```json
    {
@@ -88,6 +67,28 @@ This setup works on both Windows and Linux, as long as `uv` is installed and dSP
       uv build	# build a wheel
       ```
 
+### To install the latest GitHub release
+
+1. Download `veos-mcp-windows.zip` from the latest GitHub release. The archive contains the server executable `veos-mcp.exe`.
+2. Follow the MCP server installation instructions for your MCP client (see the documentation for [Claude](https://code.claude.com/docs/en/mcp-quickstart), [Codex](https://developers.openai.com/codex/mcp), [GitHub Copilot](https://docs.github.com/en/copilot/how-tos/provide-context/use-mcp-in-your-ide/extend-copilot-chat-with-mcp), ... ).
+
+   Here is an example installation for GitHub Copilot as a `.vscode/mcp.json` entry that points to the extracted executable:
+
+   ```json
+   {
+     "servers": {
+       "VeosMCP": {
+         "type": "stdio",
+         "command": "<PATH_TO_EXTRACTED_RELEASE>\\veos-mcp.exe",
+         "args": [
+           "--veos-version",
+           "<VEOS_VERSION>"
+         ]
+       }
+     }
+   }
+   ```
+
 ## Configuration
 
 The VEOS MCP server supports the following arguments. They can be provided in the JSON configuration above as part of the `args` list:
@@ -98,6 +99,22 @@ The VEOS MCP server supports the following arguments. They can be provided in th
 | `--veos-bin-path <PATH>` | Lets you target a specific VEOS installation by providing its `/bin` folder.  |
 
 If these arguments are not provided, the VEOS MCP server uses the newest installed VEOS version.
+
+## Key Features
+
+The VEOS MCP server offers various tools and resources to let agents perform typical VEOS tasks. 
+The tools cover a full workflow of configuring the signals of the simulation system, running the VEOS simulation, and validating the simulation result.
+
+The following example prompts show how you can interact with the VEOS MCP server:
+
+- `What signals are unconnected in `my.osa`? Do a best effort matching and create connections accordingly.`
+- `Disconnect all the signals from the EngineModel FMU in `my.osa`.`
+- `Load `my.osa` and run the simulation for 5 seconds.`
+- `Enable bus logging and start the simulation, then check the bus logs for any TCP transmissions.`
+
+![VEOS MCP demo](docs/demo.gif)
+
+*Demo: Let the agent connect signals, run the simulation and validate its result.*
 
 ## Tools
 
@@ -215,16 +232,6 @@ If these arguments are not provided, the VEOS MCP server uses the newest install
   - MIME type: `application/vnd.tcpdump.pcap`
 
 </details>
-
-## Example Prompts
-
-The following example prompts show how you can interact with the VEOS MCP server to perform typical VEOS tasks:
-
-- `Load `my.osa` and run the simulation for 5 seconds.`
-- `What signals are unconnected in `my.osa`? Do a best effort matching and create connections accordingly.`
-- `Disconnect all the signals from the EngineModel FMU in `my.osa`.`
-- `Enable bus logging and start the simulation, then check the bus logs for any TCP transmissions.`
-
 
 ## Adding MCP Tools
 
