@@ -30,9 +30,7 @@ def create_command_result(*, success: bool = True) -> CliCommandResult:
         ("model.smc", "smc"),
     ],
 )
-def test_import_file_infers_and_builds_container_type(
-    monkeypatch, import_file_path: str, expected_build_type: str
-) -> None:
+def test_import_file_infers_and_builds_container_type(monkeypatch, import_file_path: str, expected_build_type: str) -> None:
     cli = RecordingBuildCliMock(create_command_result())
     monkeypatch.setattr(runtime, "_veos_cli", cli)
 
@@ -70,8 +68,7 @@ def test_import_file_requires_explicit_type_for_vecu(monkeypatch) -> None:
     assert result.isError is True
     assert_error_text_content(
         result,
-        "Could not determine the VEOS import type for model.vecu. "
-        "Specify file_type; VECU files require classic-vecu or adaptive-vecu.",
+        "Could not determine the VEOS import type for model.vecu. Specify file_type; VECU files require classic-vecu or adaptive-vecu.",
     )
 
 

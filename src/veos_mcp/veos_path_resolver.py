@@ -5,9 +5,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 
-_WINDOWS_INSTALLATION_REFERENCE = (
-    "dSPACE.InstallationManager.API, Version=2.0.0.0, Culture=neutral, PublicKeyToken=f9604847d8afbfbb"
-)
+_WINDOWS_INSTALLATION_REFERENCE = "dSPACE.InstallationManager.API, Version=2.0.0.0, Culture=neutral, PublicKeyToken=f9604847d8afbfbb"
 _REQUESTED_VERSION_PATTERN = re.compile(r"^\s*(?P<year>\d{2}|\d{4})[.\-_ ]?(?P<release>[12abAB])\s*$")
 _DISPLAY_NAME_PATTERN = re.compile(
     r"^dSPACE\s+VEOS\s+(?P<year>\d{4})-(?P<release>[AB])$",
@@ -119,15 +117,13 @@ def _select_installation(
     matches = [
         installation
         for installation in available_installations
-        if installation.year == requested_year
-        and (requested_release is None or installation.release == requested_release)
+        if installation.year == requested_year and (requested_release is None or installation.release == requested_release)
     ]
     if matches:
         return matches[-1]
 
     available_versions = ", ".join(
-        _format_installation_version(installation.year, installation.release)
-        for installation in available_installations
+        _format_installation_version(installation.year, installation.release) for installation in available_installations
     )
     raise RuntimeError(
         "Could not find the installation of dSPACE VEOS "
