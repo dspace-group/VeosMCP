@@ -4,7 +4,11 @@ from typing import cast
 
 from mcp.types import CallToolResult
 
-from tests.tool_test_helpers import RecordingModelCliMock, assert_command_result_structured_content, assert_error_text_content
+from tests.tool_test_helpers import (
+    RecordingModelCliMock,
+    assert_command_result_structured_content,
+    assert_error_text_content,
+)
 from veos_mcp import runtime
 from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
 from veos_mcp.tools.osa_creation import veos_create_osa

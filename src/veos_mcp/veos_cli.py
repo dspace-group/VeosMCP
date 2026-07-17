@@ -78,7 +78,9 @@ def _timeout_result(
         code=CommandResultCode.PROCESS_TIMED_OUT,
         stdout="",
         stdout_bytes=b"",
-        stderr=(f"The VEOS command {command_name} timed out after {command_timeout_seconds:0.0f} seconds.{cleanup_error}"),
+        stderr=(
+            f"The VEOS command {command_name} timed out after {command_timeout_seconds:0.0f} seconds.{cleanup_error}"
+        ),
     )
 
 

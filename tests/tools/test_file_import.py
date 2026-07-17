@@ -30,7 +30,9 @@ def create_command_result(*, success: bool = True) -> CliCommandResult:
         ("model.smc", "smc"),
     ],
 )
-def test_import_file_infers_and_builds_container_type(monkeypatch, import_file_path: str, expected_build_type: str) -> None:
+def test_import_file_infers_and_builds_container_type(
+    monkeypatch, import_file_path: str, expected_build_type: str
+) -> None:
     cli = RecordingBuildCliMock(create_command_result())
     monkeypatch.setattr(runtime, "_veos_cli", cli)
 
@@ -58,9 +60,7 @@ def test_import_file_uses_model_console_for_osa_and_json(monkeypatch, import_fil
 
     result = cast(CallToolResult, veos_import_file("target.osa", import_file_path))
 
-    assert cli.model_calls == [
-        ("import", "target.osa", "--path", import_file_path, "--save-only-on-success")
-    ]
+    assert cli.model_calls == [("import", "target.osa", "--path", import_file_path, "--save-only-on-success")]
     assert result.isError is False
 
 
