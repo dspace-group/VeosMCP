@@ -32,10 +32,6 @@ class _VeosInstallation:
         executable_name = "veos.exe" if sys.platform.startswith("win32") else "veos"
         return self.bin_path / executable_name
 
-    @property
-    def automation_programmatic_identifier(self) -> str:
-        return f"VeosPlayer.Application.{self.year}-{self.release}"
-
 
 def _normalize_release(release: str | None) -> str | None:
     if release is None:

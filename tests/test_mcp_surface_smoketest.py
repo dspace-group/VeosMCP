@@ -3,6 +3,7 @@
 import asyncio
 import os
 import sys
+from typing import Any
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
@@ -22,6 +23,7 @@ def test_list_all_tools() -> None:
     expected_tools = [
         "veos_add_signal_connections",
         "veos_apply_config",
+        "veos_create_osa",
         "veos_get_all_signals_and_ports",
         "veos_get_log_file",
         "veos_import_file",
@@ -45,6 +47,33 @@ def test_list_all_tools() -> None:
     actual_tools = asyncio.run(list_tool_names())
 
     assert actual_tools == expected_tools
+
+
+def test_import_tool_exposes_all_cli_file_types() -> None:
+    """Test that clients can select every supported CLI import route."""
+
+    async def get_file_type_schema() -> dict[str, Any]:
+        server_params = create_server_params()
+
+        async with stdio_client(server_params) as (read, write):
+            async with ClientSession(read, write) as session:
+                await session.initialize()
+                tools = await session.list_tools()
+                import_tool = next(tool for tool in tools.tools if tool.name == "veos_import_file")
+                return import_tool.inputSchema["properties"]["file_type"]
+
+    file_type_schema = asyncio.run(get_file_type_schema())
+
+    assert file_type_schema["anyOf"][0]["enum"] == [
+        "osa",
+        "json",
+        "fmu",
+        "sic",
+        "bsc",
+        "smc",
+        "classic-vecu",
+        "adaptive-vecu",
+    ]
 
 
 def test_list_all_resource_templates() -> None:

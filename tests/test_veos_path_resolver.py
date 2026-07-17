@@ -39,12 +39,6 @@ def test_select_installation_uses_newest_version_when_unspecified() -> None:
     assert selected.release == "A"
 
 
-def test_installation_exposes_version_specific_automation_identifier() -> None:
-    installation = _installation(2026, "B", "C:/VEOS/2026B/bin")
-
-    assert installation.automation_programmatic_identifier == "VeosPlayer.Application.2026-B"
-
-
 def test_select_installation_reports_available_versions() -> None:
     installations = [_installation(2026, "A", "C:/VEOS/2026A/bin")]
 

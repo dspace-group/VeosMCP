@@ -8,6 +8,7 @@ from threading import Lock
 from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
 
 DEFAULT_COMMAND_TIMEOUT_SECONDS = 40.0
+DEFAULT_BUILD_COMMAND_TIMEOUT_SECONDS = 600.0
 _COMMAND_GATE = Lock()
 
 
@@ -130,9 +131,11 @@ class VeosCli:
         *,
         veos_path: Path,
         command_timeout_seconds: float = DEFAULT_COMMAND_TIMEOUT_SECONDS,
+        build_command_timeout_seconds: float = DEFAULT_BUILD_COMMAND_TIMEOUT_SECONDS,
     ) -> None:
         self.veos_path = veos_path
         self.command_timeout_seconds = command_timeout_seconds
+        self.build_command_timeout_seconds = build_command_timeout_seconds
 
     def run_sim(self, *arguments: str) -> CliCommandResult:
         """Run the VEOS simulator CLI with serialized access."""
@@ -142,14 +145,26 @@ class VeosCli:
         """Run the VEOS model CLI with serialized access."""
         return self._run_locked(self.veos_path, ("model", *arguments))
 
+    def run_build(self, *arguments: str) -> CliCommandResult:
+        """Run the VEOS build CLI with serialized access."""
+        return self._run_locked(
+            self.veos_path,
+            ("build", *arguments),
+            command_timeout_seconds=self.build_command_timeout_seconds,
+        )
+
     def _run_locked(
         self,
         executable_path: Path,
         arguments: tuple[str, ...],
+        *,
+        command_timeout_seconds: float | None = None,
     ) -> CliCommandResult:
         with _COMMAND_GATE:
             return run_process_command(
                 executable_path,
                 arguments,
-                command_timeout_seconds=self.command_timeout_seconds,
+                command_timeout_seconds=(
+                    self.command_timeout_seconds if command_timeout_seconds is None else command_timeout_seconds
+                ),
             )

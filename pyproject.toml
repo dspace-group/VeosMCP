@@ -12,7 +12,6 @@ dependencies = [
     "mcp[cli]>=1.27,<2",
     "pydantic>=2.8,<3",
     "pythonnet>=3.1.0",
-    "pywin32>=306; sys_platform == 'win32'",
 ]
 
 [project.optional-dependencies]

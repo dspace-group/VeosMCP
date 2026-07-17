@@ -139,14 +139,27 @@ The following example prompts show how you can interact with the VEOS MCP server
 </details>
 
 <details>
+<summary><b>OSA Creation</b></summary>
+
+- **veos_create_osa**
+  - Title: Create a new VEOS OSA file
+  - Description: Creates and saves a new, empty VEOS offline simulation application using the headless VEOS Model Console.
+  - Parameters:
+    - `osa_path` (string): Destination path of the OSA file. The parent directory must already exist.
+  - Read-only: **false**
+
+</details>
+
+<details>
 <summary><b>File Import</b></summary>
 
 - **veos_import_file**
   - Title: Import a file into a VEOS simulation system
-  - Description: Imports a VEOS-supported file into an existing OSA simulation system and saves the updated OSA file. Supported formats depend on the selected VEOS version and include OSA, FMU, VECU, SIC, BSC, and JSON files.
+  - Description: Imports a VEOS-supported file into an existing OSA and saves it using the headless VEOS Model or Build Console. Supported types are OSA, JSON, FMU, SIC, BSC, SMC, classic VECU, and adaptive VECU.
   - Parameters:
     - `osa_path` (string): Path to the OSA simulation system to modify.
     - `import_file_path` (string): Path to the file to import using the default VEOS import and build settings.
+    - `file_type` (string, optional): Explicit import type. Required for VECU (`classic-vecu` or `adaptive-vecu`) and optional for other supported types.
   - Read-only: **false**
 
 </details>

@@ -7,7 +7,6 @@ from mcp.types import CallToolResult, TextContent
 
 from veos_mcp.models.cli_command_result import CliCommandResult
 from veos_mcp.models.errors import ErrorType, VeosError
-from veos_mcp.veos_automation import VeosAutomation
 from veos_mcp.veos_cli import VeosCli
 from veos_mcp.veos_path_resolver import (
     get_linux_installations,
@@ -22,7 +21,6 @@ mcp = FastMCP(
 )
 
 _veos_cli: VeosCli | None = None
-_veos_automation: VeosAutomation | None = None
 
 
 def configure_cli(*, veos_version: str | None, veos_bin_path: str | None) -> None:
@@ -35,9 +33,8 @@ def configure_cli(*, veos_version: str | None, veos_bin_path: str | None) -> Non
         veos_bin_path=veos_bin_path,
     )
 
-    global _veos_cli, _veos_automation
+    global _veos_cli
     _veos_cli = VeosCli(veos_path=installation.executable_path)
-    _veos_automation = VeosAutomation(programmatic_identifier=installation.automation_programmatic_identifier)
 
 
 def get_cli() -> VeosCli:
@@ -45,13 +42,6 @@ def get_cli() -> VeosCli:
     if _veos_cli is None:
         raise RuntimeError("VEOS CLI is not configured.")
     return _veos_cli
-
-
-def get_automation() -> VeosAutomation:
-    """Return the configured VEOS Player automation facade."""
-    if _veos_automation is None:
-        raise RuntimeError("VEOS Player automation is not configured.")
-    return _veos_automation
 
 
 def _create_error(

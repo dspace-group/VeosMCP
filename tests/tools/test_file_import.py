@@ -1,76 +1,85 @@
 """Tests for the VEOS file import tool."""
 
-import json
-from pathlib import Path
 from typing import cast
 
-from mcp.types import CallToolResult, TextContent
+import pytest
+from mcp.types import CallToolResult
 
+from tests.tool_test_helpers import RecordingBuildCliMock, RecordingModelCliMock, assert_error_text_content
 from veos_mcp import runtime
-from veos_mcp.models.import_result import ImportResult
+from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
 from veos_mcp.tools.file_import import veos_import_file
 
 
-class AutomationMock:
-    def __init__(self, result: ImportResult | Exception) -> None:
-        self.result = result
-        self.import_calls: list[tuple[str, str]] = []
-
-    def import_file(self, osa_path: str, import_file_path: str) -> ImportResult:
-        self.import_calls.append((osa_path, import_file_path))
-        if isinstance(self.result, Exception):
-            raise self.result
-        return self.result
-
-
-def create_import_result(*, success: bool) -> ImportResult:
-    return ImportResult(
+def create_command_result(*, success: bool = True) -> CliCommandResult:
+    return CliCommandResult(
         success=success,
-        osa_path=str(Path("target.osa").resolve()),
-        imported_file_path=str(Path("model.fmu").resolve()),
-        build_status="valid" if success else "invalid",
-        build_output="build output",
-        imported_application_processes=["ImportedModel"] if success else [],
+        exit_code=0 if success else 1,
+        code=CommandResultCode.OK if success else CommandResultCode.PROCESS_FAILED,
+        stdout="imported" if success else "",
+        stderr="" if success else "failed",
     )
 
 
-def test_import_file_returns_structured_build_result(monkeypatch) -> None:
-    automation = AutomationMock(create_import_result(success=True))
-    monkeypatch.setattr(runtime, "_veos_automation", automation)
+@pytest.mark.parametrize(
+    ("import_file_path", "expected_build_type"),
+    [
+        ("model.fmu", "fmu"),
+        ("model.sic", "sic"),
+        ("model.bsc", "bsc"),
+        ("model.smc", "smc"),
+    ],
+)
+def test_import_file_infers_and_builds_container_type(monkeypatch, import_file_path: str, expected_build_type: str) -> None:
+    cli = RecordingBuildCliMock(create_command_result())
+    monkeypatch.setattr(runtime, "_veos_cli", cli)
 
-    result = cast(CallToolResult, veos_import_file("target.osa", "model.fmu"))
+    result = cast(CallToolResult, veos_import_file("target.osa", import_file_path))
 
-    assert automation.import_calls == [("target.osa", "model.fmu")]
+    assert cli.build_calls == [(expected_build_type, import_file_path, "--output-file", "target.osa")]
     assert result.isError is False
-    assert result.structuredContent is not None
-    assert result.structuredContent["Success"] is True
-    assert result.structuredContent["BuildStatus"] == "valid"
-    assert result.structuredContent["BuildOutput"] == "build output"
 
 
-def test_import_file_returns_build_details_on_invalid_build(monkeypatch) -> None:
-    automation = AutomationMock(create_import_result(success=False))
-    monkeypatch.setattr(runtime, "_veos_automation", automation)
+@pytest.mark.parametrize("file_type", ["classic-vecu", "adaptive-vecu"])
+def test_import_file_builds_explicit_vecu_type(monkeypatch, file_type: str) -> None:
+    cli = RecordingBuildCliMock(create_command_result())
+    monkeypatch.setattr(runtime, "_veos_cli", cli)
 
-    result = cast(CallToolResult, veos_import_file("target.osa", "model.fmu"))
+    result = cast(CallToolResult, veos_import_file("target.osa", "model.vecu", file_type))
+
+    assert cli.build_calls == [(file_type, "model.vecu", "--output-file", "target.osa")]
+    assert result.isError is False
+
+
+@pytest.mark.parametrize("import_file_path", ["source.osa", "participant.json"])
+def test_import_file_uses_model_console_for_osa_and_json(monkeypatch, import_file_path: str) -> None:
+    cli = RecordingModelCliMock(create_command_result())
+    monkeypatch.setattr(runtime, "_veos_cli", cli)
+
+    result = cast(CallToolResult, veos_import_file("target.osa", import_file_path))
+
+    assert cli.model_calls == [
+        ("import", "target.osa", "--path", import_file_path, "--save-only-on-success")
+    ]
+    assert result.isError is False
+
+
+def test_import_file_requires_explicit_type_for_vecu(monkeypatch) -> None:
+    result = cast(CallToolResult, veos_import_file("target.osa", "model.vecu"))
 
     assert result.isError is True
-    assert result.structuredContent is not None
-    assert result.structuredContent["Success"] is False
-    assert result.structuredContent["BuildOutput"] == "build output"
-    text_content = cast(TextContent, result.content[0])
-    assert (
-        json.loads(text_content.text)["Message"]
-        == "VEOS could not build and import file model.fmu. See BuildOutput for details."
+    assert_error_text_content(
+        result,
+        "Could not determine the VEOS import type for model.vecu. "
+        "Specify file_type; VECU files require classic-vecu or adaptive-vecu.",
     )
 
 
-def test_import_file_returns_error_when_automation_fails(monkeypatch) -> None:
-    automation = AutomationMock(RuntimeError("COM unavailable"))
-    monkeypatch.setattr(runtime, "_veos_automation", automation)
+def test_import_file_returns_command_error(monkeypatch) -> None:
+    cli = RecordingBuildCliMock(create_command_result(success=False))
+    monkeypatch.setattr(runtime, "_veos_cli", cli)
 
     result = cast(CallToolResult, veos_import_file("target.osa", "model.fmu"))
 
     assert result.isError is True
-    text_content = cast(TextContent, result.content[0])
-    assert json.loads(text_content.text)["Message"] == "Failed to import file model.fmu into VEOS: COM unavailable"
+    assert_error_text_content(result, "Failed to import file model.fmu into VEOS OSA target.osa.")
