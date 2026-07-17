@@ -24,6 +24,7 @@ def test_list_all_tools() -> None:
         "veos_apply_config",
         "veos_get_all_signals_and_ports",
         "veos_get_log_file",
+        "veos_import_file",
         "veos_list_all_available_log_files",
         "veos_load",
         "veos_remove_signal_connections",

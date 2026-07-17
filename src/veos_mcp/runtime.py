@@ -7,12 +7,12 @@ from mcp.types import CallToolResult, TextContent
 
 from veos_mcp.models.cli_command_result import CliCommandResult
 from veos_mcp.models.errors import ErrorType, VeosError
+from veos_mcp.veos_automation import VeosAutomation
 from veos_mcp.veos_cli import VeosCli
 from veos_mcp.veos_path_resolver import (
-    check_veos_installation_exists,
     get_linux_installations,
     get_windows_installations,
-    resolve_veos_path_for_version,
+    resolve_veos_installation,
 )
 
 mcp = FastMCP(
@@ -22,20 +22,22 @@ mcp = FastMCP(
 )
 
 _veos_cli: VeosCli | None = None
+_veos_automation: VeosAutomation | None = None
 
 
 def configure_cli(*, veos_version: str | None, veos_bin_path: str | None) -> None:
-    """Configure the server with the VEOS CLI installation directory."""
+    """Configure the server with the selected VEOS installation."""
 
     veos_installations = get_windows_installations() if sys.platform.startswith("win32") else get_linux_installations()
+    installation = resolve_veos_installation(
+        veos_installations,
+        veos_version=veos_version,
+        veos_bin_path=veos_bin_path,
+    )
 
-    if veos_bin_path is not None:
-        veos_path = check_veos_installation_exists(veos_installations, veos_bin_path)
-    else:
-        veos_path = resolve_veos_path_for_version(veos_installations, veos_version)
-
-    global _veos_cli
-    _veos_cli = VeosCli(veos_path=veos_path)
+    global _veos_cli, _veos_automation
+    _veos_cli = VeosCli(veos_path=installation.executable_path)
+    _veos_automation = VeosAutomation(programmatic_identifier=installation.automation_programmatic_identifier)
 
 
 def get_cli() -> VeosCli:
@@ -43,6 +45,13 @@ def get_cli() -> VeosCli:
     if _veos_cli is None:
         raise RuntimeError("VEOS CLI is not configured.")
     return _veos_cli
+
+
+def get_automation() -> VeosAutomation:
+    """Return the configured VEOS Player automation facade."""
+    if _veos_automation is None:
+        raise RuntimeError("VEOS Player automation is not configured.")
+    return _veos_automation
 
 
 def _create_error(

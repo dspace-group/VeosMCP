@@ -139,6 +139,19 @@ The following example prompts show how you can interact with the VEOS MCP server
 </details>
 
 <details>
+<summary><b>File Import</b></summary>
+
+- **veos_import_file**
+  - Title: Import a file into a VEOS simulation system
+  - Description: Imports a VEOS-supported file into an existing OSA simulation system and saves the updated OSA file. Supported formats depend on the selected VEOS version and include OSA, FMU, VECU, SIC, BSC, and JSON files.
+  - Parameters:
+    - `osa_path` (string): Path to the OSA simulation system to modify.
+    - `import_file_path` (string): Path to the file to import using the default VEOS import and build settings.
+  - Read-only: **false**
+
+</details>
+
+<details>
 <summary><b>Simulator Control</b></summary>
 
 - **veos_status_info**

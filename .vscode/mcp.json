@@ -1,0 +1,24 @@
+{
+  "servers": {
+    // "VeosMCP": {
+    //   "type": "stdio",
+    //   "command": "C:\\Tim\\programs\\veos-mcp-windows\\veos-mcp.exe",
+    //   "args": [
+    //     "--veos-version",
+    //     "24-A"
+    //   ]
+    // },
+    "dSPACE Documentation": {
+      "type": "http",
+      "url": "https://udls-documentation.mcp.dspace-dev.com/mcp"
+    },
+    "VeosMCP": {
+      "type": "stdio",
+      "command": "C:\\Tim\\repos\\VeosMCPDev\\VeosMCP.cmd",
+      "args": [
+        "--veos-version",
+        "24-A"
+      ]
+    }
+  }
+}
