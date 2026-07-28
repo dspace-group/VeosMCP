@@ -18,6 +18,16 @@ class RecordingModelCliMock:
         return self._result
 
 
+class RecordingBuildCliMock:
+    def __init__(self, result: CliCommandResult) -> None:
+        self._result = result
+        self.build_calls: list[tuple[str, ...]] = []
+
+    def run_build(self, *arguments: str) -> CliCommandResult:
+        self.build_calls.append(arguments)
+        return self._result
+
+
 class RecordingSimCliMock:
     def __init__(self, sim_result: CliCommandResult) -> None:
         self._sim_result = sim_result

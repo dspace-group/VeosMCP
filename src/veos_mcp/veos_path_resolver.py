@@ -25,6 +25,11 @@ class _VeosInstallation:
     bin_path: Path
     source_name: str
 
+    @property
+    def executable_path(self) -> Path:
+        executable_name = "veos.exe" if sys.platform.startswith("win32") else "veos"
+        return self.bin_path / executable_name
+
 
 def _normalize_release(release: str | None) -> str | None:
     if release is None:
@@ -163,16 +168,33 @@ def get_linux_installations(
 
 
 def resolve_veos_path_for_version(installations: list[_VeosInstallation], veos_version: str | None) -> Path:
-    candidate_installation = _select_installation(installations, veos_version)
-    return candidate_installation.bin_path / "veos.exe" if sys.platform.startswith("win32") else candidate_installation.bin_path / "veos"
+    return _select_installation(installations, veos_version).executable_path
 
 
 def check_veos_installation_exists(installations: list[_VeosInstallation], veos_bin_path: str) -> Path:
     for installation in installations:
         if installation.bin_path == Path(veos_bin_path):
-            return installation.bin_path / "veos.exe" if sys.platform.startswith("win32") else installation.bin_path / "veos"
+            return installation.executable_path
     raise ValueError(
         f"Provided VEOS path is invalid, make sure that the provided path '{veos_bin_path}' "
         f"points to the bin directory of an existing VEOS installation. "
         f"Following installations were found: {', '.join(str(installation.bin_path) for installation in installations)}."
     )
+
+
+def resolve_veos_installation(
+    installations: list[_VeosInstallation],
+    *,
+    veos_version: str | None,
+    veos_bin_path: str | None,
+) -> _VeosInstallation:
+    if veos_bin_path is None:
+        return _select_installation(installations, veos_version)
+
+    requested_bin_path = Path(veos_bin_path)
+    for installation in installations:
+        if installation.bin_path == requested_bin_path:
+            return installation
+
+    check_veos_installation_exists(installations, veos_bin_path)
+    raise AssertionError("Unreachable")
