@@ -4,7 +4,7 @@ import argparse
 import os
 from collections.abc import Sequence
 
-import veos_mcp.resources  # noqa: F401
+import veos_mcp.resources
 import veos_mcp.tools  # noqa: F401
 from veos_mcp.runtime import configure_cli, mcp
 

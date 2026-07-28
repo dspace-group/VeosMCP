@@ -260,11 +260,7 @@ Here is a minimal tool example:
 ```python
 from veos_mcp.runtime import mcp
 
-@mcp.tool(
-    name="veos_new_tool",
-    title="New tool",
-    description="New tool extending the VEOS MCP server."
-)
+@mcp.tool(name="veos_new_tool", title="New tool", description="New tool extending the VEOS MCP server.")
 def veos_new_tool() -> str:
     return "Hello from the new VEOS MCP server tool!"
 ```

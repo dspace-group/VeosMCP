@@ -36,7 +36,7 @@ jobs:
         run: uv run ruff check .
 
       - name: Run formatter check
-        run: uv run ruff format --check .
+        run: uv run ruff format --check src tests
 
   tests:
     name: Tests (${{ matrix.os }})
