@@ -264,3 +264,8 @@ from veos_mcp.runtime import mcp
 def veos_new_tool() -> str:
     return "Hello from the new VEOS MCP server tool!"
 ```
+
+## Support
+
+For technical questions and issues related to the dSPACE MCP Servers and related GitHub repositories, please open a GitHub issue.
+As a valued dSPACE customer, you are always welcome to contact dSPACE Support directly via http://www.dspace.com/go/supportrequest.
