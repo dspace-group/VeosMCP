@@ -1,9 +1,12 @@
 """VEOS CLI subprocess execution helpers."""
 
 import subprocess
+import sys
 from collections.abc import Iterable
 from pathlib import Path
 from threading import Lock
+
+from attr import dataclass
 
 from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
 
@@ -122,16 +125,25 @@ def _completed_result(
     )
 
 
+@dataclass(frozen=True)
+class VeosInstallation:
+    year: int
+    release: str
+    bin_path: Path
+    source_name: str
+
+
 class VeosCli:
-    """Facade for serialized VEOS simulator and model CLI access."""
+    """Wrapper for serialized VEOS CLI access."""
 
     def __init__(
         self,
         *,
-        veos_path: Path,
+        installation: VeosInstallation,
         command_timeout_seconds: float = DEFAULT_COMMAND_TIMEOUT_SECONDS,
     ) -> None:
-        self.veos_path = veos_path
+        self.installation = installation
+        self.veos_path = installation.bin_path / "veos.exe" if sys.platform.startswith("win32") else installation.bin_path / "veos"
         self.command_timeout_seconds = command_timeout_seconds
 
     def run_sim(self, *arguments: str) -> CliCommandResult:
@@ -141,6 +153,13 @@ class VeosCli:
     def run_model(self, *arguments: str) -> CliCommandResult:
         """Run the VEOS model CLI with serialized access."""
         return self._run_locked(self.veos_path, ("model", *arguments))
+
+    def run_build(self, *arguments: str) -> CliCommandResult:
+        """Run the VEOS build CLI with serialized access."""
+        return self._run_locked(self.veos_path, ("build", *arguments))
+
+    def get_installation(self) -> VeosInstallation:
+        return self.installation
 
     def _run_locked(
         self,
