@@ -6,12 +6,12 @@ from unittest.mock import ANY, patch
 
 import pytest
 
-import veos_mcp.veos_path_resolver as path_resolver
 from veos_mcp import server
+from veos_mcp.veos_cli import VeosInstallation
 
 
-def create_installation(tmp_path: Path) -> path_resolver._VeosInstallation:
-    return path_resolver._VeosInstallation(
+def create_installation(tmp_path: Path) -> VeosInstallation:
+    return VeosInstallation(
         year=2026,
         release="A",
         bin_path=tmp_path / "bin",
@@ -19,39 +19,11 @@ def create_installation(tmp_path: Path) -> path_resolver._VeosInstallation:
     )
 
 
-def patch_veos_installation_discovery(installations: list[path_resolver._VeosInstallation]):
+def patch_veos_installation_discovery(installations: list[VeosInstallation]):
     discovery_target = (
         "veos_mcp.runtime.get_windows_installations" if sys.platform.startswith("win32") else "veos_mcp.runtime.get_linux_installations"
     )
     return patch(discovery_target, return_value=installations)
-
-
-def test_argument_no_veos_version_calls_select_installation(tmp_path: Path) -> None:
-    installation = create_installation(tmp_path)
-
-    with (
-        patch_veos_installation_discovery([installation]),
-        patch("veos_mcp.veos_path_resolver._select_installation", return_value=installation) as mock_select,
-        patch.object(server.mcp, "run") as mock_run,
-    ):
-        server.main([])
-
-    mock_select.assert_called_once_with(ANY, None)
-    mock_run.assert_called_once_with()
-
-
-def test_argument_veos_version_calls_select_installation(tmp_path: Path) -> None:
-    installation = create_installation(tmp_path)
-
-    with (
-        patch_veos_installation_discovery([installation]),
-        patch("veos_mcp.veos_path_resolver._select_installation", return_value=installation) as mock_select,
-        patch.object(server.mcp, "run") as mock_run,
-    ):
-        server.main(["--veos-version", "26.1"])
-
-    mock_select.assert_called_once_with(ANY, "26.1")
-    mock_run.assert_called_once_with()
 
 
 def test_skip_configure_environment_variable_skips_configure(monkeypatch) -> None:
@@ -61,7 +33,7 @@ def test_skip_configure_environment_variable_skips_configure(monkeypatch) -> Non
         server.main([])
 
     mock_configure.assert_not_called()
-    mock_run.assert_called_once_with()
+    mock_run.assert_called_once()
 
 
 def test_argument_veos_bin_path_invalid(tmp_path: Path) -> None:

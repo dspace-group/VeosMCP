@@ -28,7 +28,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     if os.environ.get("VEOS_MCP_SKIP_CONFIGURE") != "1":
         configure_cli(veos_version=args.veos_version, veos_bin_path=args.veos_bin_path)
 
-    mcp.run()
+    mcp.run(transport="stdio")
 
 
 if __name__ == "__main__":

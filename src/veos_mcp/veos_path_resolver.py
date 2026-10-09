@@ -3,7 +3,7 @@ import re
 from collections.abc import Iterable
 from pathlib import Path
 
-from veos_mcp.veos_cli import VeosInstallation
+from veos_mcp.veos_installation import VeosInstallation
 
 _WINDOWS_INSTALLATION_REFERENCE = "dSPACE.InstallationManager.API, Version=2.0.0.0, Culture=neutral, PublicKeyToken=f9604847d8afbfbb"
 _REQUESTED_VERSION_PATTERN = re.compile(r"^\s*(?P<year>\d{2}|\d{4})[.\-_ ]?(?P<release>[12abAB])\s*$")

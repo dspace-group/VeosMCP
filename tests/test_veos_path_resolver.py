@@ -4,11 +4,12 @@ from pathlib import Path
 
 import pytest
 
-import veos_mcp.veos_path_resolver as path_resolver
+from veos_mcp import veos_path_resolver as path_resolver
+from veos_mcp.veos_installation import VeosInstallation
 
 
-def _installation(year: int, release: str, path: str) -> path_resolver._VeosInstallation:
-    return path_resolver._VeosInstallation(
+def _installation(year: int, release: str, path: str) -> VeosInstallation:
+    return VeosInstallation(
         year=year,
         release=release,
         bin_path=Path(path),
@@ -22,8 +23,8 @@ def test_select_installation_maps_numeric_release_aliases() -> None:
         _installation(2026, "A", "C:/VEOS/2026A/bin"),
     ]
 
-    assert path_resolver._select_installation(installations, "26.1").release == "A"
-    assert path_resolver._select_installation(installations, "2026-B").release == "B"
+    assert path_resolver.get_installation_for_version(installations, "26.1").release == "A"
+    assert path_resolver.get_installation_for_version(installations, "2026-B").release == "B"
 
 
 def test_select_installation_uses_newest_version_when_unspecified() -> None:
@@ -33,7 +34,7 @@ def test_select_installation_uses_newest_version_when_unspecified() -> None:
         _installation(2027, "A", "C:/VEOS/2025A/bin"),
     ]
 
-    selected = path_resolver._select_installation(installations, None)
+    selected = path_resolver.get_installation_for_version(installations, None)
 
     assert selected.year == 2027
     assert selected.release == "A"
@@ -43,7 +44,7 @@ def test_select_installation_reports_available_versions() -> None:
     installations = [_installation(2026, "A", "C:/VEOS/2026A/bin")]
 
     with pytest.raises(RuntimeError) as exc_info:
-        path_resolver._select_installation(installations, "26.2")
+        path_resolver.get_installation_for_version(installations, "26.2")
 
     assert "2026-A" in str(exc_info.value)
 
@@ -52,6 +53,6 @@ def test_select_installation_reports_error_when_no_installations_available() -> 
     installations = []
 
     with pytest.raises(RuntimeError) as exc_info:
-        path_resolver._select_installation(installations, "26.2")
+        path_resolver.get_installation_for_version(installations, "26.2")
 
     assert "Could not find any installed dSPACE VEOS instances on the machine." in str(exc_info.value)

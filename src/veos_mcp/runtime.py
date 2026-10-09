@@ -2,7 +2,7 @@
 
 import sys
 
-from mcp.server import FastMCP
+from mcp.server import MCPServer
 from mcp.types import CallToolResult, TextContent
 
 from veos_mcp.models.cli_command_result import CliCommandResult
@@ -15,10 +15,9 @@ from veos_mcp.veos_path_resolver import (
     get_windows_installations,
 )
 
-mcp = FastMCP(
+mcp = MCPServer(
     name="VEOS MCP Server",
     instructions="Tools for controlling the dSPACE VEOS simulator.",
-    json_response=True,
 )
 
 _veos_cli: VeosCli | None = None
@@ -32,6 +31,7 @@ def configure_cli(*, veos_version: str | None, veos_bin_path: str | None) -> Non
     if veos_bin_path is not None:
         installation = get_installation_for_bin_path(veos_installations, veos_bin_path)
     else:
+        # veos_version can be None as well, will pick newest VEOS installation
         installation = get_installation_for_version(veos_installations, veos_version)
 
     global _veos_cli
@@ -57,9 +57,9 @@ def create_error_response(message: str) -> CallToolResult:
     """Create a typed MCP-facing error result."""
     error = _create_error(message)
     return CallToolResult(
-        isError=True,
+        is_error=True,
         content=[TextContent(type="text", text=error.model_dump_json(by_alias=True))],
-        structuredContent=error.model_dump(by_alias=True, mode="json"),
+        structured_content=error.model_dump(by_alias=True, mode="json"),
     )
 
 
@@ -70,9 +70,9 @@ def create_command_result_response_error(
     """Convert a VEOS CLI command result into an MCP tool result."""
     error = _create_error(error_message)
     return CallToolResult(
-        isError=not command_result.success,
+        is_error=not command_result.success,
         content=[TextContent(type="text", text=error.model_dump_json(by_alias=True))],
-        structuredContent=command_result.to_structured_content(),
+        structured_content=command_result.to_structured_content(),
     )
 
 
@@ -81,7 +81,7 @@ def create_command_result_response_success(
 ) -> CallToolResult:
     """Convert a VEOS CLI command result into an MCP tool result."""
     return CallToolResult(
-        isError=not command_result.success,
+        is_error=not command_result.success,
         content=[TextContent(type="text", text="Tool Call succeeded.")],
-        structuredContent=command_result.to_structured_content(),
+        structured_content=command_result.to_structured_content(),
     )

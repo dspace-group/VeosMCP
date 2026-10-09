@@ -51,10 +51,10 @@ def test_sim_control_tools_invoke_veos_sim_and_return_structured_content(
 
     result = cast(CallToolResult, tool_func(**payload))
 
-    assert result.isError is False
+    assert result.is_error is False
     assert cli.sim_calls == [expected_call]
-    assert result.structuredContent is not None
-    assert_command_result_structured_content(tool_name, result.structuredContent)
+    assert result.structured_content is not None
+    assert_command_result_structured_content(tool_name, result.structured_content)
 
 
 @pytest.mark.parametrize(
@@ -112,10 +112,10 @@ def test_sim_control_tools_return_error_response_on_cli_failure(
 
     result = cast(CallToolResult, tool_func(**payload))
 
-    assert result.isError is True
+    assert result.is_error is True
     assert cli.sim_calls == [expected_call]
-    assert result.structuredContent is not None
-    assert_command_result_structured_content(tool_name, result.structuredContent)
+    assert result.structured_content is not None
+    assert_command_result_structured_content(tool_name, result.structured_content)
     assert_error_text_content(result, expected_message)
 
 
@@ -136,7 +136,7 @@ def test_tool_veos_apply_config_invokes_veos_sim_with_all_supported_arguments(mo
         CallToolResult, veos_apply_config(stop_time="10", acceleration_factor="2", ip_address="127.0.0.2", bus_log=True, sim_log=False)
     )
 
-    assert result.isError is False
+    assert result.is_error is False
     assert cli.sim_calls == [
         (
             "config",
@@ -150,8 +150,8 @@ def test_tool_veos_apply_config_invokes_veos_sim_with_all_supported_arguments(mo
             "--disable-sim-log",
         )
     ]
-    assert result.structuredContent is not None
-    assert_command_result_structured_content("veos_apply_config", result.structuredContent)
+    assert result.structured_content is not None
+    assert_command_result_structured_content("veos_apply_config", result.structured_content)
 
 
 def test_tool_veos_apply_config_uses_default_command_without_optional_arguments(monkeypatch) -> None:
@@ -169,10 +169,10 @@ def test_tool_veos_apply_config_uses_default_command_without_optional_arguments(
 
     result = cast(CallToolResult, veos_apply_config())
 
-    assert result.isError is False
+    assert result.is_error is False
     assert cli.sim_calls == [("config",)]
-    assert result.structuredContent is not None
-    assert_command_result_structured_content("veos_apply_config", result.structuredContent)
+    assert result.structured_content is not None
+    assert_command_result_structured_content("veos_apply_config", result.structured_content)
 
 
 def test_tool_veos_apply_config_returns_error_response_on_cli_failure(monkeypatch) -> None:
@@ -190,8 +190,8 @@ def test_tool_veos_apply_config_returns_error_response_on_cli_failure(monkeypatc
 
     result = cast(CallToolResult, veos_apply_config(bus_log=False, sim_log=True))
 
-    assert result.isError is True
+    assert result.is_error is True
     assert cli.sim_calls == [("config", "--disable-bus-log", "--enable-sim-log")]
-    assert result.structuredContent is not None
-    assert_command_result_structured_content("veos_apply_config", result.structuredContent)
+    assert result.structured_content is not None
+    assert_command_result_structured_content("veos_apply_config", result.structured_content)
     assert_error_text_content(result, "Failed to apply the VEOS simulation configuration.")

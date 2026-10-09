@@ -6,9 +6,8 @@ from collections.abc import Iterable
 from pathlib import Path
 from threading import Lock
 
-from attr import dataclass
-
 from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
+from veos_mcp.veos_installation import VeosInstallation
 
 DEFAULT_COMMAND_TIMEOUT_SECONDS = 40.0
 _COMMAND_GATE = Lock()
@@ -125,14 +124,6 @@ def _completed_result(
     )
 
 
-@dataclass(frozen=True)
-class VeosInstallation:
-    year: int
-    release: str
-    bin_path: Path
-    source_name: str
-
-
 class VeosCli:
     """Wrapper for serialized VEOS CLI access."""
 
@@ -143,20 +134,19 @@ class VeosCli:
         command_timeout_seconds: float = DEFAULT_COMMAND_TIMEOUT_SECONDS,
     ) -> None:
         self.installation = installation
-        self.veos_path = installation.bin_path / "veos.exe" if sys.platform.startswith("win32") else installation.bin_path / "veos"
         self.command_timeout_seconds = command_timeout_seconds
 
     def run_sim(self, *arguments: str) -> CliCommandResult:
         """Run the VEOS simulator CLI with serialized access."""
-        return self._run_locked(self.veos_path, ("sim", *arguments))
+        return self._run_locked(self.installation.veos_path, ("sim", *arguments))
 
     def run_model(self, *arguments: str) -> CliCommandResult:
         """Run the VEOS model CLI with serialized access."""
-        return self._run_locked(self.veos_path, ("model", *arguments))
+        return self._run_locked(self.installation.veos_path, ("model", *arguments))
 
     def run_build(self, *arguments: str) -> CliCommandResult:
         """Run the VEOS build CLI with serialized access."""
-        return self._run_locked(self.veos_path, ("build", *arguments))
+        return self._run_locked(self.installation.veos_path, ("build", *arguments))
 
     def get_installation(self) -> VeosInstallation:
         return self.installation

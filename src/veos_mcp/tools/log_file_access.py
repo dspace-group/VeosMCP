@@ -1,7 +1,6 @@
 """MCP tools for enumerating VEOS log files and returning resource links."""
 
 from mcp.types import CallToolResult, ResourceLink, ToolAnnotations
-from pydantic import AnyUrl
 
 from veos_mcp.models.cli_command_result import CommandResultCode
 from veos_mcp.runtime import (
@@ -21,10 +20,10 @@ from veos_mcp.runtime import (
         "process_failed, process_start_failed, or process_timed_out. It also includes its exit code, Stdout, and Stderr."
     ),
     annotations=ToolAnnotations(
-        readOnlyHint=True,
-        destructiveHint=False,
-        idempotentHint=True,
-        openWorldHint=False,
+        read_only_hint=True,
+        destructive_hint=False,
+        idempotent_hint=True,
+        open_world_hint=False,
     ),
 )
 def veos_list_all_available_log_files() -> CallToolResult:
@@ -44,10 +43,10 @@ def veos_list_all_available_log_files() -> CallToolResult:
         "This tool does not fail, hence it will not provide an error message."
     ),
     annotations=ToolAnnotations(
-        readOnlyHint=True,
-        destructiveHint=False,
-        idempotentHint=True,
-        openWorldHint=False,
+        read_only_hint=True,
+        destructive_hint=False,
+        idempotent_hint=True,
+        open_world_hint=False,
     ),
 )
 def veos_get_log_file(log_file_name: str) -> CallToolResult:
@@ -57,18 +56,17 @@ def veos_get_log_file(log_file_name: str) -> CallToolResult:
     mime_type = "application/vnd.tcpdump.pcap" if is_pcapng_file else "text/plain"
     description = "VEOS bus log file in pcapng format." if is_pcapng_file else "VEOS simulation log file in plain text format."
     return CallToolResult(
-        isError=False,
+        is_error=False,
         content=[
             ResourceLink(
-                type="resource_link",
-                uri=AnyUrl(resource_uri),
+                uri=resource_uri,
                 name=log_file_name,
                 title=log_file_name,
                 description=description,
                 mimeType=mime_type,
             )
         ],
-        structuredContent={
+        structured_content={
             "Success": True,
             "Code": CommandResultCode.OK.value,
             "LogFileName": log_file_name,
