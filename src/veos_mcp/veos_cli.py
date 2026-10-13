@@ -131,34 +131,33 @@ class VeosCli:
         self,
         *,
         installation: VeosInstallation,
-        command_timeout_seconds: float = DEFAULT_COMMAND_TIMEOUT_SECONDS,
     ) -> None:
-        self.installation = installation
-        self.command_timeout_seconds = command_timeout_seconds
+        self._installation = installation
 
     def run_sim(self, *arguments: str) -> CliCommandResult:
         """Run the VEOS simulator CLI with serialized access."""
-        return self._run_locked(self.installation.veos_path, ("sim", *arguments))
+        return self._run_locked(self._installation.veos_path, ("sim", *arguments))
 
     def run_model(self, *arguments: str) -> CliCommandResult:
         """Run the VEOS model CLI with serialized access."""
-        return self._run_locked(self.installation.veos_path, ("model", *arguments))
+        return self._run_locked(self._installation.veos_path, ("model", *arguments))
 
     def run_build(self, *arguments: str) -> CliCommandResult:
         """Run the VEOS build CLI with serialized access."""
-        return self._run_locked(self.installation.veos_path, ("build", *arguments))
+        return self._run_locked(self._installation.veos_path, ("build", *arguments), command_timeout_seconds=130)
 
     def get_installation(self) -> VeosInstallation:
-        return self.installation
+        return self._installation
 
     def _run_locked(
         self,
         executable_path: Path,
         arguments: tuple[str, ...],
+        command_timeout_seconds: float = DEFAULT_COMMAND_TIMEOUT_SECONDS,
     ) -> CliCommandResult:
         with _COMMAND_GATE:
             return run_process_command(
                 executable_path,
                 arguments,
-                command_timeout_seconds=self.command_timeout_seconds,
+                command_timeout_seconds=command_timeout_seconds,
             )
