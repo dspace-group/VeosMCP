@@ -1,7 +1,11 @@
 """MCP tools for system/osa file build."""
 
+import anyio
+from anyio import to_thread
+from mcp.server.mcpserver import Context
 from mcp.types import CallToolResult, TextContent, ToolAnnotations
 
+from veos_mcp.models.cli_command_result import CliCommandResult
 from veos_mcp.runtime import (
     create_command_result_response_error,
     create_command_result_response_success,
@@ -44,14 +48,14 @@ def veos_get_build_import_config_schema() -> CallToolResult:
         open_world_hint=False,
     ),
 )
-def system_build_tool(
+async def system_build_tool(
     target_osa_path: str,
     models: list[str],
+    ctx: Context,
     config_identifier: str | None = None,
     log_file: str | None = None,
     build_directory: str | None = None,
 ) -> CallToolResult:
-    cli = get_cli()
 
     if config_identifier is not None:
         config_name_argument = ["--config-name", config_identifier]
@@ -68,9 +72,41 @@ def system_build_tool(
     else:
         build_directory_argument = []
 
-    command_result = cli.run_build(
-        "multi", *models, "--output-file", target_osa_path, *config_name_argument, *log_file_argument, *build_directory_argument
+    build_cli_arguments = (
+        "multi",
+        *models,
+        "--output-file",
+        target_osa_path,
+        *config_name_argument,
+        *log_file_argument,
+        *build_directory_argument,
     )
+
+    # builds can take 20 minutes, prevent timeouts by reporting progress to client
+
+    async def report_build_heartbeat(ctx: Context) -> None:
+        heartbeat_counter = 0
+        while True:
+            await ctx.report_progress(progress=heartbeat_counter, message="Build in progress.")
+            heartbeat_counter += 1
+            await anyio.sleep(15)
+
+    cli = get_cli()
+
+    async def run_build_with_heartbeat() -> CliCommandResult:
+        result: CliCommandResult | None = None
+        async with anyio.create_task_group() as task_group:
+            task_group.start_soon(report_build_heartbeat, ctx)
+            try:
+                result = await to_thread.run_sync(cli.run_build, *build_cli_arguments)
+            finally:
+                task_group.cancel_scope.cancel()
+        if result is None:
+            raise RuntimeError("VEOS build completed without a command result.")
+        return result
+
+    command_result = await run_build_with_heartbeat()
+
     if not command_result.success:
         return create_command_result_response_error(command_result, f"Failed to build OSA file at {target_osa_path}.")
 
