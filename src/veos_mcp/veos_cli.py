@@ -10,6 +10,7 @@ from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCo
 from veos_mcp.veos_installation import VeosInstallation
 
 DEFAULT_COMMAND_TIMEOUT_SECONDS = 40.0
+BUILD_COMMAND_TIMEOUT_SECONDS = 3600.0
 _COMMAND_GATE = Lock()
 
 
@@ -144,7 +145,7 @@ class VeosCli:
 
     def run_build(self, *arguments: str) -> CliCommandResult:
         """Run the VEOS build CLI with serialized access."""
-        return self._run_locked(self._installation.veos_path, ("build", *arguments), command_timeout_seconds=130)
+        return self._run_locked(self._installation.veos_path, ("build", *arguments), command_timeout_seconds=BUILD_COMMAND_TIMEOUT_SECONDS)
 
     def get_installation(self) -> VeosInstallation:
         return self._installation
