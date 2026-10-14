@@ -59,7 +59,7 @@ def test_list_all_resource_templates() -> None:
         async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
             await session.initialize()
             templates = await session.list_resource_templates()
-            return sorted(template.uriTemplate for template in templates.resourceTemplates)
+            return sorted(template.uri_template for template in templates.resource_templates)
 
     actual_resource_templates = asyncio.run(list_resource_templates())
 
@@ -75,8 +75,8 @@ def test_smoketest_log_file_tool_over_mcp() -> None:
         async with stdio_client(server_params) as (read, write), ClientSession(read, write) as session:
             await session.initialize()
             result = await session.call_tool("veos_get_log_file", {"log_file_name": "veos.log"})
-            assert result.structuredContent is not None
-            return result.isError, result.structuredContent
+            assert result.structured_content is not None
+            return result.is_error, result.structured_content
 
     is_error, structured_content = asyncio.run(call_tool())
 

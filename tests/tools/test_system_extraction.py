@@ -70,9 +70,9 @@ def test_tool_veos_get_all_signals_and_ports_returns_signal_summary(monkeypatch)
 
     result = cast(CallToolResult, veos_get_all_signals_and_ports("model.osa"))
 
-    assert result.isError is False
+    assert result.is_error is False
     assert cli.model_calls == [("get", "model.osa")]
-    assert result.structuredContent == {
+    assert result.structured_content == {
         "InSignals": [
             {"path": "/Consumer/In1", "data_type": "Float64"},
             {"path": "/Consumer/In2", "data_type": "UInt8"},
@@ -104,6 +104,6 @@ def test_tool_veos_get_all_signals_and_ports_returns_error_on_cli_failure(monkey
 
     result = cast(CallToolResult, veos_get_all_signals_and_ports("model.osa"))
 
-    assert result.isError is True
+    assert result.is_error is True
     assert cli.model_calls == [("get", "model.osa")]
-    assert result.structuredContent is not None
+    assert result.structured_content is not None

@@ -13,6 +13,10 @@ def _read_log_file(log_file_name: str) -> str | bytes:
     return bytes(command_result.stdout_bytes) if log_file_name.lower().endswith(".pcapng") else command_result.stdout
 
 
+# TODO: check if file local, then return the file link.
+# if not, download to local folder first.
+
+
 @mcp.resource(
     "veos://logs/sim/{log_file_name}",
     name="veos_get_sim_log_file_resource",

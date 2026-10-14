@@ -25,10 +25,10 @@ from veos_mcp.runtime import (
         "code, Stdout, and Stderr."
     ),
     annotations=ToolAnnotations(
-        readOnlyHint=True,
-        destructiveHint=False,
-        idempotentHint=True,
-        openWorldHint=False,
+        read_only_hint=True,
+        destructive_hint=False,
+        idempotent_hint=True,
+        open_world_hint=False,
     ),
 )
 def veos_status_info() -> CallToolResult:
@@ -53,10 +53,10 @@ def veos_status_info() -> CallToolResult:
         "It also includes its exit code, Stdout, and Stderr."
     ),
     annotations=ToolAnnotations(
-        readOnlyHint=False,
-        destructiveHint=False,
-        idempotentHint=True,
-        openWorldHint=False,
+        read_only_hint=False,
+        destructive_hint=False,
+        idempotent_hint=True,
+        open_world_hint=False,
     ),
 )
 def veos_load(osa_path: str) -> CallToolResult:
@@ -78,10 +78,10 @@ def veos_load(osa_path: str) -> CallToolResult:
         "process_start_failed, or process_timed_out. It also includes its exit code, Stdout, and Stderr."
     ),
     annotations=ToolAnnotations(
-        readOnlyHint=False,
-        destructiveHint=False,
-        idempotentHint=True,
-        openWorldHint=False,
+        read_only_hint=False,
+        destructive_hint=False,
+        idempotent_hint=True,
+        open_world_hint=False,
     ),
 )
 def veos_start() -> CallToolResult:
@@ -105,10 +105,10 @@ def veos_start() -> CallToolResult:
         "process_start_failed, or process_timed_out. It also includes its exit code, Stdout, and Stderr."
     ),
     annotations=ToolAnnotations(
-        readOnlyHint=False,
-        destructiveHint=False,
-        idempotentHint=True,
-        openWorldHint=False,
+        read_only_hint=False,
+        destructive_hint=False,
+        idempotent_hint=True,
+        open_world_hint=False,
     ),
 )
 def veos_stop() -> CallToolResult:
@@ -139,10 +139,10 @@ def veos_stop() -> CallToolResult:
         "It also includes its exit code, Stdout, and Stderr."
     ),
     annotations=ToolAnnotations(
-        readOnlyHint=False,
-        destructiveHint=False,
-        idempotentHint=True,
-        openWorldHint=False,
+        read_only_hint=False,
+        destructive_hint=False,
+        idempotent_hint=True,
+        open_world_hint=False,
     ),
 )
 def veos_apply_config(

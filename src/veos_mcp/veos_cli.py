@@ -1,13 +1,16 @@
 """VEOS CLI subprocess execution helpers."""
 
 import subprocess
+import sys
 from collections.abc import Iterable
 from pathlib import Path
 from threading import Lock
 
 from veos_mcp.models.cli_command_result import CliCommandResult, CommandResultCode
+from veos_mcp.veos_installation import VeosInstallation
 
 DEFAULT_COMMAND_TIMEOUT_SECONDS = 40.0
+BUILD_COMMAND_TIMEOUT_SECONDS = 3600.0
 _COMMAND_GATE = Lock()
 
 
@@ -123,33 +126,39 @@ def _completed_result(
 
 
 class VeosCli:
-    """Facade for serialized VEOS simulator and model CLI access."""
+    """Wrapper for serialized VEOS CLI access."""
 
     def __init__(
         self,
         *,
-        veos_path: Path,
-        command_timeout_seconds: float = DEFAULT_COMMAND_TIMEOUT_SECONDS,
+        installation: VeosInstallation,
     ) -> None:
-        self.veos_path = veos_path
-        self.command_timeout_seconds = command_timeout_seconds
+        self._installation = installation
 
     def run_sim(self, *arguments: str) -> CliCommandResult:
         """Run the VEOS simulator CLI with serialized access."""
-        return self._run_locked(self.veos_path, ("sim", *arguments))
+        return self._run_locked(self._installation.veos_path, ("sim", *arguments))
 
     def run_model(self, *arguments: str) -> CliCommandResult:
         """Run the VEOS model CLI with serialized access."""
-        return self._run_locked(self.veos_path, ("model", *arguments))
+        return self._run_locked(self._installation.veos_path, ("model", *arguments))
+
+    def run_build(self, *arguments: str) -> CliCommandResult:
+        """Run the VEOS build CLI with serialized access."""
+        return self._run_locked(self._installation.veos_path, ("build", *arguments), command_timeout_seconds=BUILD_COMMAND_TIMEOUT_SECONDS)
+
+    def get_installation(self) -> VeosInstallation:
+        return self._installation
 
     def _run_locked(
         self,
         executable_path: Path,
         arguments: tuple[str, ...],
+        command_timeout_seconds: float = DEFAULT_COMMAND_TIMEOUT_SECONDS,
     ) -> CliCommandResult:
         with _COMMAND_GATE:
             return run_process_command(
                 executable_path,
                 arguments,
-                command_timeout_seconds=self.command_timeout_seconds,
+                command_timeout_seconds=command_timeout_seconds,
             )

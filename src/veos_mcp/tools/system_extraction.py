@@ -26,10 +26,10 @@ from veos_mcp.runtime import (
         "and Stderr of the underlying VEOS process in structured content."
     ),
     annotations=ToolAnnotations(
-        readOnlyHint=True,
-        destructiveHint=False,
-        idempotentHint=True,
-        openWorldHint=False,
+        read_only_hint=True,
+        destructive_hint=False,
+        idempotent_hint=True,
+        open_world_hint=False,
     ),
 )
 def veos_get_all_signals_and_ports(osa_path: str) -> CallToolResult:
@@ -44,7 +44,7 @@ def veos_get_all_signals_and_ports(osa_path: str) -> CallToolResult:
         return create_error_response(f"Failed to parse the signal summary from the VEOS model output: {exception}")
 
     return CallToolResult(
-        isError=False,
+        is_error=False,
         content=[],
-        structuredContent=signal_summary.model_dump(by_alias=True, mode="json"),
+        structured_content=signal_summary.model_dump(by_alias=True, mode="json"),
     )
