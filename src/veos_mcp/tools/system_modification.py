@@ -1,6 +1,6 @@
 """MCP tools for editing VEOS model signal connections."""
 
-from mcp.types import CallToolResult, ToolAnnotations
+from mcp.types import CallToolResult, TextContent, ToolAnnotations
 
 from veos_mcp.runtime import (
     create_command_result_response_error,
@@ -8,6 +8,39 @@ from veos_mcp.runtime import (
     get_cli,
     mcp,
 )
+
+
+@mcp.tool(
+    name="veos_get_system_modification_model_schema",
+    title="",
+    description="",
+)
+def veos_get_system_modification_model_schema() -> CallToolResult:
+    cli = get_cli()
+
+    context = TextContent(text="")
+    path = TextContent(text=f"{cli.get_installation().schema_path / 'veos-model.schema.json'}")
+
+    return CallToolResult(is_error=False, content=[context, path])
+
+
+@mcp.tool(
+    name="veos_simulation_system_modify",
+    title="",
+    description="",
+    annotations=ToolAnnotations(
+        read_only_hint=False,
+        destructive_hint=False,
+        idempotent_hint=True,
+        open_world_hint=False,
+    ),
+)
+def veos_simulation_system_modify(osa_path: str, modification_json_path: str) -> CallToolResult:
+    command_result = get_cli().run_model("modify", osa_path, "-c", modification_json_path)
+    if not command_result.success:
+        return create_command_result_response_error(command_result, f"Failed to perform system modification for {osa_path}.")
+
+    return create_command_result_response_success(command_result)
 
 
 @mcp.tool(

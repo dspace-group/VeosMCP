@@ -16,7 +16,7 @@ from veos_mcp.runtime import (
 
 
 @mcp.tool(
-    name="get_build_import_config_schema",
+    name="veos_get_build_import_config_schema",
     title="Get Build Import Config Schema",
     description="Build/Import config schema for configuring the build/import of container/model. Yaml file has to be placed next to the container (fmu/sic/bsc/ssp).",
 )
@@ -39,7 +39,7 @@ def veos_get_build_import_config_schema() -> CallToolResult:
 
 
 @mcp.tool(
-    name="system_build",
+    name="veos_system_build",
     title="Building an osa file describing the simulation system",
     description="Tool for building/importing models into one simulation system, described as an osa file.",
     annotations=ToolAnnotations(
