@@ -23,13 +23,18 @@ def test_list_all_tools() -> None:
         "veos_add_signal_connections",
         "veos_apply_config",
         "veos_get_all_signals_and_ports",
+        "veos_get_build_import_config_schema",
+        "veos_get_full_simulation_system_data_model",
         "veos_get_log_file",
+        "veos_get_system_modification_model_schema",
         "veos_list_all_available_log_files",
         "veos_load",
         "veos_remove_signal_connections",
+        "veos_simulation_system_modify",
         "veos_start",
         "veos_status_info",
         "veos_stop",
+        "veos_system_build",
     ]
 
     async def list_tool_names() -> list[str]:

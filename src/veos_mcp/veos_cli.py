@@ -1,7 +1,6 @@
 """VEOS CLI subprocess execution helpers."""
 
 import subprocess
-import sys
 from collections.abc import Iterable
 from pathlib import Path
 from threading import Lock
