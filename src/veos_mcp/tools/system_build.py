@@ -18,7 +18,13 @@ from veos_mcp.runtime import (
 @mcp.tool(
     name="veos_get_build_import_config_schema",
     title="Get Build Import Config Schema",
-    description="Build/Import config schema for configuring the build/import of container/model. Yaml file has to be placed next to the container (fmu/sic/bsc/ssp).",
+    description="Build/Import config schema for configuring the build/import of container/model. The build yaml file has to be placed next to the container (fmu/sic/bsc/ssp).",
+    annotations=ToolAnnotations(
+        read_only_hint=True,
+        destructive_hint=False,
+        idempotent_hint=True,
+        open_world_hint=False,
+    ),
 )
 def veos_get_build_import_config_schema() -> CallToolResult:
     cli = get_cli()
@@ -41,11 +47,11 @@ def veos_get_build_import_config_schema() -> CallToolResult:
 @mcp.tool(
     name="veos_system_build",
     title="Building an osa file describing the simulation system",
-    description="Tool for building/importing models into one simulation system, described as an osa file.",
+    description="Tool for building/importing models into one simulation system, described as an osa file. See veos_get_build_import_config_schema for any non-default build configuration",
     annotations=ToolAnnotations(
         read_only_hint=False,
         destructive_hint=False,
-        idempotent_hint=True,
+        idempotent_hint=False,
         open_world_hint=False,
     ),
 )
