@@ -18,20 +18,28 @@ from veos_mcp.runtime import (
 @mcp.tool(
     name="veos_get_build_import_config_schema",
     title="Get Build Import Config Schema",
-    description="Build/Import config schema for configuring the build/import of container/model. Yaml file has to be placed next to the container (fmu/sic/bsc/ssp).",
+    description="Build/Import config schema for configuring the build/import of container/model. The build yaml file has to be placed next to the container (fmu/sic/bsc/ssp).",
+    annotations=ToolAnnotations(
+        read_only_hint=True,
+        destructive_hint=False,
+        idempotent_hint=True,
+        open_world_hint=False,
+    ),
 )
 def veos_get_build_import_config_schema() -> CallToolResult:
     cli = get_cli()
 
     if cli.get_installation().year < 2026 or (cli.get_installation().year == 2026 and cli.get_installation().release == "A"):
-        return create_error_response("Schema support from release VEOS 26-B.")
+        return create_error_response(
+            f"Schema support from release VEOS 26-B. For older releases use {cli.get_installation().bin_path / 'veos-build'} --help directly."
+        )
 
     context = TextContent(
         text="The yaml file should be placed next to the container (fmu/sic/bsc/ssp) as a <container>.icfg.yaml file, <container>.icfg.yaml is also accepted. "
         "Naming convention: Controller.fmu Controller.fmu.icfg.yaml"
         "If and only if multiple config build files for same containter are needed, specify a config_identifier for the system_build tool call by following this naming:"
         " <container>.<identifier>.icfg.yaml. If no yaml is provided, the build/import will use the default VEOS configurations, "
-        "same for properties within the schema. Prefer to only set the necessary properties that are explicitly defined/requested by the user."
+        "same for missing properties within the schema. Prefer to only set the necessary properties that are explicitly defined/requested by the user."
     )
     path = TextContent(text=f"{cli.get_installation().schema_path / 'import-config.schema.json'}")
 
@@ -41,11 +49,11 @@ def veos_get_build_import_config_schema() -> CallToolResult:
 @mcp.tool(
     name="veos_system_build",
     title="Building an osa file describing the simulation system",
-    description="Tool for building/importing models into one simulation system, described as an osa file.",
+    description="Tool for building/importing models into one simulation system, described as an osa file. See veos_get_build_import_config_schema for any non-default build configuration",
     annotations=ToolAnnotations(
         read_only_hint=False,
         destructive_hint=False,
-        idempotent_hint=True,
+        idempotent_hint=False,
         open_world_hint=False,
     ),
 )

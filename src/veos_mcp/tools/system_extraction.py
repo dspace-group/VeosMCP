@@ -40,7 +40,8 @@ def _write_json_to_server_temp_file(osa_path: str, data: object) -> Path:
     title="Export the full VEOS simulation system data model to a JSON file",
     description=(
         "Exports the complete data model of the given VEOS osa simulation system (VPUs, ports, signals, "
-        "communication packages, connections, etc.) as a pretty-printed JSON file. The data model can be very large, "
+        "bus clusters, signals/bus connections, etc.) as a pretty-printed JSON file. You can get the schema with "
+        "the veos_get_veos_data_model_and_modify_schema. The data model can be very large, "
         "so it is written to a new unique file in the VEOS MCP server's temp directory instead of being returned. "
         "Read or search the file in parts afterwards. On success, structured content contains the JsonFilePath of the "
         "written file, its SizeBytes, and TopLevelEntries (element counts of the top-level properties) as an overview. "
@@ -48,7 +49,7 @@ def _write_json_to_server_temp_file(osa_path: str, data: object) -> Path:
         "VEOS process failed, its Stdout and Stderr in structured content."
     ),
     annotations=ToolAnnotations(
-        read_only_hint=False,
+        read_only_hint=True,
         destructive_hint=False,
         idempotent_hint=True,
         open_world_hint=False,
@@ -93,8 +94,9 @@ def veos_get_full_simulation_system_data_model(osa_path: str) -> CallToolResult:
     name="veos_get_all_signals_and_ports",
     title="Get a list of signals/ports from the VEOS osa simulation system",
     description=(
-        "Gets the list of available signals/ports from the given osa file and existing connections "
-        "between them. Signals and ports are often used interchangeably in the context of the VEOS simulation system. "
+        "Gets the list of available signals/ports from the given osa file and existing connections between them."
+        "This is a short-cut tool instead of needing to parse the full data-model via veos_get_full_simulation_system_data_model."
+        "Signals and ports are often used interchangeably in the context of the VEOS simulation system. "
         "Signals are either output or input ports, and each port has a specific data type. An output port/signal "
         "represents a signal that is produced by a component in the simulation and can be connected to multiple input "
         "ports/signals of other components. Signal paths are structured hierarchically. Interpret the first path "

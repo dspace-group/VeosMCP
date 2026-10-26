@@ -11,11 +11,25 @@ from veos_mcp.runtime import (
 
 
 @mcp.tool(
-    name="veos_get_system_modification_model_schema",
-    title="",
-    description="",
+    name="veos_get_veos_data_model_and_modify_schema",
+    title="Get general schema file describing the structure of VEOS osa data model and how the JSON modifications work.",
+    description=(
+        "Returns the schema file path. veos_get_full_simulation_system_data_model returns a JSON confirming "
+        "/definitions/ExecutableApplication and veos_simulation_system_modify expects a JSON confirming definitions/ModifyVerbJsonInput "
+        "Each array for the modify JSON can use one of these general command shapes: "
+        "-set- changes an existing element; -add- adds communication packages or bus clusters; "
+        "-remove- removes elements or signal connections; -connect- creates connections and can enable automatic "
+        "connection; -import- imports an OSA and can optionally select VPUs. See the schema for the exact properties "
+        "and supported command forms."
+    ),
+    annotations=ToolAnnotations(
+        read_only_hint=True,
+        destructive_hint=False,
+        idempotent_hint=True,
+        open_world_hint=False,
+    ),
 )
-def veos_get_system_modification_model_schema() -> CallToolResult:
+def veos_get_veos_data_model_and_modify_schema() -> CallToolResult:
     cli = get_cli()
 
     context = TextContent(text="")
@@ -26,12 +40,12 @@ def veos_get_system_modification_model_schema() -> CallToolResult:
 
 @mcp.tool(
     name="veos_simulation_system_modify",
-    title="",
-    description="",
+    title="Modify the VEOS simulation system via a JSON file.",
+    description="Expects a modification JSON file, get the schema via veos_get_veos_data_model_and_modify_schema first.",
     annotations=ToolAnnotations(
         read_only_hint=False,
-        destructive_hint=False,
-        idempotent_hint=True,
+        destructive_hint=True,
+        idempotent_hint=False,
         open_world_hint=False,
     ),
 )
