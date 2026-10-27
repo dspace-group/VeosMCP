@@ -102,11 +102,12 @@ If these arguments are not provided, the VEOS MCP server uses the newest install
 
 ## Key Features
 
-The VEOS MCP server offers various tools and resources to let agents perform typical VEOS tasks. 
-The tools cover a full workflow of configuring the signals of the simulation system, running the VEOS simulation, and validating the simulation result.
+The VEOS MCP server offers various tools to let agents perform typical VEOS tasks.
+The tools cover a full workflow of bulding the simulation system, configuring it, running the VEOS simulation, and validating the simulation result.
 
 The following example prompts show how you can interact with the VEOS MCP server:
 
+- `Import `my.fmu` into `my.osa`, and enable XCP over TCP listening on `127.0.0.1:5555.``
 - `What signals are unconnected in `my.osa`? Do a best effort matching and create connections accordingly.`
 - `Disconnect all the signals from the EngineModel FMU in `my.osa`.`
 - `Load `my.osa` and run the simulation for 5 seconds.`
@@ -130,10 +131,11 @@ The following example prompts show how you can interact with the VEOS MCP server
   - Read-only: **true**
 
 - **veos_get_log_file**
-  - Title: Get VEOS log file resource link
-  - Description: Gets the resource link to a specified VEOS log file, which can be either a bus log file (pcapng) or a simulation log file. Call `veos_list_all_available_log_files` to get the list of available log files first.
+  - Title: Gets the path to a VEOS log file
+  - Description: Downloads a specified VEOS log file, which can be either a bus log file (pcapng) or a simulation log file, to a unique file in the VEOS MCP server's temp directory. Call `veos_list_all_available_log_files` to get the list of available log files first.
   - Parameters:
-    - `log_file_name` (string): Name of the VEOS log file to return as a resource link. Files ending with `.pcapng` are returned as bus log resources; all others are returned as simulation log resources.
+    - `log_file_name` (string): Name of the VEOS log file to download.
+  - Result: Structured content includes `LogFileName`, `LogFilePath`, and `SizeBytes` for the downloaded file.
   - Read-only: **true**
 
 </details>
@@ -180,7 +182,37 @@ The following example prompts show how you can interact with the VEOS MCP server
 </details>
 
 <details>
+<summary><b>System Build</b></summary>
+
+- **veos_get_build_import_config_schema**
+  - Title: Get Build Import Config Schema
+  - Description: Returns the path to the schema for configuring model/container build and import operations. Build configuration is supported from VEOS 26-B and is supplied in an `.icfg.yaml` file next to the FMU, SIC, BSC, or SSP container.
+  - Parameters: None
+  - Read-only: **true**
+
+- **veos_system_build**
+  - Title: Building an osa file describing the simulation system
+  - Description: Builds or imports one or more models into a simulation system described by an osa file. Use `veos_get_build_import_config_schema` for non-default build configuration.
+  - Parameters:
+    - `target_osa_path` (string): Path of the osa simulation system file to create.
+    - `models` (array of strings): Paths of the models or containers to build or import.
+    - `config_identifier` (string, optional): Identifier selecting a `<container>.<identifier>.icfg.yaml` configuration file.
+    - `log_file` (string, optional): Path to the build log file.
+    - `build_directory` (string, optional): Path to the build directory.
+  - Read-only: **false**
+
+</details>
+
+<details>
 <summary><b>System Extraction</b></summary>
+
+- **veos_get_full_simulation_system_data_model**
+  - Title: Export the full VEOS simulation system data model to a JSON file
+  - Description: Exports the complete data model of the given VEOS osa simulation system to a unique, pretty-printed JSON file in the VEOS MCP server's temp directory. Use `veos_get_veos_data_model_and_modify_schema` to get the data model schema.
+  - Parameters:
+    - `osa_path` (string): Path to the osa simulation model file to export.
+  - Result: Structured content includes `JsonFilePath`, `SizeBytes`, and `TopLevelEntries` for the exported data model.
+  - Read-only: **true**
 
 - **veos_get_all_signals_and_ports**
   - Title: Get a list of signals/ports from the VEOS osa simulation system
@@ -193,6 +225,20 @@ The following example prompts show how you can interact with the VEOS MCP server
 
 <details>
 <summary><b>System Modification</b></summary>
+
+- **veos_get_veos_data_model_and_modify_schema**
+  - Title: Get general schema file describing the structure of VEOS osa data model and how the JSON modifications work.
+  - Description: Returns the path to the schema that describes the VEOS osa data model and the JSON command shapes accepted by `veos_simulation_system_modify`.
+  - Parameters: None
+  - Read-only: **true**
+
+- **veos_simulation_system_modify**
+  - Title: Modify the VEOS simulation system via a JSON file.
+  - Description: Applies modifications from a JSON file to a VEOS osa simulation system. Use `veos_get_veos_data_model_and_modify_schema` to get the modification schema first.
+  - Parameters:
+    - `osa_path` (string): Path to the osa simulation model file to modify.
+    - `modification_json_path` (string): Path to the JSON file containing the modifications.
+  - Read-only: **false**
 
 - **veos_add_signal_connections**
   - Title: Connect signals given a JSON file
@@ -209,27 +255,6 @@ The following example prompts show how you can interact with the VEOS MCP server
     - `osa_path` (string): Path to the osa simulation model file to modify.
     - `json_path` (string): Path to the JSON file that contains the signal connections to remove.
   - Read-only: **false**
-
-</details>
-
-## Resource Templates
-
-<details>
-<summary><b>Log Files</b></summary>
-
-- **veos://logs/sim/{log_file_name}**
-  - Title: VEOS Log File
-  - Description: Resource for accessing the contents of a VEOS simulation log file. If the specified log file does not exist, an error is returned.
-  - Parameters:
-    - `log_file_name` (string): Name of the VEOS simulation log file to read.
-  - MIME type: `text/plain`
-
-- **veos://logs/bus/{log_file_name}**
-  - Title: VEOS Bus Log File
-  - Description: Resource for accessing the contents of a VEOS bus log file. If the specified log file does not exist, an error is returned.
-  - Parameters:
-    - `log_file_name` (string): Name of the VEOS bus log file to read.
-  - MIME type: `application/vnd.tcpdump.pcap`
 
 </details>
 
