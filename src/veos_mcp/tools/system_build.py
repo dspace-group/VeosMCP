@@ -47,6 +47,25 @@ def veos_get_build_import_config_schema() -> CallToolResult:
 
 
 @mcp.tool(
+    name="veos_get_simulation_targets",
+    title="Get all build/import targets for the build, and the currently set default.",
+    description="Lists all available simulation targets (compiler, target architecture, OS, ...) for model build and import operations and identifies the currently configured default target.",
+    annotations=ToolAnnotations(
+        read_only_hint=True,
+        destructive_hint=False,
+        idempotent_hint=True,
+        open_world_hint=False,
+    ),
+)
+def veos_get_simulation_targets() -> CallToolResult:
+    cli = get_cli()
+    command_result = cli.run_target("list")
+    if not command_result.success:
+        return create_command_result_response_error(command_result, "")
+    return create_command_result_response_success(command_result)
+
+
+@mcp.tool(
     name="veos_system_build",
     title="Building an osa file describing the simulation system",
     description="Tool for building/importing models into one simulation system, described as an osa file. See veos_get_build_import_config_schema for any non-default build configuration",

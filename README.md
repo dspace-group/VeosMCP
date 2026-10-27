@@ -190,6 +190,12 @@ The following example prompts show how you can interact with the VEOS MCP server
   - Parameters: None
   - Read-only: **true**
 
+- **veos_get_simulation_targets**
+  - Title: Get all build/import targets for the build, and the currently set default.
+  - Description: Lists all available simulation targets for model build and import operations and identifies the currently configured default target.
+  - Parameters: None
+  - Read-only: **true**
+
 - **veos_system_build**
   - Title: Building an osa file describing the simulation system
   - Description: Builds or imports one or more models into a simulation system described by an osa file. Use `veos_get_build_import_config_schema` for non-default build configuration.

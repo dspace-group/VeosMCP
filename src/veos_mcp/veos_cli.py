@@ -146,6 +146,10 @@ class VeosCli:
         """Run the VEOS build CLI with serialized access."""
         return self._run_locked(self._installation.veos_path, ("build", *arguments), command_timeout_seconds=BUILD_COMMAND_TIMEOUT_SECONDS)
 
+    def run_target(self, *arguments: str) -> CliCommandResult:
+        """Run the VEOS target CLI with serialized access."""
+        return self._run_locked(self._installation.veos_path, ("target", *arguments))
+
     def get_installation(self) -> VeosInstallation:
         return self._installation
 

@@ -26,6 +26,7 @@ def test_list_all_tools() -> None:
         "veos_get_build_import_config_schema",
         "veos_get_full_simulation_system_data_model",
         "veos_get_log_file",
+        "veos_get_simulation_targets",
         "veos_get_veos_data_model_and_modify_schema",
         "veos_list_all_available_log_files",
         "veos_load",
