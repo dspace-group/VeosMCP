@@ -1,9 +1,9 @@
 import importlib
 import re
-import sys
 from collections.abc import Iterable
-from dataclasses import dataclass
 from pathlib import Path
+
+from veos_mcp.veos_installation import VeosInstallation
 
 _WINDOWS_INSTALLATION_REFERENCE = "dSPACE.InstallationManager.API, Version=2.0.0.0, Culture=neutral, PublicKeyToken=f9604847d8afbfbb"
 _REQUESTED_VERSION_PATTERN = re.compile(r"^\s*(?P<year>\d{2}|\d{4})[.\-_ ]?(?P<release>[12abAB])\s*$")
@@ -16,14 +16,6 @@ _LINUX_INSTALLATION_PATTERN = re.compile(
     re.IGNORECASE,
 )
 _RELEASE_ORDER = {"A": 1, "B": 2}
-
-
-@dataclass(frozen=True)
-class _VeosInstallation:
-    year: int
-    release: str
-    bin_path: Path
-    source_name: str
 
 
 def _normalize_release(release: str | None) -> str | None:
@@ -58,12 +50,12 @@ def _parse_requested_version(veos_version: str | None) -> tuple[int, str | None]
     )
 
 
-def _parse_windows_installation(display_name: str, root_path: str | Path) -> _VeosInstallation | None:
+def _parse_windows_installation(display_name: str, root_path: str | Path) -> VeosInstallation | None:
     match = _DISPLAY_NAME_PATTERN.fullmatch(display_name.strip())
     if match is None:
         return None
 
-    return _VeosInstallation(
+    return VeosInstallation(
         year=int(match.group("year")),
         release=match.group("release").upper(),
         bin_path=Path(root_path) / "bin",
@@ -71,12 +63,12 @@ def _parse_windows_installation(display_name: str, root_path: str | Path) -> _Ve
     )
 
 
-def _parse_linux_installation(bin_path: Path) -> _VeosInstallation | None:
+def _parse_linux_installation(bin_path: Path) -> VeosInstallation | None:
     match = _LINUX_INSTALLATION_PATTERN.fullmatch(bin_path.parent.name)
     if match is None:
         return None
 
-    return _VeosInstallation(
+    return VeosInstallation(
         year=int(match.group("year")),
         release=match.group("release").upper(),
         bin_path=bin_path,
@@ -84,7 +76,7 @@ def _parse_linux_installation(bin_path: Path) -> _VeosInstallation | None:
     )
 
 
-def _installation_sort_key(installation: _VeosInstallation) -> tuple[int, int]:
+def _installation_sort_key(installation: VeosInstallation) -> tuple[int, int]:
     return installation.year, _RELEASE_ORDER[installation.release]
 
 
@@ -96,10 +88,56 @@ def _format_requested_version(year: int, release: str | None) -> str:
     return str(year) if release is None else _format_installation_version(year, release)
 
 
-def _select_installation(
-    installations: Iterable[_VeosInstallation],
+def get_windows_installations() -> list[VeosInstallation]:
+    try:
+        import clr
+
+        clr.AddReference(_WINDOWS_INSTALLATION_REFERENCE)  # pyright: ignore[reportAttributeAccessIssue]
+        installation_api = importlib.import_module("dSPACE.InstallationManager.API")
+    except (ImportError, ModuleNotFoundError) as exception:
+        raise RuntimeError(
+            "Could not load the dSPACE InstallationManager API required for Windows VEOS discovery. "
+            "Ensure pythonnet is installed and the dSPACE Installation Manager is available on this machine."
+        ) from exception
+
+    configuration_info = installation_api.ConfigurationInfo()
+    installations: list[VeosInstallation] = []
+    for installation in configuration_info.Installations:
+        parsed_installation = _parse_windows_installation(
+            str(installation.DisplayName),
+            str(installation.RootPath),
+        )
+        if parsed_installation is not None:
+            installations.append(parsed_installation)
+    return installations
+
+
+def get_linux_installations(
+    base_path: Path = Path("/opt/dspace"),
+) -> list[VeosInstallation]:
+    installations: list[VeosInstallation] = []
+    for bin_path in base_path.glob("veos????[aAbB]/bin"):
+        parsed_installation = _parse_linux_installation(bin_path)
+        if parsed_installation is not None:
+            installations.append(parsed_installation)
+    return installations
+
+
+def get_installation_for_bin_path(installations: list[VeosInstallation], veos_bin_path: str) -> VeosInstallation:
+    for installation in installations:
+        if installation.bin_path == Path(veos_bin_path):
+            return installation
+    raise ValueError(
+        f"Provided VEOS path is invalid, make sure that the provided path '{veos_bin_path}' "
+        f"points to the bin directory of an existing VEOS installation. "
+        f"Following installations were found: {', '.join(str(installation.bin_path) for installation in installations)}."
+    )
+
+
+def get_installation_for_version(
+    installations: Iterable[VeosInstallation],
     veos_version: str | None,
-) -> _VeosInstallation:
+) -> VeosInstallation:
     available_installations = sorted(installations, key=_installation_sort_key)
     if not available_installations:
         raise RuntimeError("Could not find any installed dSPACE VEOS instances on the machine.")
@@ -124,55 +162,4 @@ def _select_installation(
         "Could not find the installation of dSPACE VEOS "
         f"{_format_requested_version(requested_year, requested_release)}. "
         f"Available installations: {available_versions}."
-    )
-
-
-def get_windows_installations() -> list[_VeosInstallation]:
-    try:
-        import clr
-
-        clr.AddReference(_WINDOWS_INSTALLATION_REFERENCE)
-        installation_api = importlib.import_module("dSPACE.InstallationManager.API")
-    except (ImportError, ModuleNotFoundError) as exception:
-        raise RuntimeError(
-            "Could not load the dSPACE InstallationManager API required for Windows VEOS discovery. "
-            "Ensure pythonnet is installed and the dSPACE Installation Manager is available on this machine."
-        ) from exception
-
-    configuration_info = installation_api.ConfigurationInfo()
-    installations: list[_VeosInstallation] = []
-    for installation in configuration_info.Installations:
-        parsed_installation = _parse_windows_installation(
-            str(installation.DisplayName),
-            str(installation.RootPath),
-        )
-        if parsed_installation is not None:
-            installations.append(parsed_installation)
-    return installations
-
-
-def get_linux_installations(
-    base_path: Path = Path("/opt/dspace"),
-) -> list[_VeosInstallation]:
-    installations: list[_VeosInstallation] = []
-    for bin_path in base_path.glob("veos????[aAbB]/bin"):
-        parsed_installation = _parse_linux_installation(bin_path)
-        if parsed_installation is not None:
-            installations.append(parsed_installation)
-    return installations
-
-
-def resolve_veos_path_for_version(installations: list[_VeosInstallation], veos_version: str | None) -> Path:
-    candidate_installation = _select_installation(installations, veos_version)
-    return candidate_installation.bin_path / "veos.exe" if sys.platform.startswith("win32") else candidate_installation.bin_path / "veos"
-
-
-def check_veos_installation_exists(installations: list[_VeosInstallation], veos_bin_path: str) -> Path:
-    for installation in installations:
-        if installation.bin_path == Path(veos_bin_path):
-            return installation.bin_path / "veos.exe" if sys.platform.startswith("win32") else installation.bin_path / "veos"
-    raise ValueError(
-        f"Provided VEOS path is invalid, make sure that the provided path '{veos_bin_path}' "
-        f"points to the bin directory of an existing VEOS installation. "
-        f"Following installations were found: {', '.join(str(installation.bin_path) for installation in installations)}."
     )

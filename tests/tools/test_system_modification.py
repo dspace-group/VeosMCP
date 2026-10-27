@@ -53,10 +53,10 @@ def test_system_modification_tools_invoke_veos_model_and_return_structured_conte
 
     result = cast(CallToolResult, tool_func("model.osa", "connections.json"))
 
-    assert result.isError is False
+    assert result.is_error is False
     assert cli.model_calls == [arguments]
-    assert result.structuredContent is not None
-    assert_command_result_structured_content(tool_name, result.structuredContent)
+    assert result.structured_content is not None
+    assert_command_result_structured_content(tool_name, result.structured_content)
 
 
 @pytest.mark.parametrize(
@@ -97,8 +97,8 @@ def test_system_modification_tools_return_error_response_on_cli_failure(
 
     result = cast(CallToolResult, tool_func("model.osa", "connections.json"))
 
-    assert result.isError is True
+    assert result.is_error is True
     assert cli.model_calls == [arguments]
-    assert result.structuredContent is not None
-    assert_command_result_structured_content(tool_name, result.structuredContent)
+    assert result.structured_content is not None
+    assert_command_result_structured_content(tool_name, result.structured_content)
     assert_error_text_content(result, expected_message)

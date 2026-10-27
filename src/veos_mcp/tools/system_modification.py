@@ -1,6 +1,6 @@
 """MCP tools for editing VEOS model signal connections."""
 
-from mcp.types import CallToolResult, ToolAnnotations
+from mcp.types import CallToolResult, TextContent, ToolAnnotations
 
 from veos_mcp.runtime import (
     create_command_result_response_error,
@@ -8,6 +8,53 @@ from veos_mcp.runtime import (
     get_cli,
     mcp,
 )
+
+
+@mcp.tool(
+    name="veos_get_veos_data_model_and_modify_schema",
+    title="Get general schema file describing the structure of VEOS osa data model and how the JSON modifications work.",
+    description=(
+        "Returns the schema file path. veos_get_full_simulation_system_data_model returns a JSON confirming "
+        "/definitions/ExecutableApplication and veos_simulation_system_modify expects a JSON confirming definitions/ModifyVerbJsonInput "
+        "Each array for the modify JSON can use one of these general command shapes: "
+        "-set- changes an existing element; -add- adds communication packages or bus clusters; "
+        "-remove- removes elements or signal connections; -connect- creates connections and can enable automatic "
+        "connection; -import- imports an OSA and can optionally select VPUs. See the schema for the exact properties "
+        "and supported command forms."
+    ),
+    annotations=ToolAnnotations(
+        read_only_hint=True,
+        destructive_hint=False,
+        idempotent_hint=True,
+        open_world_hint=False,
+    ),
+)
+def veos_get_veos_data_model_and_modify_schema() -> CallToolResult:
+    cli = get_cli()
+
+    context = TextContent(text="")
+    path = TextContent(text=f"{cli.get_installation().schema_path / 'veos-model.schema.json'}")
+
+    return CallToolResult(is_error=False, content=[context, path])
+
+
+@mcp.tool(
+    name="veos_simulation_system_modify",
+    title="Modify the VEOS simulation system via a JSON file.",
+    description="Expects a modification JSON file, get the schema via veos_get_veos_data_model_and_modify_schema first.",
+    annotations=ToolAnnotations(
+        read_only_hint=False,
+        destructive_hint=True,
+        idempotent_hint=False,
+        open_world_hint=False,
+    ),
+)
+def veos_simulation_system_modify(osa_path: str, modification_json_path: str) -> CallToolResult:
+    command_result = get_cli().run_model("modify", osa_path, "-c", modification_json_path)
+    if not command_result.success:
+        return create_command_result_response_error(command_result, f"Failed to perform system modification for {osa_path}.")
+
+    return create_command_result_response_success(command_result)
 
 
 @mcp.tool(
@@ -41,10 +88,10 @@ from veos_mcp.runtime import (
         "disconnect signals for testing purposes."
     ),
     annotations=ToolAnnotations(
-        readOnlyHint=False,
-        destructiveHint=False,
-        idempotentHint=True,
-        openWorldHint=False,
+        read_only_hint=False,
+        destructive_hint=False,
+        idempotent_hint=True,
+        open_world_hint=False,
     ),
 )
 def veos_add_signal_connections(osa_path: str, json_path: str) -> CallToolResult:
@@ -84,10 +131,10 @@ def veos_add_signal_connections(osa_path: str, json_path: str) -> CallToolResult
         "disconnect signals for testing purposes."
     ),
     annotations=ToolAnnotations(
-        readOnlyHint=False,
-        destructiveHint=True,
-        idempotentHint=True,
-        openWorldHint=False,
+        read_only_hint=False,
+        destructive_hint=True,
+        idempotent_hint=True,
+        open_world_hint=False,
     ),
 )
 def veos_remove_signal_connections(osa_path: str, json_path: str) -> CallToolResult:

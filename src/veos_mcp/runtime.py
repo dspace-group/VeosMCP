@@ -2,23 +2,22 @@
 
 import sys
 
-from mcp.server import FastMCP
+from mcp.server import MCPServer
 from mcp.types import CallToolResult, TextContent
 
 from veos_mcp.models.cli_command_result import CliCommandResult
 from veos_mcp.models.errors import ErrorType, VeosError
 from veos_mcp.veos_cli import VeosCli
 from veos_mcp.veos_path_resolver import (
-    check_veos_installation_exists,
+    get_installation_for_bin_path,
+    get_installation_for_version,
     get_linux_installations,
     get_windows_installations,
-    resolve_veos_path_for_version,
 )
 
-mcp = FastMCP(
+mcp = MCPServer(
     name="VEOS MCP Server",
     instructions="Tools for controlling the dSPACE VEOS simulator.",
-    json_response=True,
 )
 
 _veos_cli: VeosCli | None = None
@@ -30,12 +29,13 @@ def configure_cli(*, veos_version: str | None, veos_bin_path: str | None) -> Non
     veos_installations = get_windows_installations() if sys.platform.startswith("win32") else get_linux_installations()
 
     if veos_bin_path is not None:
-        veos_path = check_veos_installation_exists(veos_installations, veos_bin_path)
+        installation = get_installation_for_bin_path(veos_installations, veos_bin_path)
     else:
-        veos_path = resolve_veos_path_for_version(veos_installations, veos_version)
+        # veos_version can be None as well, will pick newest VEOS installation
+        installation = get_installation_for_version(veos_installations, veos_version)
 
     global _veos_cli
-    _veos_cli = VeosCli(veos_path=veos_path)
+    _veos_cli = VeosCli(installation=installation)
 
 
 def get_cli() -> VeosCli:
@@ -57,9 +57,9 @@ def create_error_response(message: str) -> CallToolResult:
     """Create a typed MCP-facing error result."""
     error = _create_error(message)
     return CallToolResult(
-        isError=True,
+        is_error=True,
         content=[TextContent(type="text", text=error.model_dump_json(by_alias=True))],
-        structuredContent=error.model_dump(by_alias=True, mode="json"),
+        structured_content=error.model_dump(by_alias=True, mode="json"),
     )
 
 
@@ -70,9 +70,9 @@ def create_command_result_response_error(
     """Convert a VEOS CLI command result into an MCP tool result."""
     error = _create_error(error_message)
     return CallToolResult(
-        isError=not command_result.success,
+        is_error=not command_result.success,
         content=[TextContent(type="text", text=error.model_dump_json(by_alias=True))],
-        structuredContent=command_result.to_structured_content(),
+        structured_content=command_result.to_structured_content(),
     )
 
 
@@ -81,7 +81,7 @@ def create_command_result_response_success(
 ) -> CallToolResult:
     """Convert a VEOS CLI command result into an MCP tool result."""
     return CallToolResult(
-        isError=not command_result.success,
+        is_error=not command_result.success,
         content=[TextContent(type="text", text="Tool Call succeeded.")],
-        structuredContent=command_result.to_structured_content(),
+        structured_content=command_result.to_structured_content(),
     )
