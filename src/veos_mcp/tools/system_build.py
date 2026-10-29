@@ -76,7 +76,7 @@ def veos_get_simulation_targets() -> CallToolResult:
         open_world_hint=False,
     ),
 )
-async def system_build_tool(
+async def veos_system_build(
     target_osa_path: str,
     models: list[str],
     ctx: Context,
