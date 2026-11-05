@@ -68,7 +68,8 @@ def veos_get_simulation_targets() -> CallToolResult:
 @mcp.tool(
     name="veos_system_build",
     title="Building an osa file describing the simulation system",
-    description="Tool for building/importing models into one simulation system, described as an osa file. See veos_get_build_import_config_schema for any non-default build configuration",
+    description="Tool for building/importing models into one simulation system, described as an osa file. See veos_get_build_import_config_schema for any non-default build configuration."
+    "Extensions like CoSim, HSIL or Qemu need to be imported with seperate tool veos_extension_import.",
     annotations=ToolAnnotations(
         read_only_hint=False,
         destructive_hint=False,
@@ -76,7 +77,7 @@ def veos_get_simulation_targets() -> CallToolResult:
         open_world_hint=False,
     ),
 )
-async def system_build_tool(
+async def veos_system_build(
     target_osa_path: str,
     models: list[str],
     ctx: Context,

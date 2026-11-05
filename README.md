@@ -210,6 +210,21 @@ The following example prompts show how you can interact with the VEOS MCP server
 </details>
 
 <details>
+<summary><b>Extension Import</b></summary>
+
+- **veos_extension_import**
+  - Title: Import VEOS extension or HSIL participant
+  - Description: Imports a VEOS extension (VEOS CoSim or Qemu) or HSIL configuration into an osa file. Import these extensions separately from `veos_system_build`.
+  - Parameters:
+    - `osa_path` (string): Path to the osa simulation system file to update.
+    - `json_path` (string): Path to the JSON configuration file describing the extension or HSIL participant.
+  - Read-only: **false**
+
+  Use `veos_get_cosim_docs`, `veos_get_qemu_docs`, or `veos_get_hsil_docs` for the relevant schema and documentation before importing.
+
+</details>
+
+<details>
 <summary><b>System Extraction</b></summary>
 
 - **veos_get_full_simulation_system_data_model**
