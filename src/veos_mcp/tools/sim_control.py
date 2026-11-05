@@ -15,7 +15,7 @@ from veos_mcp.runtime import (
     title="Get VEOS Simulator Status Info",
     description=(
         "Gets the current status information of the VEOS simulator, including the simulator state. State can be one "
-        "of: Unloaded, Stopped, Running, Paused, Stopped, Terminated. This also resembles the typical VEOS workflow. "
+        "of: Unloaded, Stopped, Running, Paused, Terminated. This also resembles the typical VEOS workflow. "
         "VEOS starts in Unloaded state. From there, you can load a model (.osa file), which transitions it to state "
         "Stopped. From Stopped, you can start the simulation, which transitions it to Running. If no pause or stop time is "
         "configured or no explicit pause or stop command is issued, the simulation will continue running forever. The "
