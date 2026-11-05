@@ -22,6 +22,7 @@ def test_list_all_tools() -> None:
     expected_tools = [
         "veos_add_signal_connections",
         "veos_apply_config",
+        "veos_extension_import",
         "veos_get_all_signals_and_ports",
         "veos_get_build_import_config_schema",
         "veos_get_cosim_docs",
