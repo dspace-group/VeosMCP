@@ -107,11 +107,11 @@ The tools cover a full workflow of bulding the simulation system, configuring it
 
 The following example prompts show how you can interact with the VEOS MCP server:
 
-- `Import `my.fmu` into `my.osa`, and enable XCP over TCP listening on `127.0.0.1:5555.``
-- `What signals are unconnected in `my.osa`? Do a best effort matching and create connections accordingly.`
-- `Disconnect all the signals from the EngineModel FMU in `my.osa`.`
+- `Import `my.fmu` into `my.osa`, and enable XCP over TCP listening on `127.0.0.1:5555`.`
+- `What signals are unconnected in `my.osa`? Do a best effort matching and connnect them.`
+- `In `my.osa`, create the `CoSim` counterpart to `EngineModel.fmu`.`
 - `Load `my.osa` and run the simulation for 5 seconds.`
-- `Enable bus logging and start the simulation, then check the bus logs for any TCP transmissions.`
+- `Enable bus logging, then check the bus logs for any TCP transmissions.`
 
 ![VEOS MCP demo](docs/demo.gif)
 
@@ -145,7 +145,7 @@ The following example prompts show how you can interact with the VEOS MCP server
 
 - **veos_status_info**
   - Title: Get VEOS Simulator Status Info
-  - Description: Gets the current status information of the VEOS simulator, including the simulator state. State can be one of: Unloaded, Stopped, Running, Paused, Stopped, Terminated.
+  - Description: Gets the current status information of the VEOS simulator, including the simulator state. State can be one of: Unloaded, Stopped, Running, Paused, Terminated.
   - Parameters: None
   - Read-only: **true**
 
@@ -206,6 +206,39 @@ The following example prompts show how you can interact with the VEOS MCP server
     - `log_file` (string, optional): Path to the build log file.
     - `build_directory` (string, optional): Path to the build directory.
   - Read-only: **false**
+
+</details>
+
+<details>
+<summary><b>Simulator Extension</b></summary>
+
+- **veos_extension_import**
+  - Title: Import VEOS extension or HSIL participant
+  - Description: Imports a VEOS extension (VEOS CoSim or Qemu) or HSIL configuration into an osa file. Import these extensions separately from `veos_system_build`.
+  - Parameters:
+    - `osa_path` (string): Path to the osa simulation system file to update.
+    - `json_path` (string): Path to the JSON configuration file describing the extension or HSIL participant.
+  - Read-only: **false**
+
+  Use `veos_get_cosim_docs`, `veos_get_qemu_docs`, or `veos_get_hsil_docs` for the relevant schema and documentation before importing.
+
+- **veos_get_cosim_docs**
+  - Title: Get VEOS CoSim documentation
+  - Description: Returns the VEOS CoSimulation schema file paths and a link to the GitHub documentation. Use this documentation for `DsVeosCoSim` instances imported with `veos_extension_import`.
+  - Parameters: None
+  - Read-only: **true**
+
+- **veos_get_qemu_docs**
+  - Title: Get VEOS Qemu extension documentation
+  - Description: Returns the schema file paths and GitHub documentation reference for `DsVeosQemu` extensions imported with `veos_extension_import`.
+  - Parameters: None
+  - Read-only: **true**
+
+- **veos_get_hsil_docs**
+  - Title: Get VEOS HSIL CoSim documentation
+  - Description: Returns the HSIL simulation configuration schema file path. HSIL instances are imported with `veos_extension_import`.
+  - Parameters: None
+  - Read-only: **true**
 
 </details>
 

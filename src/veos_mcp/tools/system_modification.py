@@ -18,7 +18,7 @@ from veos_mcp.runtime import (
         "/definitions/ExecutableApplication and veos_simulation_system_modify expects a JSON confirming definitions/ModifyVerbJsonInput "
         "Each array for the modify JSON can use one of these general command shapes: "
         "-set- changes an existing element; -add- adds communication packages or bus clusters; "
-        "-remove- removes elements or signal connections; -connect- creates connections and can enable automatic "
+        "-remove- removes VPUs, elements or signal connections; -connect- creates connections and can enable automatic "
         "connection; -import- imports an OSA and can optionally select VPUs. See the schema for the exact properties "
         "and supported command forms."
     ),
